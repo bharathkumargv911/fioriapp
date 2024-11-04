@@ -1,0 +1,58 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	controllerName="pyopcnfglist.controller.DetailBasic" xmlns:html="http://www.w3.org/1999/xhtml">
+	<f:SimpleForm maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="4" labelSpanM="4" columnsL="2"
+		emptySpanL="2" emptySpanM="2" columnsM="2" visible="{LocalViewSettingsDetail>/Detail}">
+		<f:content>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>AGGRID}" tooltip="{i18n>AGGRID}"/>
+			<Text text="{DetailModel>/AGGRID}" tooltip="{i18n>AGGRID}"/>
+			<Label text="{i18n>OWN_CORPID}" tooltip="{i18n>OWN_CORPID}"/>
+			<Text text="{DetailModel>/OWN_CORPID}" tooltip="{i18n>OWN_CORPID}"/>
+			<Label text="{i18n>OWN_USERID}" tooltip="{i18n>OWN_USERID}"/>
+			<Text text="{DetailModel>/OWN_USERID}" tooltip="{i18n>OWN_USERID}"/>
+			<Label text="{i18n>OWN_AGGRID}" tooltip="{i18n>OWN_AGGRID}"/>
+			<Text text="{DetailModel>/OWN_AGGRID}" tooltip="{i18n>OWN_AGGRID}"/>
+			<Label text="{i18n>OWN_AGGRNAME}" tooltip="{i18n>OWN_AGGRNAME}"/>
+			<Text text="{DetailModel>/OWN_AGGRNAME}" tooltip="{i18n>OWN_AGGRNAME}"/>
+			<Label text="{i18n>AggregatorDivision}" tooltip="{i18n>AggregatorDivision}"/>
+			<Text text="{DetailModel>/AggregatorDivision}" tooltip="{i18n>AggregatorDivision}"/>
+			<Label text="{i18n>FacilityType}" tooltip="{i18n>FacilityType}"/>
+			<Text text="{DetailModel>/FacilityType}" tooltip="{i18n>FacilityType}"/>
+			<Label text="{i18n>CORMandatoryFields}" tooltip="{i18n>CORMandatoryFields}"/>
+			<Text text="{DetailModel>/CORMandatoryFields}" tooltip="{i18n>CORMandatoryFields}"/>
+			<Label text="{i18n>TraceID}" tooltip="{i18n>TraceID}"/>
+			<Text text="{DetailModel>/TraceID}" tooltip="{i18n>TraceID}"/>
+			<Label text="{i18n>SourceID}" tooltip="{i18n>SourceID}"/>
+			<Text text="{DetailModel>/SourceID}" tooltip="{i18n>SourceID}"/>
+			<Label text="{i18n>Module}" tooltip="{i18n>Module}"/>
+			<Text text="{DetailModel>/Module}" tooltip="{i18n>Module}"/>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>SubModule}" tooltip="{i18n>SubModule}"/>
+			<Text text="{DetailModel>/SubModule}" tooltip="{i18n>SubModule}"/>
+			<Label text="{i18n>BPCreate}" tooltip="{i18n>BPCreate}"/>
+			<Text text="{DetailModel>/BPCreate}" tooltip="{i18n>BPCreate}"/>
+			<Label text="{i18n>SCFCreate}" tooltip="{i18n>SCFCreate}"/>
+			<Text text="{DetailModel>/SCFCreate}" tooltip="{i18n>SCFCreate}"/>
+			<Label text="{i18n>Source}" tooltip="{i18n>Source}"/>
+			<Text text="{DetailModel>/Source}" tooltip="{i18n>Source}"/>
+			<Label text="{i18n>SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"/>
+			<Text text="{DetailModel>/SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"/>
+			<Label text="{i18n>CreatedBy}" tooltip="{i18n>CreatedBy}"/>
+			<Text text="{DetailModel>/CreatedBy}" tooltip="{i18n>CreatedBy}"/>
+			<Label text="{i18n>CreatedOn}" tooltip="{i18n>CreatedOn}"/>
+			<Text text="{path:'DetailModel>/CreatedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+				tooltip="{path:'DetailModel>/CreatedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+			<Label text="{i18n>CreatedAt}" tooltip="{i18n>CreatedAt}"/>
+			<Text text="{path:'DetailModel>/CreatedAt', formatter:'.getTimeFormat'}"
+				tooltip="{path:'DetailModel>/CreatedAt', formatter:'.getTimeFormat'}"/>
+			<Label text="{i18n>ChangedBy}" tooltip="{i18n>ChangedBy}"/>
+			<Text text="{DetailModel>/ChangedBy}" tooltip="{i18n>ChangedBy}"/>
+			<Label text="{i18n>ChangedOn}" tooltip="{i18n>ChangedOn}"/>
+			<Text text="{path:'DetailModel>/ChangedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+				tooltip="{path:'DetailModel>/ChangedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+			<Label text="{i18n>ChangedAt}" tooltip="{i18n>ChangedAt}"/>
+			<Text text="{path:'DetailModel>/ChangedAt', formatter:'.getTimeFormat'}"
+				tooltip="{path:'DetailModel>/ChangedAt', formatter:'.getTimeFormat'}"/>
+		</f:content>
+	</f:SimpleForm>
+</mvc:View>

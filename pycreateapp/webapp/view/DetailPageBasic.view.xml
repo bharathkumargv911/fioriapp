@@ -1,0 +1,102 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	controllerName="pycreateapp.controller.DetailPageBasic" xmlns:html="http://www.w4.org/1999/xhtml">
+    <f:SimpleForm id="sfDpBasic" maxContainerCols="6" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+emptySpanL="1" emptySpanM="1" columnsM="4" visible="{LocalViewSettingsDetail>/Detail1}">
+        <f:content>
+		<core:Title text="" tooltip=""/>
+            <Label text="{i18n>CPGuid}" tooltip="{i18n>CPGuid}"  required="true"/>
+			<Input id="idCPGuid" value="{CreateModel>/CPGuid}"/>
+			<Label text="{i18n>CPType}" tooltip="{i18n>CPType}"  required="true"/>
+			<Input id="idCPType" value="{CreateModel>/CPType}" />
+			<Label text="{i18n>CPName}" tooltip="{i18n>CPName}"  required="true"/>
+			<Input id="idCPName" value="{CreateModel>/CPName}"/>
+			<Label text="{i18n>UtilDistrict}" tooltip="{i18n>UtilDistrict}"  required="true"/>
+			<Input id="idUtilDistrict" value="{CreateModel>/UtilDistrict}"/>
+			<Label text="{i18n>IncorporationDate}" tooltip="{i18n>IncorporationDate}"  required="true"/>
+			<DatePicker
+					id="DP1"
+					placeholder="Enter Date"
+					change="handleChange"
+					class="sapUiSmallMarginBottom"
+					value="{CreateModel>/IncorporationDate}"/>
+			<Label text="{i18n>LegalStatus}" tooltip="{i18n>LegalStatus}"  required="true"/>
+			<Input id="idLegalStatus" value="{CreateModel>/LegalStatus}"/>
+			<Label text="{i18n>Address1}" tooltip="{i18n>Address1}"  required="true"/>
+			<Input id="idAddress1" value="{CreateModel>/Address1}"/>
+			<Label text="{i18n>Address2}" tooltip="{i18n>Address2}"  required="true"/>
+			<Input id="idAddress2" value="{CreateModel>/Address2}"/>
+			<Label text="{i18n>Address3}" tooltip="{i18n>Address3}"  required="true"/>
+			<Input id="idAddress3" value="{CreateModel>/Address3}"/>
+			<Label text="{i18n>Address4}" tooltip="{i18n>Address4}"  required="true"/>
+			<Input id="idAddress4" value="{CreateModel>/Address4}"/>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>District}" tooltip="{i18n>District}"  required="true"/>
+			<Input id="idDistrict" value="{CreateModel>/District}"/>
+			<Label text="{i18n>City}" tooltip="{i18n>City}"  required="true"/>
+			<Input id="idCity" value="{CreateModel>/City}"/>
+			<Label text="{i18n>State}" tooltip="{i18n>State}"  required="true"/>
+			<Input id="idState" value="{CreateModel>/State}"/>
+			<Label text="{i18n>StateDesc}" tooltip="{i18n>StateDesc}"  required="true"/>
+			<Input id="idStateDesc" value="{CreateModel>/StateDesc}"/>
+			<Label text="{i18n>Country}" tooltip="{i18n>Country}"  required="true"/>
+			<Input id="idCountry" value="{CreateModel>/Country}"/>
+			<Label text="{i18n>CountryDesc}" tooltip="{i18n>CountryDesc}"  required="true"/>
+			<Input id="idCountryDesc" value="{CreateModel>/CountryDesc}"/>
+			<Label text="{i18n>Pincode}" tooltip="{i18n>Pincode}"  required="true"/>
+			<Input id="idPincode" value="{CreateModel>/Pincode}" type="Number" liveChange="onPincode" valueLiveUpdate="true"/>
+			<Label text="{i18n>EntityType}" tooltip="{i18n>EntityType}"  required="true"/>
+			<Input id="idEntityType" value="{CreateModel>/EntityType}"/>
+			<Label text="{i18n>EntityID}" tooltip="{i18n>EntityID}"  required="true"/>
+			<Input id="idEntityID" value="{CreateModel>/EntityID}"/>
+			<Label text="{i18n>ParentNo}" tooltip="{i18n>ParentNo}"  required="true"/>
+			<Input id="idParentNo" value="{CreateModel>/ParentNo}"/>
+        </f:content>
+    </f:SimpleForm>
+	<f:SimpleForm id="sfDpBasic2" maxContainerCols="6" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+emptySpanL="1" emptySpanM="1" columnsM="4" visible="{LocalViewSettingsDetail>/Detail}">
+		<f:content>
+		<core:Title text="" tooltip=""/>
+			<Label text="{i18n>CPGuid}" tooltip="{i18n>CPGuid}"/>
+			<Text text="{CreateModel>/CPGuid}"/>
+			<Label text="{i18n>CPType}" tooltip="{i18n>CPType}"/>
+			<Text text="{CreateModel>/CPType}"/>
+			<Label text="{i18n>CPName}" tooltip="{i18n>CPName}"/>
+			<Text text="{CreateModel>/CPName}"/>
+			<Label text="{i18n>UtilDistrict}" tooltip="{i18n>UtilDistrict}"/>
+			<Text text="{CreateModel>/UtilDistrict}"/>
+			<Label text="{i18n>IncorporationDate}" tooltip="{i18n>IncorporationDate}"/>
+			<Text text="{path:'CreateModel>/IncorporationDate',formatter:'.formatDate'}"/>
+			<Label text="{i18n>LegalStatus}" tooltip="{i18n>LegalStatus}"/>
+			<Text text="{CreateModel>/LegalStatus}"/>
+			<Label text="{i18n>Address1}" tooltip="{i18n>Address1}"/>
+			<Text text="{CreateModel>/Address1}"/>
+			<Label text="{i18n>Address2}" tooltip="{i18n>Address2}"/>
+			<Text text="{CreateModel>/Address2}"/>
+			<Label text="{i18n>Address3}" tooltip="{i18n>Address3}"/>
+			<Text text="{CreateModel>/Address3}"/>
+			<Label text="{i18n>Address4}" tooltip="{i18n>Address4}"/>
+			<Text text="{CreateModel>/Address4}"/>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>District}" tooltip="{i18n>District}"/>
+			<Text text="{CreateModel>/District}"/>
+			<Label text="{i18n>City}" tooltip="{i18n>City}"/>
+			<Text text="{CreateModel>/City}"/>
+			<Label text="{i18n>State}" tooltip="{i18n>State}"/>
+			<Text text="{CreateModel>/State}"/>
+			<Label text="{i18n>StateDesc}" tooltip="{i18n>StateDesc}"/>
+			<Text text="{CreateModel>/StateDesc}"/>
+			<Label text="{i18n>Country}" tooltip="{i18n>Country}"/>
+			<Text text="{CreateModel>/Country}"/>
+			<Label text="{i18n>CountryDesc}" tooltip="{i18n>CountryDesc}"/>
+			<Text text="{CreateModel>/CountryDesc}"/>
+			<Label text="{i18n>Pincode}" tooltip="{i18n>Pincode}"/>
+			<Text text="{CreateModel>/Pincode}"/>
+			<Label text="{i18n>EntityType}" tooltip="{i18n>EntityType}"/>
+			<Text text="{CreateModel>/EntityType}"/>
+			<Label text="{i18n>EntityID}" tooltip="{i18n>EntityID}"/>
+			<Text text="{CreateModel>/EntityID}"/>
+			<Label text="{i18n>ParentNo}" tooltip="{i18n>ParentNo}"/>
+			<Text text="{CreateModel>/ParentNo}"/>
+		</f:content>
+	</f:SimpleForm>
+</mvc:View>

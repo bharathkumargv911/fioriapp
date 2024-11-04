@@ -1,0 +1,167 @@
+<mvc:View id="PartnerMVCView" controllerName="pyregisterapp.controller.PartnerData" xmlns="sap.m" 
+xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:layout="sap.ui.layout" xmlns:form="sap.ui.layout.form" 
+xmlns:table="sap.ui.table" displayBlock="true">
+<layout:Grid id="PartnerDataGridID" defaultSpan="L12 M6 S12" visible="{LocalViewSettings>/create}">
+<form:Form id="PartnerDataFormID">
+<form:layout>
+    <form:ResponsiveGridLayout 
+    id="PartnerDataFormRGLID"
+    labelSpanXL="2"
+    labelSpanL="3"
+    labelSpanM="2"
+    labelSpanS="2"
+    adjustLabelSpan="false"
+    emptySpanXL="2"
+    emptySpanL="2"
+    emptySpanM="2"
+    emptySpanS="2"
+    columnsXL="2"
+    columnsL="2"
+    columnsM="2">
+    </form:ResponsiveGridLayout>
+</form:layout>
+<form:formContainers>
+    <form:FormContainer id="PartnerDataFCId">
+        <form:title>
+            <core:Title id="PartnerTitleID1" text="{i18n>BasicDetails}"></core:Title>
+        </form:title>
+            <form:formElements>
+                <form:FormElement id="PartnerDataFEId1" label="{i18n>FirstName}">
+                    <form:fields>
+                        <Input id="PartnerNameInputID" value="{CreateModel>/fname}" type="Text" placeholder="{i18n>FirstName}" change="onFirstNameChange"></Input>
+                    </form:fields>
+                </form:FormElement>
+                <form:FormElement id="PartnerDataFEId2" label="{i18n>LastName}">
+                    <form:fields>
+                        <Input id="PartnerNameInputID2" value="{CreateModel>/lname}" type="Text" placeholder="{i18n>LastName}" change="onFirstNameChange"></Input>
+                    </form:fields>
+                </form:FormElement>
+                <!-- <form:FormElement id="PartnerDataFEId3" label="{i18n>Gender}">
+                    <form:fields>
+                        <Select id="PartnerGenderDD" items="{genderData>/}">
+                            <core:Item id="PartnerGenderDDId" key="{genderData>genderKey}" text="{genderData>genderKey}-{genderData>genderText}"></core:Item>
+                        </Select>
+                    </form:fields>
+                </form:FormElement> -->
+                <!-- <form:FormElement id="PartnerDataFEId4" label="{i18n>DateOfBirth}">
+                    <form:fields>
+                        <DatePicker id="PartnerDP2" placeholder="{i18n>DateOfBirth}" change="handleChange" class="sapUiSmallMarginBottom" value="{CreateModel>/DateofBirth}"/>
+                    </form:fields>
+                </form:FormElement> -->
+            </form:formElements>
+    </form:FormContainer>
+    <form:FormContainer id="PartnerDataFCId2">
+        <form:title>
+            <core:Title id="PartnerTitleID2" text="{i18n>OtherDetails}"></core:Title>
+        </form:title>
+        <form:formElements>
+            <form:FormElement id="PartnerDataFEId5" label="{i18n>Mobile}">
+                <form:fields>
+                    <Input id="PartnerMobileInputID" value="{CreateModel>/Mobile}" type="Number" placeholder="{i18n>MobileNo}"></Input>
+                </form:fields>
+            </form:FormElement>
+            <form:FormElement id="PartnerDataFEId6" label="{i18n>RetypeNumber}">
+                <form:fields>
+                    <Input id="PartnerMobileInputID2" value="{CreateModel>/Mobile2}" type="Password" placeholder="{i18n>ReTypeMobile}"></Input>
+                </form:fields>
+            </form:FormElement>
+            <form:FormElement id="PartnerDataFEId7" label="{i18n>Email}">
+                <form:fields>
+                    <Input id="PartneremailInputID3" value="{CreateModel>/email}" type="Email" placeholder="{i18n>EmailID}"></Input>
+                </form:fields>
+            </form:FormElement>
+            <form:FormElement id="PartnerDataFEId8" label="{i18n>RetypeEmail}">
+                <form:fields>
+                    <Input id="PartneremailInputID4" value="{CreateModel>/email2}" type="Password" placeholder="{i18n>ReTypeEmailID}"></Input>
+                </form:fields>
+            </form:FormElement>
+            <form:FormElement id="PartnerDataFEId9" label="{i18n>PostalCode}">
+                <form:fields>
+                    <Input id="PartnerPostalInputID5" value="{CreateModel>/PostalCode}" type="Number" placeholder="{i18n>Postalcode}"></Input>
+                </form:fields>
+            </form:FormElement>
+            <!-- <form:FormElement id="PartnerDataFEId10" label="{i18n>PAN}">
+                <form:fields>
+                    <Input id="PartnerInputID6" value="{CustomersDetails>/PAN}" editable="false"></Input>
+                </form:fields>
+            </form:FormElement> -->
+        </form:formElements>
+    </form:FormContainer>
+</form:formContainers>
+</form:Form>
+</layout:Grid>
+
+
+
+<Toolbar id="PartnerToolbarId">
+    <ToolbarSpacer id="PartnerToolbarSpacer"/>
+    <Button id="AddButtonID" text="Add" press="addData"></Button>
+</Toolbar>
+
+<table:Table rows ="{PartnerTableDetails>/}" id="PartnerUITable" selectionMode="None" noData=" No Data" showColumnVisibilityMenu="true" 
+enableGrouping="false" enableSelectAll="false"  visible="true" enableBusyIndicator="true" margin-right="0rem"
+minAutoRowCount="{LocalViewSettings>/visibleRowCount}" visibleRowCount="{LocalViewSettings>/visibleRowCount}">
+<table:columns>
+    <table:Column id="PartnerFirstName">
+        <Label id="PartnerFirstNameLabel" text="{i18n>FirstName}"/>
+        <table:template>
+            <Text id="PartnerFName" text="{PartnerTableDetails>FirstName}"/>
+        </table:template>
+    </table:Column>
+        <table:Column id="PartnerLastName">
+        <Label id="PartnerLastNameLabel" text="{i18n>LastName}"/>
+        <table:template>
+            <Text id="PartnerLName" text="{PartnerTableDetails>LastName}"/>
+        </table:template>
+    </table:Column>
+    <!-- <table:Column id="PartnerGender">
+        <Label id="PartnerGenderLabel" text="{i18n>Gender}"/>
+        <table:template>
+            <Text id="PartnerGender1" text="{PartnerTableDetails>Gender}"/>
+        </table:template>
+    </table:Column> -->
+    <!-- <table:Column id="PartnerDateOfBirth">
+        <Label id="PartnerDateOfBirthrLabel" text="{i18n>DateOfBirth}"/>
+        <table:template>
+            <Text id="PartnerDateOfBirth1" text="{PartnerTableDetails>DateOfBirth}"/>
+        </table:template>
+    </table:Column> -->
+    <table:Column id="PartnerMobile">
+        <Label id="PartnerMobileLabel" text="{i18n>Mobile}"/>
+        <table:template>
+            <Text id="PartnerMobile1" text="{PartnerTableDetails>Mobile}"/>
+        </table:template>
+    </table:Column>
+    <table:Column id="PartnerRetypeNumber">
+        <Label id="PartnerRetypeNumberLabel" text="{i18n>RetypeNumber}"/>
+        <table:template>
+            <Text id="PartneRetypeNumber1" text="{PartnerTableDetails>RetypeMobile}"/>
+        </table:template>
+    </table:Column>
+    <table:Column id="PartnerEmail">
+        <Label id="PartnerEmailLabel" text="{i18n>Email}"/>
+        <table:template>
+            <Text id="PartnerEmail1" text="{PartnerTableDetails>email}"/>
+        </table:template>
+    </table:Column>
+    <table:Column id="PartnerRetypeEmail">
+        <Label id="PartnerRetypeEmailLabel" text="{i18n>RetypeEmail}"/>
+        <table:template>
+            <Text id="PartnerRetypeEmail1" text="{PartnerTableDetails>retypeemail}"/>
+        </table:template>
+    </table:Column>
+    <table:Column id="PartnerPostalCode">
+        <Label id="PartnerPostalCodeLabel" text="{i18n>PostalCode}"/>
+        <table:template>
+            <Text id="PartnerPostalCode1" text="{PartnerTableDetails>PostalCode}"/>
+        </table:template>
+    </table:Column>
+    <!-- <table:Column id="PartnerPAN">
+        <Label id="PartnerPANLabel" text="{i18n>PAN}"/>
+        <table:template>
+            <Text id="PartnerPAN1" text="{CustomersDetails>Pan}"/>
+        </table:template>
+    </table:Column> -->
+</table:columns>
+</table:Table>
+</mvc:View>

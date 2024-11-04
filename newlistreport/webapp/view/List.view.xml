@@ -1,0 +1,55 @@
+<mvc:View xmlns:core="sap.ui.core" controllerName="newlistreport.controller.List"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:fb="sap.ui.comp.filterbar" xmlns:tb="sap.ui.table">
+    <App id="appId">
+    <pages>
+    <Page id="pageId">
+     <fb:FilterBar id="filterbarrr" search="onSearch" showRestoreButton="true" showClearOnFB="false" filterContainerWidth="15rem" 
+        filterBarExpanded="true" visible="true">
+            <fb:filterItems>
+            </fb:filterItems>
+        </fb:FilterBar>
+        <Toolbar>
+            <Text id="mad1" text="Items({LocalViewSettings>/TableRowCount})"></Text>
+        </Toolbar>
+        <content>
+             <tb:Table id="tablcontnt" visible="true" rows="{BPHeader>/}" selectionMode="None" visibleRowCount="{LocalViewSettings>/setRowCount}">
+                <tb:columns>
+                    <tb:Column>
+                        <Label text="ID"></Label>
+                        <tb:template>
+                            <Link text="{BPHeader>ID}" press="onPress"></Link>
+                        </tb:template>
+                    </tb:Column>
+                    <tb:Column>
+                        <Label text="CP Name"></Label>
+                        <tb:template>
+                            <Text text="{BPHeader>CPName}"></Text>
+                        </tb:template>
+                    </tb:Column>
+                    <tb:Column>
+                        <Label text="State"></Label>
+                        <tb:template>
+                            <Text text="{BPHeader>State}"></Text>
+                        </tb:template>
+                    </tb:Column>
+                    <tb:Column>
+                        <Label text="Email ID"></Label>
+                        <tb:template>
+                            <Text text="{BPHeader>EmailID}"></Text>
+                        </tb:template>
+                    </tb:Column>
+                    <tb:Column>
+                        <Label text="PAN"></Label>
+                        <tb:template>
+                            <Text text="{BPHeader>PAN}"></Text>
+                        </tb:template>
+                    </tb:Column>
+                </tb:columns>
+            </tb:Table>
+        </content> 
+    </Page>
+    </pages>
+    </App>
+
+</mvc:View>

@@ -1,0 +1,18 @@
+<mvc:View controllerName="pytabledetails.controller.CreatePage" xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:uxap="sap.uxap">
+    <Page title="Detail" id="header" navButtonPress="onBack" navButtonType="Back" showNavButton="true">
+    <content>
+       <mvc:XMLView viewName="pytabledetails.view.CreateObjectHeader"/>
+       <mvc:XMLView viewName="pytabledetails.view.CreateObjectDetails"/>
+    </content>
+    <footer>
+        <Toolbar>
+            <Button id="b1" press="onshowerrorpopup" icon="{= ${LocalViewSettingsDetail>/messageLength} === 0 ? '' : 'sap-icon://alert' }" text="{= ${LocalViewSettingsDetail>/messageLength} === 0 ? '' : ${LocalViewSettingsDetail>/messageLength}}" visible="{= ${LocalViewSettingsDetail>/messageLength} === 0 ? false : true}"/>
+            <ToolbarSpacer ></ToolbarSpacer>
+            <Button id="ReviewButton" press="onReview" visible="{LocalViewSettingsDetail>/reviewbtn}" text="Review"></Button>
+            <Button id="SaveButton" press="onSavePopup" visible="{LocalViewSettingsDetail>/savebtn}" text="Save"></Button>
+        </Toolbar>
+    </footer>
+    </Page>
+</mvc:View>

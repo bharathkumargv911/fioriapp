@@ -1,0 +1,185 @@
+<mvc:View controllerName="pyregisterapp.controller.ProprietorData" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" 
+xmlns:core="sap.ui.core" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form" displayBlock="true"
+xmlns:html="http://www.w3.org/1999/xhtml">
+
+<l:Grid id="ProprietorGridId" defaultSpan="L12 M6 S12" visible="{LocalViewSettings>/create}">
+<f:Form id="ProprietorFormID">
+<f:layout>
+            <f:ResponsiveGridLayout 
+                    id="ProprietorRGLId"
+                    labelSpanXL="2"
+					labelSpanL="3"
+					labelSpanM="2"
+					labelSpanS="2"
+					adjustLabelSpan="false"
+					emptySpanXL="2"
+					emptySpanL="2"
+					emptySpanM="2"
+					emptySpanS="2"
+					columnsXL="2"
+					columnsL="2"
+					columnsM="2">
+            </f:ResponsiveGridLayout>
+</f:layout>
+<f:formContainers>
+    <f:FormContainer id="ProprietorFCID">
+    <f:title>
+        <core:Title id="TitleID1" text="{i18n>BasicDetails}"></core:Title>
+    </f:title>
+        <f:formElements>
+            <f:FormElement id="ProprietorFEID1" label="{i18n>FirstName}">
+                <f:fields>
+                    <Input id="NameInputID" value="{CreateModel>/fname}" type="Text" placeholder="{i18n>FirstName}" change="onFirstNameChange"></Input>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEID2" label="{i18n>LastName}">
+                <f:fields>
+                    <Input id="NameInputID2" value="{CreateModel>/lname}" type="Text" placeholder="{i18n>LastName}" change="onFirstNameChange"></Input>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEID3" label="{i18n>Gender}">
+                <f:fields>
+                    <Select id="GenderDD" items="{genderData>/}">
+                        <core:Item id="GenderDDId" key="{genderData>genderKey}" text="{genderData>genderKey}-{genderData>genderText}"></core:Item>
+                    </Select>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEID4" label="{i18n>DateOfBirth}">
+                <f:fields>
+                    <DatePicker id="DP2" placeholder="{i18n>DateOfBirth}" change="handleChange" class="sapUiSmallMarginBottom" value="{CreateModel>/DateofBirth}"/>
+                </f:fields>
+            </f:FormElement>
+        </f:formElements>
+    </f:FormContainer>
+    <f:FormContainer id="ProprietorFCID2">
+    <f:title>
+        <core:Title id="TitleID2" text="{i18n>OtherDetails}"></core:Title>
+    </f:title>
+        <f:formElements>
+            <f:FormElement id="ProprietorFEId1" label="{i18n>Mobile}">
+                <f:fields>
+                    <Input id="MobileInputID" value="{CreateModel>/Mobile}" type="Number" placeholder="{i18n>MobileNo}"></Input>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId2" label="{i18n>RetypeNumber}">
+                <f:fields>
+                    <Input id="MobileInputID2" value="{CreateModel>/Mobile2}" type="Password" placeholder="{i18n>ReTypeMobile}"></Input>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId3" label="{i18n>Email}">
+                <f:fields>
+                    <Input id="emailInputID3" value="{CreateModel>/email}" type="Email" placeholder="{i18n>EmailID}"></Input>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId4" label="{i18n>RetypeEmail}">
+                <f:fields>
+                    <Input id="emailInputID4" value="{CreateModel>/email2}" type="Password" placeholder="{i18n>ReTypeEmailID}"></Input>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId5" label="{i18n>PostalCode}">
+                <f:fields>
+                    <Input id="PostalInputID5" value="{CreateModel>/PostalCode}" type="Number" placeholder="{i18n>Postalcode}"></Input>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId6" label="{i18n>PAN}">
+                <f:fields>
+                    <Input id="InputID6" value="{CustomersDetails>/PAN}" editable="false"></Input>
+                </f:fields>
+            </f:FormElement>
+        </f:formElements>
+    </f:FormContainer>
+</f:formContainers>
+</f:Form>
+
+</l:Grid>
+<l:Grid id="ProprietorGridIdT" defaultSpan="L12 M6 S12" visible="{LocalViewSettings>/review}">
+<f:Form id="ProprietorFormIDT">
+<f:layout>
+            <f:ResponsiveGridLayout 
+                    id="ProprietorRGLIdT"
+                    labelSpanXL="2"
+					labelSpanL="3"
+					labelSpanM="2"
+					labelSpanS="2"
+					adjustLabelSpan="false"
+					emptySpanXL="2"
+					emptySpanL="2"
+					emptySpanM="2"
+					emptySpanS="2"
+					columnsXL="2"
+					columnsL="2"
+					columnsM="2">
+            </f:ResponsiveGridLayout>
+</f:layout>
+<f:formContainers>
+    <f:FormContainer id="ProprietorFCIDT">
+    <f:title>
+        <core:Title id="TitleID1T" text="Basic Details"></core:Title>
+    </f:title>
+        <f:formElements>
+            <f:FormElement id="ProprietorFEID1T" label="{i18n>FirstName}">
+                <f:fields>
+                    <Text id="NameInputIDT" text="{CreateModel>/fname}"></Text>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEID2T" label="{i18n>LastName}">
+                <f:fields>
+                    <Text id="NameInputID2T" text="{CreateModel>/lname}"></Text>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEID3T" label="{i18n>Gender}">
+                <f:fields>
+                    <!-- <Select id="GenderDDT" items="{genderData>/}">
+                        <core:Item id="GenderDDIdT" key="{genderData>genderKey}" text="{genderData>genderKey}-{genderData>genderText}"></core:Item>
+                    </Select> -->
+                    <Text id="GenderTextID" text="{CreateModel>/Gender}"></Text>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEID4T" label="{i18n>DateOfBirth}">
+                <f:fields>
+                    <Text id="DP2T" text="{path:'CreateModel>/DateofBirth',formatter:'.formatDate'}"/>
+                </f:fields>
+            </f:FormElement>
+        </f:formElements>
+    </f:FormContainer>
+    <f:FormContainer id="ProprietorFCID2T">
+    <f:title>
+        <core:Title id="TitleID2T" text="{i18n>OtherDetails}"></core:Title>
+    </f:title>
+        <f:formElements>
+            <f:FormElement id="ProprietorFEId1T" label="{i18n>Mobile}">
+                <f:fields>
+                    <Text id="InputIDT" text="{CreateModel>/Mobile}"></Text>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId2T" label="{i18n>RetypeNumber}">
+                <f:fields>
+                    <Text id="InputID2T" text="{CreateModel>/Mobile2}"></Text>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId3T" label="{i18n>Email}">
+                <f:fields>
+                    <Text id="InputID3T" text="{CreateModel>/email}"></Text>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId42" label="{i18n>RetypeEmail}">
+                <f:fields>
+                    <Text id="InputID42" text="{CreateModel>/email2}"></Text>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId5T" label="{i18n>PostalCode}">
+                <f:fields>
+                    <Text id="InputID5T" text="{CreateModel>/PostalCode}"></Text>
+                </f:fields>
+            </f:FormElement>
+            <f:FormElement id="ProprietorFEId6T" label="{i18n>PAN}">
+                <f:fields>
+                    <Text id="InputIDT2" text="{CustomersDetails>/PAN}"></Text>
+                </f:fields>
+            </f:FormElement>
+        </f:formElements>
+    </f:FormContainer>
+</f:formContainers>
+</f:Form>
+</l:Grid>
+</mvc:View>

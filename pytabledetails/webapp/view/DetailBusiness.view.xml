@@ -1,0 +1,93 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	controllerName="pytabledetails.controller.DetailBusiness" xmlns:html="http://www.w3.org/1999/xhtml">
+    <f:SimpleForm maxContainerCols="4" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+emptySpanL="1" emptySpanM="5" columnsM="10" visible="{LocalViewSettingsDetail>/Detail}">
+<core:Title text="" tooltip=""/>
+	<Label text="{i18n>EntityType}" tooltip="{i18n>EntityType}"/>
+	<Text text="{DetailModel>/EntityType}" tooltip="{i18n>EntityType}"/>
+    <Label text="{i18n>EntityID}" tooltip="{i18n>EntityID}"/>
+	<Text text="{DetailModel>/EntityID}" tooltip="{i18n>EntityID}"/>
+    <Label text="{i18n>ParentNo}" tooltip="{i18n>ParentNo}"/>
+	<Text text="{DetailModel>/ParentNo}" tooltip="{i18n>ParentNo}"/>
+    <Label text="{i18n>ParentTypeID}" tooltip="{i18n>ParentTypeID}"/>
+	<Text text="{DetailModel>/ParentTypeID}" tooltip="{i18n>ParentTypeID}"/>
+    <Label text="{i18n>ParentName}" tooltip="{i18n>ParentName}"/>
+	<Text text="{DetailModel>/ParentName}" tooltip="{i18n>ParentName}"/>
+    <Label text="{i18n>URCEntityType}" tooltip="{i18n>URCEntityType}"/>
+	<Text text="{DetailModel>/URCEntityType}" tooltip="{i18n>URCEntityType}"/>
+    <Label text="{i18n>URCActivityType}" tooltip="{i18n>URCActivityType}"/>
+	<Text text="{DetailModel>/URCActivityType}" tooltip="{i18n>URCActivityType}"/>
+    <Label text="{i18n>URCSectorCode}" tooltip="{i18n>URCSectorCode}"/>
+	<Text text="{DetailModel>/URCSectorCode}" tooltip="{i18n>URCSectorCode}"/>
+    <Label text="{i18n>URCSubSectorCode}" tooltip="{i18n>URCSubSectorCode}"/>
+	<Text text="{DetailModel>/URCSubSectorCode}" tooltip="{i18n>URCSubSectorCode}"/>
+    <Label text="{i18n>URCDocURL}" tooltip="{i18n>URCDocURL}"/>
+	<Text text="{DetailModel>/URCDocURL}" tooltip="{i18n>URCDocURL}"/>
+    <core:Title text="" tooltip=""/>
+    <Label text="{i18n>ODAccountNo}" tooltip="{i18n>ODAccountNo}"/>
+	<Text text="{DetailModel>/ODAccountNo}" tooltip="{i18n>ODAccountNo}"/>
+    <Label text="{i18n>URCRegistrationDate}" tooltip="{i18n>URCRegistrationDate}"/>
+	<Text text="{DetailModel>/URCRegistrationDate}" tooltip="{i18n>URCRegistrationDate}"/>
+    <Label text="{i18n>ERP_CPName}" tooltip="{i18n>ERP_CPName}"/>
+	<Text text="{DetailModel>/ERP_CPName}" tooltip="{i18n>ERP_CPName}"/>
+    <Label text="{i18n>CreatedBy}" tooltip="{i18n>CreatedBy}"/>
+	<Text text="{DetailModel>/CreatedBy}" tooltip="{i18n>CreatedBy}"/>
+    <Label text="{i18n>CreatedAt}" tooltip="{i18n>CreatedAt}"/>
+	<Text text="{DetailModel>/CreatedAt}" tooltip="{i18n>CreatedAt}"/>
+    <Label text="{i18n>ChangedBy}" tooltip="{i18n>ChangedBy}"/>
+	<Text text="{DetailModel>/ChangedBy}" tooltip="{i18n>ChangedBy}"/>
+    <Label text="{i18n>ChangedAt}" tooltip="{i18n>ChangedAt}"/>
+	<Text text="{DetailModel>/ChangedAt}" tooltip="{i18n>ChangedAt}"/>
+    <Label text="{i18n>ChangedOn}" tooltip="{i18n>ChangedOn}"/>
+	<Text text="{DetailModel>/ChangedOn}" tooltip="{i18n>ChangedOn}"/>
+    <Label text="{i18n>Source}" tooltip="{i18n>Source}"/>
+	<Text text="{DetailModel>/Source}" tooltip="{i18n>Source}"/>
+    <Label text="{i18n>SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"/>
+	<Text text="{DetailModel>/SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"/>
+    </f:SimpleForm >
+    <f:SimpleForm maxContainerCols="4" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+emptySpanL="1" emptySpanM="5" columnsM="10" visible="{LocalViewSettingsDetail>/Edit}">
+<core:Title text="" tooltip=""/>
+	<Label text="{i18n>EntityType}" tooltip="{i18n>EntityType}"/>
+	<Input id="idEntityType1" value="{DetailModel>/EntityType}" tooltip="{i18n>EntityType}"/>
+    <Label text="{i18n>EntityID}" tooltip="{i18n>EntityID}"/>
+	<Input id="idEntityID1" value="{DetailModel>/EntityID}" tooltip="{i18n>EntityID}"/>
+    <Label text="{i18n>ParentNo}" tooltip="{i18n>ParentNo}"/>
+	<Input id="idParentNo1" value="{DetailModel>/ParentNo}" tooltip="{i18n>ParentNo}"/>
+    <Label text="{i18n>ParentTypeID}" tooltip="{i18n>ParentTypeID}"/>
+	<Input id="idParentTypeID1" value="{DetailModel>/ParentTypeID}" tooltip="{i18n>ParentTypeID}"/>
+    <Label text="{i18n>ParentName}" tooltip="{i18n>ParentName}"/>
+	<Input id="idParentName1" value="{DetailModel>/ParentName}" tooltip="{i18n>ParentName}"/>
+    <Label text="{i18n>URCEntityType}" tooltip="{i18n>URCEntityType}"/>
+	<Input id="idURCEntityType1" value="{DetailModel>/URCEntityType}" tooltip="{i18n>URCEntityType}"/>
+    <Label text="{i18n>URCActivityType}" tooltip="{i18n>URCActivityType}"/>
+	<Input id="idURCActivityType1" value="{DetailModel>/URCActivityType}" tooltip="{i18n>URCActivityType}"/>
+    <Label text="{i18n>URCSectorCode}" tooltip="{i18n>URCSectorCode}"/>
+	<Input id="idURCSectorCode1" value="{DetailModel>/URCSectorCode}" tooltip="{i18n>URCSectorCode}"/>
+    <Label text="{i18n>URCSubSectorCode}" tooltip="{i18n>URCSubSectorCode}"/>
+	<Input id="idURCSubSectorCode1" value="{DetailModel>/URCSubSectorCode}" tooltip="{i18n>URCSubSectorCode}"/>
+    <Label text="{i18n>URCDocURL}" tooltip="{i18n>URCDocURL}"/>
+	<Input id="idURCDocURL1" value="{DetailModel>/URCDocURL}" tooltip="{i18n>URCDocURL}"/>
+    <core:Title text="" tooltip=""/>
+    <Label text="{i18n>ODAccountNo}" tooltip="{i18n>ODAccountNo}"/>
+	<Input id="idODAccountNo1" value="{DetailModel>/ODAccountNo}" tooltip="{i18n>ODAccountNo}"/>
+    <Label text="{i18n>URCRegistrationDate}" tooltip="{i18n>URCRegistrationDate}"/>
+	<Input id="idURCRegistrationDate1" value="{DetailModel>/URCRegistrationDate}" tooltip="{i18n>URCRegistrationDate}"/>
+    <Label text="{i18n>ERP_CPName}" tooltip="{i18n>ERP_CPName}"/>
+	<Input id="idERP_CPName1" value="{DetailModel>/ERP_CPName}" tooltip="{i18n>ERP_CPName}"/>
+    <Label text="{i18n>CreatedBy}" tooltip="{i18n>CreatedBy}"/>
+	<Input id="idCreatedBy1" value="{DetailModel>/CreatedBy}" tooltip="{i18n>CreatedBy}"/>
+    <Label text="{i18n>CreatedAt}" tooltip="{i18n>CreatedAt}"/>
+	<Input id="idCreatedAt1" value="{DetailModel>/CreatedAt}" tooltip="{i18n>CreatedAt}"/>
+    <Label text="{i18n>ChangedBy}" tooltip="{i18n>ChangedBy}"/>
+	<Input id="idChangedBy1" value="{DetailModel>/ChangedBy}" tooltip="{i18n>ChangedBy}"/>
+    <Label text="{i18n>ChangedAt}" tooltip="{i18n>ChangedAt}"/>
+	<Input id="idChangedAt1" value="{DetailModel>/ChangedAt}" tooltip="{i18n>ChangedAt}"/>
+    <Label text="{i18n>ChangedOn}" tooltip="{i18n>ChangedOn}"/>
+	<Input id="idChangedOn1" value="{DetailModel>/ChangedOn}" tooltip="{i18n>ChangedOn}"/>
+    <Label text="{i18n>Source}" tooltip="{i18n>Source}"/>
+	<Input id="idSource1" value="{DetailModel>/Source}" tooltip="{i18n>Source}"/>
+    <Label text="{i18n>SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"/>
+	<Input id="idSourceReferenceID1" value="{DetailModel>/SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"/>
+    </f:SimpleForm >
+</mvc:View>

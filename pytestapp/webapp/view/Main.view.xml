@@ -1,0 +1,4 @@
+<mvc:View id="View" controllerName="pytestapp.controller.Main" xmlns="sap.m" xmlns:core="sap.ui.core" 
+xmlns:mvc="sap.ui.core.mvc" displayBlock="true">
+    
+</mvc:View>

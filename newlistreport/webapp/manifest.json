@@ -1,0 +1,158 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "newlistreport",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.15.0",
+      "toolsId": "f5c29f21-7e21-428c-87ad-20b5cc016901"
+    },
+    "dataSources": {
+			"PYGWHANA": {
+				"uri": "/PYGWHANA/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			}
+		},
+    "crossNavigation": {
+      "inbounds": {
+        "newlistreport-Display": {
+          "semanticObject": "newlistreport",
+          "action": "Display",
+          "title": "{{flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": false,
+    "dependencies": {
+      "minUI5Version": "1.128.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "newlistreport.i18n.i18n"
+        }
+      },
+      "PYGWHANA": {
+				"dataSource": "PYGWHANA",
+				"preload":true,
+				"settings": {
+					"defaultOperationMode": "sap.ui.model.odata.OperationMode.Client"
+				}
+			}
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "newlistreport.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "RouteMain",
+          "pattern": "RouteMain",
+          "target": [
+            "TargetMain"
+          ]
+        },
+        {
+          "name":"DetailPage",
+          "pattern":"DetailPage/{ID}",
+          "target":[
+            "DetailPage"
+          ]
+        },
+        {
+          "name": "ListPage",
+					"pattern": "",
+					"target": [
+						"ListPage"
+					]
+        }
+      ],
+      "targets": {
+        "TargetMain": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Main",
+          "viewName": "Main"
+        },
+        "DetailPage":{
+          "viewType": "XML",
+          "viewName": "DetailPage"
+        },
+        "ListPage":{
+          "viewType": "XML",
+          "viewName": "ListPage"
+        },
+        "List":{
+          "viewType": "XML",
+          "viewName": "List"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "newlistreport.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "newlistreport"
+  }
+}

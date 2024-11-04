@@ -1,0 +1,246 @@
+<mvc:View xmlns:core="sap.ui.core"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form" controllerName="pytabledetails.controller.CreateObjectDetails"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<f:SimpleForm  id="header1" visible="{LocalViewSettingsDetail>/CreatePage}" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="4" labelSpanM="4" columnsL="2" emptySpanL="2" emptySpanM="2" columnsM="2">
+		<f:content>
+		<core:Title text="" tooltip=""/>
+		<Label text="{i18n>AggregatorID}" tooltip="{i18n>AggregatorID}"/>
+			<Select id="Selectt" items="{DetailModel>/}">
+				<core:Item id="Select11" text="{DetailModel>AggregatorID}"></core:Item>
+			</Select>
+			<Label text="{i18n>CPGuid}" tooltip="{i18n>CPGuid}"  required="true"/>
+			<Input id="idCPGuid" value="{CreateModel>/CPGuid}"/>
+			<Label text="{i18n>CPType}" tooltip="{i18n>CPType}"  required="true"/>
+			<Input id="idCPType" value="{CreateModel>/CPType}" />
+			<Label text="{i18n>CPName}" tooltip="{i18n>CPName}"  required="true"/>
+			<Input id="idCPName" value="{CreateModel>/CPName}"/>
+			
+			<Label text="{i18n>UtilDistrict}" tooltip="{i18n>UtilDistrict}"  required="true"/>
+			<Input id="idUtilDistrict" value="{CreateModel>/UtilDistrict}"/>
+			<Label text="{i18n>IncorporationDate}" tooltip="{i18n>IncorporationDate}"  required="true"/>
+			<DatePicker
+					id="DP1"
+					placeholder="Enter Date"
+					change="handleChange"
+					class="sapUiSmallMarginBottom"
+					value="{CreateModel>/IncorporationDate}"/>
+			<Label text="{i18n>LegalStatus}" tooltip="{i18n>LegalStatus}"  required="true"/>
+			<Input id="idLegalStatus" value="{CreateModel>/LegalStatus}"/>
+			<Label text="{i18n>Address1}" tooltip="{i18n>Address1}"  required="true"/>
+			<Input id="idAddress1" value="{CreateModel>/Address1}"/>
+			<Label text="{i18n>Address2}" tooltip="{i18n>Address2}"  required="true"/>
+			<Input id="idAddress2" value="{CreateModel>/Address2}"/>
+			<Label text="{i18n>Address3}" tooltip="{i18n>Address3}"  required="true"/>
+			<Input id="idAddress3" value="{CreateModel>/Address3}"/>
+			<Label text="{i18n>Address4}" tooltip="{i18n>Address4}"  required="true"/>
+			<Input id="idAddress4" value="{CreateModel>/Address4}"/>
+			<Label text="{i18n>District}" tooltip="{i18n>District}"  required="true"/>
+			<Input id="idDistrict" value="{CreateModel>/District}"/>
+			<Label text="{i18n>City}" tooltip="{i18n>City}"  required="true"/>
+			<Input id="idCity" value="{CreateModel>/City}"/>
+			<Label text="{i18n>State}" tooltip="{i18n>State}"  required="true"/>
+			<Input id="idState" value="{CreateModel>/State}"/>
+			<Label text="{i18n>StateDesc}" tooltip="{i18n>StateDesc}"  required="true"/>
+			<Input id="idStateDesc" value="{CreateModel>/StateDesc}"/>
+			<Label text="{i18n>Country}" tooltip="{i18n>Country}"  required="true"/>
+			<Input id="idCountry" value="{CreateModel>/Country}"/>
+			<Label text="{i18n>CountryDesc}" tooltip="{i18n>CountryDesc}"  required="true"/>
+			<Input id="idCountryDesc" value="{CreateModel>/CountryDesc}"/>
+			<Label text="{i18n>Pincode}" tooltip="{i18n>Pincode}"  required="true"/>
+			<Input id="idPincode" value="{CreateModel>/Pincode}" type="Number" liveChange="onPincode" valueLiveUpdate="true"/>
+			<Label text="{i18n>EntityType}" tooltip="{i18n>EntityType}"  required="true"/>
+			<Input id="idEntityType" value="{CreateModel>/EntityType}"/>
+			<Label text="{i18n>EntityID}" tooltip="{i18n>EntityID}"  required="true"/>
+			<Input id="idEntityID" value="{CreateModel>/EntityID}"/>
+			<Label text="{i18n>ParentNo}" tooltip="{i18n>ParentNo}"  required="true"/>
+			<Input id="idParentNo" value="{CreateModel>/ParentNo}"/>
+			<Label text="{i18n>ParentTypeID}" tooltip="{i18n>ParentTypeID}"  required="true"/>
+			<Input id="idParentTypeID" value="{CreateModel>/ParentTypeID}"/>
+			<Label text="{i18n>ParentName}" tooltip="{i18n>ParentName}"  required="true"/>
+			<Input id="idParentName" value="{CreateModel>/ParentName}"/>
+			<Label text="{i18n>URCEntityType}" tooltip="{i18n>URCEntityType}"  required="true"/>
+			<Input id="idURCEntityType" value="{CreateModel>/URCEntityType}"/>
+			<Label text="{i18n>URCActivityType}" tooltip="{i18n>URCActivityType}"  required="true"/>
+			<Input id="idURCActivityType" value="{CreateModel>/URCActivityType}"/>
+			<Label text="{i18n>URCSectorCode}" tooltip="{i18n>URCSectorCode}"  required="true"/>
+			<Input id="idURCSectorCode" value="{CreateModel>/URCSectorCode}"/>
+			<Label text="{i18n>URCSubSectorCode}" tooltip="{i18n>URCSubSectorCode}"  required="true"/>
+			<Input id="idURCSubSectorCode" value="{CreateModel>/URCSubSectorCode}"/>
+			<Label text="{i18n>URCDocURL}" tooltip="{i18n>URCDocURL}"  required="true"/>
+			<Input id="idURCDocURL" value="{CreateModel>/URCDocURL}"/>
+			<Label text="{i18n>ODAccountNo}" tooltip="{i18n>ODAccountNo}"  required="true"/>
+			<Input id="idODAccountNo" value="{CreateModel>/ODAccountNo}"/>
+			<Label text="{i18n>URCRegistrationDate}" tooltip="{i18n>URCRegistrationDate}"  required="true"/>
+			<DatePicker
+					id="DP2"
+					placeholder="Enter Date"
+					change="handleChange"
+					class="sapUiSmallMarginBottom"
+					value="{CreateModel>/URCRegistrationDate}"/>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>Source}" tooltip="{i18n>Source}"  required="true"/>
+			<Input id="idSource" value="{CreateModel>/Source}"/>
+			<Label text="{i18n>SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"  required="true"/>
+			<Input id="idSourceReferenceID" value="{CreateModel>/SourceReferenceID}"/>
+			<Label text="{i18n>Mobile1}" tooltip="{i18n>Mobile1}"  required="true"/>
+			<Input id="idMobile1" value="{CreateModel>/Mobile1}" type="Number"/>
+			<Label text="{i18n>Mobile2}" tooltip="{i18n>Mobile2}"  required="true"/>
+			<Input id="idMobile2" value="{CreateModel>/Mobile2}" type="Number"/>
+			<Label text="{i18n>LandLine1}" tooltip="{i18n>LandLine1}"  required="true"/>
+			<Input id="idLandLine1" value="{CreateModel>/LandLine1}"/>
+			<Label text="{i18n>EmailID}" tooltip="{i18n>EmailID}"  required="true"/>
+			<Input id="idEmailID" value="{CreateModel>/EmailID}"/>
+			<Label text="{i18n>PAN}" tooltip="{i18n>PAN}"  required="true"/>
+			<Input id="idPAN" value="{CreateModel>/PAN}"/>
+			<Label text="{i18n>GSTIN}" tooltip="{i18n>GSTIN}"  required="true"/>
+			<Input id="idGSTIN" value="{CreateModel>/GSTIN}"/>
+			<Label text="{i18n>StatusID}" tooltip="{i18n>StatusID}"  required="true"/>
+			<Input id="idStatusID" value="{CreateModel>/StatusID}"/>
+			<Label text="{i18n>ApproverRemarks}" tooltip="{i18n>ApproverRemarks}"  required="true"/>
+			<Input id="idApproverRemarks" value="{CreateModel>/ApproverRemarks}"/>
+			<Label text="{i18n>MSME}" tooltip="{i18n>MSME}"  required="true"/>
+			<Input id="idMSME" value="{CreateModel>/MSME}"/>
+			<Label text="{i18n>UdyamRegNo}" tooltip="{i18n>UdyamRegNo}"  required="true"/>
+			<Input id="idUdyamRegNo" value="{CreateModel>/UdyamRegNo}"/>
+			<Label text="{i18n>HgdFrgnCurrExposure}" tooltip="{i18n>HgdFrgnCurrExposure}"  required="true"/>
+			<Input id="idHgdFrgnCurrExposure" value="{CreateModel>/HgdFrgnCurrExposure}"/>
+			<Label text="{i18n>UnHgdFrgnCurrExposure}" tooltip="{i18n>UnHgdFrgnCurrExposure}"  required="true"/>
+			<Input id="idUnHgdFrgnCurrExposure" value="{CreateModel>/UnHgdFrgnCurrExposure}"/>
+			<Label text="{i18n>TotalFrgnCurrExposure}" tooltip="{i18n>TotalFrgnCurrExposure}"  required="true"/>
+			<Input id="idTotalFrgnCurrExposure" value="{CreateModel>/TotalFrgnCurrExposure}"/>
+			<Label text="{i18n>FundBasedExposure}" tooltip="{i18n>FundBasedExposure}"  required="true"/>
+			<Input id="idFundBasedExposure" value="{CreateModel>/FundBasedExposure}"/>
+			<Label text="{i18n>NonFundBasedExposure}" tooltip="{i18n>NonFundBasedExposure}"  required="true"/>
+			<Input id="idNonFundBasedExposure" value="{CreateModel>/NonFundBasedExposure}"/>
+			<Label text="{i18n>TotalBankingExposure}" tooltip="{i18n>TotalBankingExposure}"  required="true"/>
+			<Input id="idTotalBankingExposure" value="{CreateModel>/TotalBankingExposure}"/>
+			<Label text="{i18n>CorporateIdentificationNo}" tooltip="{i18n>CorporateIdentificationNo}"  required="true"/>
+			<Input id="idCorporateIdentificationNo" value="{CreateModel>/CorporateIdentificationNo}"/>
+			<Label text="{i18n>FacilityType}" tooltip="{i18n>FacilityType}"  required="true"/>
+			<Input id="idFacilityType" value="{CreateModel>/FacilityType}"/>
+			<Label text="{i18n>BPRejectionRemarks}" tooltip="{i18n>BPRejectionRemarks}"  required="true"/>
+			<Input id="idBPRejectionRemarks" value="{CreateModel>/BPRejectionRemarks}"/>
+			<Label text="{i18n>LEINumber}" tooltip="{i18n>LEINumber}"  required="true"/>
+			<Input id="idLEINumber" value="{CreateModel>/LEINumber}"/>
+			<Label text="{i18n>ERP_CPName}" tooltip="{i18n>ERP_CPName}"  required="true"/>
+			<Input id="idERP_CPName" value="{CreateModel>/ERP_CPName}"/>
+		</f:content>
+	</f:SimpleForm>
+	<f:SimpleForm visible="{LocalViewSettingsDetail>/ReviewPage}" maxContainerCols="2" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="4" labelSpanM="4" columnsL="2" emptySpanL="2" emptySpanM="2" columnsM="2">
+		<f:content>
+		<core:Title text="" tooltip=""/>
+
+			<Label text="{i18n>AggregatorID}" tooltip="{i18n>AggregatorID}"/>
+			<Text text="{CreateModel>/AggregatorID}"/>
+			<Label text="{i18n>CPGuid}" tooltip="{i18n>CPGuid}"/>
+			<Text text="{CreateModel>/CPGuid}"/>
+			<Label text="{i18n>CPType}" tooltip="{i18n>CPType}"/>
+			<Text text="{CreateModel>/CPType}"/>
+			<Label text="{i18n>CPName}" tooltip="{i18n>CPName}"/>
+			<Text text="{CreateModel>/CPName}"/>
+			<Label text="{i18n>UtilDistrict}" tooltip="{i18n>UtilDistrict}"/>
+			<Text text="{CreateModel>/UtilDistrict}"/>
+			<Label text="{i18n>IncorporationDate}" tooltip="{i18n>IncorporationDate}"/>
+			<Text text="{path:'CreateModel>/IncorporationDate',formatter:'.formatDate'}"/>
+			<Label text="{i18n>LegalStatus}" tooltip="{i18n>LegalStatus}"/>
+			<Text text="{CreateModel>/LegalStatus}"/>
+			<Label text="{i18n>Address1}" tooltip="{i18n>Address1}"/>
+			<Text text="{CreateModel>/Address1}"/>
+			<Label text="{i18n>Address2}" tooltip="{i18n>Address2}"/>
+			<Text text="{CreateModel>/Address2}"/>
+			<Label text="{i18n>Address3}" tooltip="{i18n>Address3}"/>
+			<Text text="{CreateModel>/Address3}"/>
+			<Label text="{i18n>Address4}" tooltip="{i18n>Address4}"/>
+			<Text text="{CreateModel>/Address4}"/>
+			<Label text="{i18n>District}" tooltip="{i18n>District}"/>
+			<Text text="{CreateModel>/District}"/>
+			<Label text="{i18n>City}" tooltip="{i18n>City}"/>
+			<Text text="{CreateModel>/City}"/>
+			<Label text="{i18n>State}" tooltip="{i18n>State}"/>
+			<Text text="{CreateModel>/State}"/>
+			<Label text="{i18n>StateDesc}" tooltip="{i18n>StateDesc}"/>
+			<Text text="{CreateModel>/StateDesc}"/>
+			<Label text="{i18n>Country}" tooltip="{i18n>Country}"/>
+			<Text text="{CreateModel>/Country}"/>
+			<Label text="{i18n>CountryDesc}" tooltip="{i18n>CountryDesc}"/>
+			<Text text="{CreateModel>/CountryDesc}"/>
+			<Label text="{i18n>Pincode}" tooltip="{i18n>Pincode}"/>
+			<Text text="{CreateModel>/Pincode}"/>
+			<Label text="{i18n>EntityType}" tooltip="{i18n>EntityType}"/>
+			<Text text="{CreateModel>/EntityType}"/>
+			<Label text="{i18n>EntityID}" tooltip="{i18n>EntityID}"/>
+			<Text text="{CreateModel>/EntityID}"/>
+			<Label text="{i18n>ParentNo}" tooltip="{i18n>ParentNo}"/>
+			<Text text="{CreateModel>/ParentNo}"/>
+			<Label text="{i18n>ParentTypeID}" tooltip="{i18n>ParentTypeID}"/>
+			<Text text="{CreateModel>/ParentTypeID}"/>
+			<Label text="{i18n>ParentName}" tooltip="{i18n>ParentName}"/>
+			<Text text="{CreateModel>/ParentName}"/>
+			<Label text="{i18n>URCEntityType}" tooltip="{i18n>URCEntityType}"/>
+			<Text text="{CreateModel>/URCEntityType}"/>
+			<Label text="{i18n>URCActivityType}" tooltip="{i18n>URCActivityType}"/>
+			<Text text="{CreateModel>/URCActivityType}"/>
+			<Label text="{i18n>URCSectorCode}" tooltip="{i18n>URCSectorCode}"/>
+			<Text text="{CreateModel>/URCSectorCode}"/>
+			<Label text="{i18n>URCSubSectorCode}" tooltip="{i18n>URCSubSectorCode}"/>
+			<Text text="{CreateModel>/URCSubSectorCode}"/>
+			<Label text="{i18n>URCDocURL}" tooltip="{i18n>URCDocURL}"/>
+			<Text text="{CreateModel>/URCDocURL}"/>
+			<Label text="{i18n>ODAccountNo}" tooltip="{i18n>ODAccountNo}"/>
+			<Text text="{CreateModel>/ODAccountNo}"/>
+			<Label text="{i18n>URCRegistrationDate}" tooltip="{i18n>URCRegistrationDate}"/>
+			<Text text="{path:'CreateModel>/URCRegistrationDate',formatter:'.formatDate'}"/>
+			<Label text="{i18n>Source}" tooltip="{i18n>Source}"/>
+			<Text text="{CreateModel>/Source}"/>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"/>
+			<Text text="{CreateModel>/SourceReferenceID}"/>
+			<Label text="{i18n>Mobile1}" tooltip="{i18n>Mobile1}"/>
+			<Text text="{CreateModel>/Mobile1}"/>
+			<Label text="{i18n>Mobile2}" tooltip="{i18n>Mobile2}"/>
+			<Text text="{CreateModel>/Mobile2}"/>
+			<Label text="{i18n>LandLine1}" tooltip="{i18n>LandLine1}"/>
+			<Text text="{CreateModel>/LandLine1}"/>
+			<Label text="{i18n>EmailID}" tooltip="{i18n>EmailID}"/>
+			<Text text="{CreateModel>/EmailID}"/>
+			<Label text="{i18n>PAN}" tooltip="{i18n>PAN}"/>
+			<Text text="{CreateModel>/PAN}"/>
+			<Label text="{i18n>GSTIN}" tooltip="{i18n>GSTIN}"/>
+			<Text text="{CreateModel>/GSTIN}"/>
+			<Label text="{i18n>StatusID}" tooltip="{i18n>StatusID}"/>
+			<Text text="{CreateModel>/StatusID}"/>
+			<Label text="{i18n>ApproverRemarks}" tooltip="{i18n>ApproverRemarks}"/>
+			<Text text="{CreateModel>/ApproverRemarks}"/>
+			<Label text="{i18n>MSME}" tooltip="{i18n>MSME}"/>
+			<Text text="{CreateModel>/MSME}"/>
+			<Label text="{i18n>UdyamRegNo}" tooltip="{i18n>UdyamRegNo}"/>
+			<Text text="{CreateModel>/UdyamRegNo}"/>
+			<Label text="{i18n>HgdFrgnCurrExposure}" tooltip="{i18n>HgdFrgnCurrExposure}"/>
+			<Text text="{CreateModel>/HgdFrgnCurrExposure}"/>
+			<Label text="{i18n>UnHgdFrgnCurrExposure}" tooltip="{i18n>UnHgdFrgnCurrExposure}"/>
+			<Text text="{CreateModel>/UnHgdFrgnCurrExposure}"/>
+			<Label text="{i18n>TotalFrgnCurrExposure}" tooltip="{i18n>TotalFrgnCurrExposure}"/>
+			<Text text="{CreateModel>/TotalFrgnCurrExposure}"/>
+			<Label text="{i18n>FundBasedExposure}" tooltip="{i18n>FundBasedExposure}"/>
+			<Text text="{CreateModel>/FundBasedExposure}"/>
+			<Label text="{i18n>NonFundBasedExposure}" tooltip="{i18n>NonFundBasedExposure}"/>
+			<Text text="{CreateModel>/NonFundBasedExposure}"/>
+			<Label text="{i18n>TotalBankingExposure}" tooltip="{i18n>TotalBankingExposure}"/>
+			<Text text="{CreateModel>/TotalBankingExposure}"/>
+			<Label text="{i18n>CorporateIdentificationNo}" tooltip="{i18n>CorporateIdentificationNo}"/>
+			<Text text="{CreateModel>/CorporateIdentificationNo}"/>
+			<Label text="{i18n>FacilityType}" tooltip="{i18n>FacilityType}"/>
+			<Text text="{CreateModel>/FacilityType}"/>
+			<Label text="{i18n>BPRejectionRemarks}" tooltip="{i18n>BPRejectionRemarks}"/>
+			<Text text="{CreateModel>/BPRejectionRemarks}"/>
+			<Label text="{i18n>LEINumber}" tooltip="{i18n>LEINumber}"/>
+			<Text text="{CreateModel>/LEINumber}"/>
+			<Label text="{i18n>ERP_CPName}" tooltip="{i18n>ERP_CPName}"/>
+			<Text text="{CreateModel>/ERP_CPName}"/>
+			
+		</f:content>
+	</f:SimpleForm>
+</mvc:View>

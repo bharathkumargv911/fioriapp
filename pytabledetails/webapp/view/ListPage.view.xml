@@ -1,0 +1,14 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+controllerName="pytabledetails.controller.ListPage" xmlns:html="http://www.w3.org/1999/xhtml">
+<Page title="{i18n>title}">
+    <content>
+        <mvc:XMLView viewName="pytabledetails.view.List"></mvc:XMLView>
+    </content>
+    <footer>
+        <Toolbar>
+            <ToolbarSpacer ></ToolbarSpacer>
+            <Button id="CreateButtonID" text="Create" press="onCreate"></Button>
+        </Toolbar>
+    </footer>
+</Page>
+</mvc:View>

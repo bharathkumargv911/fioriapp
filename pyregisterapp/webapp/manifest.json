@@ -1,0 +1,194 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "pyregisterapp",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.15.1",
+      "toolsId": "2b8e81a6-fd18-41a1-bfde-41446f93fb4c"
+    },
+    "dataSources": {
+      "PCGWHANA":{
+        "uri": "/PCGWHANA/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "model/PCGW/metadata.xml"
+        }
+      },
+      "PYGWHANA":{
+        "uri": "/PYGWHANA/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "model/PYGWHANA/metadata.xml"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "pyregisterapp-Display": {
+          "semanticObject": "pyregisterapp",
+          "action": "Display",
+          "title": "{{flpTitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.129.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "pyregisterapp.i18n.i18n"
+        }
+      },
+      "ppcutili18n":{
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "pyregisterapp/ppcutil/utils/i18n/i18n.properties"
+        }
+      },
+      "PCGWHANA":{
+        "dataSource": "PCGWHANA",
+        "preload": true,
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode":"Auto",
+          "defaultUpdateMethod":"PUT",
+          "useBatch":true,
+          "defaultBindingMode": "Default",
+          "tokenHandling": true,
+          "disableHeadRequestForToken": true 
+        }
+      },
+      "PYGWHANA":{
+        "dataSource": "PYGWHANA",
+        "preload": true,
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode":"Auto",
+          "defaultUpdateMethod":"PUT",
+          "useBatch":true,
+          "defaultBindingMode": "Default",
+          "tokenHandling": true,
+          "disableHeadRequestForToken": true 
+        }
+    }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "pyregisterapp.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "Register",
+          "pattern": "",
+          "target": [
+            "Register"
+          ]
+        }
+      ],
+      "targets": {
+        "TargetMain": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Main",
+          "viewName": "Main"
+        },
+        "Register":{
+          "viewType": "XML",
+          "transition":"slide",
+          "clearControlAggregation": false,
+          "viewId": "Register",
+          "viewName":"Register"
+        },
+        "RegisterBasicData":{
+          "viewType": "XML",
+          "transition":"slide",
+          "clearControlAggregation": false,
+          "viewId": "RegisterBasicData",
+          "viewName": "RegisterBasicData"
+        },
+        "ProprietorData":{
+          "viewType": "XML",
+          "transition":"slide",
+          "clearControlAggregation": false,
+          "viewId": "ProprietorData",
+          "viewName": "ProprietorData"
+        },
+        "PartnerData":{
+          "viewType": "XML",
+          "transition":"slide",
+          "clearControlAggregation": false,
+          "viewId": "PartnerData",
+          "viewName": "PartnerData"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "pyregisterapp.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "pyregisterapp"
+  }
+}

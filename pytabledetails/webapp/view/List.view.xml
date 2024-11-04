@@ -1,0 +1,252 @@
+<mvc:View controllerName="pytabledetails.controller.List"
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:table="sap.ui.table"
+    xmlns:l="sap.ui.layout" displayBlock="true">
+    
+    <fb:FilterBar id="Filterbar" reset="onReset" search="onSearch" showRestoreButton="false" 
+    showRestoreOnFB="false" filterContainerWidth="18rem" visible="true">
+        <fb:filterItems>
+            <fb:FilterItem id="fDate" name="CreatedOn" label="Created On" mandatory="false" visible="true" >
+                <fb:control>
+                    <DateRangeSelection id="DP11" value="" displayFormat="dd-MM-yyyy" change="handleChange" />
+                </fb:control>
+            </fb:FilterItem>
+            <fb:FilterItem id="fSelectItem" name="ID" label="ID" mandatory="false" visible="true">
+                <fb:control>
+                    <Select id="SelectFilterID" items="{FilterItems>/}">
+                        <core:Item id="SelectFilterIDItem" key="{FilterItems>ID}" text="{FilterItems>ID}" />
+                    </Select>
+                </fb:control>
+            </fb:FilterItem>
+            <fb:FilterItem id="fSelect" name="CPName" label="CP Name" mandatory="false" visible="true">
+                <fb:control>
+                    <ComboBox id="Combo" items="{FilterItems1>/}">
+                        <core:Item id="SelectComboItem" key="{FilterItems1>CPName}" text="{FilterItems1>CPName}" />
+                    </ComboBox>
+                </fb:control>
+            </fb:FilterItem>
+            <fb:FilterItem id="fSelect2" name="CPGuid" label="CP Guid" mandatory="false" visible="true">
+                <fb:control>
+                    <MultiComboBox id="MultiCombo" items="{FilterItems1>/}">
+                        <core:Item id="MultiComboItem" key="{FilterItems1>CPGuid}" text="{FilterItems1>CPGuid}" />
+                    </MultiComboBox>
+                </fb:control>
+            </fb:FilterItem>
+            <fb:FilterItem id="fSelect3" name="CPType" label="CP Type" mandatory="false" visible="true">
+                <fb:control>
+                    <Input id="InputID" width="20rem" />
+                </fb:control>
+            </fb:FilterItem>
+            <fb:FilterItem id="AggregatorID" name="AggregatorID" label="AggregatorID" labelTooltip="AggregatorID" mandatory="false"
+             visible="true">
+                <fb:control>
+                    <MultiInput id="MultiInputID1" maxLength="" valueHelpRequest="AggregatorF4" tokenUpdate="onTokenRemove" 
+                    showTableSuggestionValueHelp="true" showSuggestion="true" filterSuggests="false" suggest="handleAggregatorSuggest" 
+                    suggestionItemSelected="suggestionAggregatorSelected" suggestionItems="{setAggregatorModel>/}" change="onChangeAggregator">
+                        <suggestionItems>
+                            <core:ListItem text="{setAggregatorModel>AggregatorID}" additionalText="{setAggregatorModel>CPName}" />
+                        </suggestionItems>
+                    </MultiInput>
+                </fb:control>
+            </fb:FilterItem>
+            <!-- <fb:FilterItem id="AggregatorID1" name="AggregatorID" label="Aggregator ID" labelTooltip="Aggregator ID" mandatory="false" visible="true">
+                <fb:control>
+                    <MultiInput id="inputCustomerNo" maxLength="{path:'PYGW>/UserCustomers/CustomerNo/#@maxLength', type:'sap.ui.model.type.Float'}" 
+                    valueHelpRequest="AggregatorF4" tokens="{path:'BankDetails>/BankKeyTokens',templateShareable:true}" tokenUpdate="onTokenRemove" 
+                    showTableSuggestionValueHelp="true" showSuggestion="true" filterSuggests="false" suggest="handleAggregatorSuggest" 
+                    suggestionItemSelected="suggestionAggregatorSelected" 
+                    suggestionItems="{setAggregatorModel>/}" change="onChangeAggregator">
+                        <suggestionItems>
+                            <core:ListItem text="{setAggregatorModel>AggregatorID}" additionalText="{setAggregatorModel>AggregatorName}"/>
+                        </suggestionItems>
+                        <tokens width="100%">
+                            <Token key="{BankDetails>key}" text="{BankDetails>text}"></Token>
+                        </tokens>
+                    </MultiInput>
+                </fb:control>
+            </fb:FilterItem> -->
+        </fb:filterItems>
+    </fb:FilterBar>
+   
+    <table:Table id="UITableData" rows="{ListItems>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None" 
+    enableSelectAll="false" noData="No Data" minAutoRowCount="{LocalViewSettings>/visibleRowCount}" 
+    visibleRowCount="{LocalViewSettings>/visibleRowCount}" visible="true" enableBusyIndicator="true" margin-right="0rem">
+        <table:toolbar>
+            <Toolbar id="_IDGenToolbar">
+                <Label id="_IDGenLabelID" design="Bold" text="Items({LocalViewSettings>/ItemsCount})" />
+                <ToolbarSpacer id="_IDGenToolbarSeparator" />
+                <Button id="_IDGenButton" icon="sap-icon://download" press="exportToExcel" tooltip="Download CSV" 
+                visible="{= ${device>/system/phone}? false : true}" />
+            </Toolbar>
+        </table:toolbar>
+        <table:columns>
+            <table:Column id="_IDGenColumn1" sortProperty="ID" width="8em" filterProperty="ID" autoResizable="true" tooltip="{ i18n>ID }">
+                <Label id="_IDGenLabel1" text="{i18n>ID}" />
+                <table:template>
+                    <Link id="_IDGenLink" press="goToDetail" text="{ListItems>ID}" tooltip="{ListItems>ID}" />
+                </table:template>
+            </table:Column>
+            <table:Column id="_IDGenColumn2" sortProperty="CPGuid" width="10em" filterProperty="CPGuid" autoResizable="true" 
+            tooltip="{i18n>CPGuid}">
+                <Label id="_IDGenLabel2" text="{i18n>CPGuid}" />
+                <table:template>
+                    <Text id="_IDGenText" text="{ListItems>CPGuid}" tooltip="{ListItems>CPGuid}" />
+                </table:template>
+            </table:Column>
+            <table:Column id="_IDGenColumn3" sortProperty="CPType" width="10em" filterProperty="CPType" autoResizable="true" 
+            tooltip="{i18n>CPType}">
+                <Label id="_IDGenLabel3" text="{i18n>CPType}" />
+                <table:template>
+                    <Text id="_IDGenText1" text="{ListItems>CPType}" tooltip="{ListItems>CPType}" />
+                </table:template>
+            </table:Column>
+            <table:Column id="_IDGenColumn4" sortProperty="CPName" width="12em" filterProperty="CPName" autoResizable="true" 
+            tooltip="{i18n>CPName}">
+                <Label id="_IDGenLabel4" text="{i18n>CPName}" />
+                <table:template>
+                    <Text id="_IDGenText2" text="{ListItems>CPName}" tooltip="{ListItems>CPName}" />
+                </table:template>
+            </table:Column>
+            <table:Column id="_IDGenColumn5" sortProperty="AggregatorID" width="12em" filterProperty="AggregatorID" 
+            autoResizable="true" tooltip="{i18n>AggregatorID}">
+                <Label id="_IDGenLabel5" text="{i18n>AggregatorID}" />
+                <table:template>
+                    <Text id="_IDGenText3" text="{ListItems>AggregatorID}" tooltip="{ListItems>AggregatorID}" />
+                </table:template>
+            </table:Column>
+            <table:Column id="_IDGenColumn6" sortProperty="IncorporationDate" width="10em" filterProperty="IncorporationDate" 
+            autoResizable="true" tooltip="{i18n>IncorporationDate}">
+                <Label id="_IDGenLabel6" text="{i18n>IncorporationDate}" />
+                <table:template>
+                    <Text id="_IDGenText4" text="{path:'ListItems>IncorporationDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}" 
+                    tooltip="{ListItems>IncorporationDate}" />
+                </table:template>
+            </table:Column>
+            <table:Column id="_IDGenColumn16" sortProperty="CreatedOn" width="8em" filterProperty="CreatedOn" autoResizable="true" 
+            tooltip="{i18n>CreatedOn}">
+                <Label id="_IDGenLabel16" text="{i18n>CreatedOn}" />
+                <table:template>
+                    <Text id="_IDGenText14" text="{path:'ListItems>CreatedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+                     tooltip="{path:'ListItems>CreatedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}" />
+                </table:template>
+            </table:Column>
+        </table:columns>
+    </table:Table>
+   
+   
+    <Table id="ListData" busy="false" inset="false" items="{ListItems>/}" noDataText="{ppcutili18n>common.NoItemSelected}" 
+    visible="false" enableBusyIndicator="true">
+        <headerToolbar>
+            <Toolbar id="_IDGenToolbar1">
+                <Title id="PGPCReference" level="H2" visible="true" text="" />
+                <ToolbarSpacer id="_IDGenToolbarSpacer1" />
+                <!--<Button icon="sap-icon://drop-down-list" press="sorterFilterSO" tooltip="Sort and Filter"/>-->
+                <Button id="_IDGenButton2" icon="sap-icon://download" press="exportToExcel" tooltip="DownLoad XL"
+                 visible="{= ${device>/system/phone}? false : true}" />
+            </Toolbar>
+        </headerToolbar>
+        <columns>
+            <Column id="_IDGenColumn24" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+                <Text id="_IDGenText21" text="{i18n>ID}" />
+            </Column>
+            <Column id="_IDGenColumn25" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+                <Text id="_IDGenText22" text="{i18n>CPGuid}" />
+            </Column>
+            <Column id="_IDGenColumn26" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+                <Text id="_IDGenText23" text="{i18n>CPType}" />
+            </Column>
+            <Column id="_IDGenColumn27" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+                <Text id="_IDGenText24" text="{i18n>CPName}" />
+            </Column>
+            <Column id="_IDGenColumn28" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+                <Text id="_IDGenText25" text="{i18n>AggregatorID}" />
+            </Column>
+            <Column id="_IDGenColumn29" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+                <Text id="_IDGenText26" text="{i18n>IncorporationDate}" />
+            </Column>
+            <!-- <Column id="_IDGenColumn30" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText27" text="{i18n>AggregatorDivision}"/>
+						</Column>
+						<Column id="_IDGenColumn31" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText28" text="{i18n>FacilityType}"/>
+						</Column>
+						<Column id="_IDGenColumn32" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText29" text="{i18n>CORMandatoryFields}"/>
+						</Column>
+						<Column id="_IDGenColumn33" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText30" text="{i18n>TraceID}"/>
+						</Column>
+						<Column id="_IDGenColumn34" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText31" text="{i18n>SourceID}"/>
+						</Column>
+						<Column id="_IDGenColumn35" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText32" text="{i18n>Module}"/>
+						</Column>
+						<Column id="_IDGenColumn36" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText33" text="{i18n>SubModule}"/>
+						</Column>
+						<Column id="_IDGenColumn37" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText34" text="{i18n>BPCreate}"/>
+						</Column>
+						<Column id="_IDGenColumn38" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText35" text="{i18n>SCFCreate}"/>
+						</Column>
+						<Column id="_IDGenColumn39" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText36" text="{i18n>CreatedBy}"/>
+						</Column> -->
+            <Column id="_IDGenColumn40" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+                <Text id="_IDGenText37" text="{i18n>CreatedOn}" />
+            </Column>
+            <!-- <Column id="_IDGenColumn41" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText38" text="{i18n>CreatedAt}"/>
+						</Column>
+						<Column id="_IDGenColumn42" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText39" text="{i18n>ChangedBy}"/>
+						</Column>
+						<Column id="_IDGenColumn43" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText40" text="{i18n>ChangedOn}"/>
+						</Column>
+						<Column id="_IDGenColumn44" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText41" text="{i18n>ChangedAt}"/>
+						</Column>
+						<Column id="_IDGenColumn45" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText42" text="{i18n>Source}"/>
+						</Column>
+						<Column id="_IDGenColumn46" demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+							<Text id="_IDGenText43" text="{i18n>SourceReferenceID}"/>
+						</Column> -->
+        </columns>
+        <items>
+            <ColumnListItem id="PG_PCReference" press="getPGDetails" type="Navigation">
+                <cells>
+                    <Text id="_IDGenText44" text="{ListItems>ID}" />
+                    <Text id="_IDGenText45" text="{ListItems>CPGuid}" />
+                    <Text id="_IDGenText46" text="{ListItems>CPType}" />
+                    <Text id="_IDGenText47" text="{ListItems>CPName}" />
+                    <Text id="_IDGenText48" text="{ListItems>AggregatorID}" />
+                    <Text id="_IDGenText49" text="{ListItems>IncorporationDate}" />
+                    <!-- <Text id="_IDGenText50" text="{ListItems>AggregatorDivision}"/>
+								<Text id="_IDGenText51" text="{ListItems>FacilityType}"/>
+								<Text id="_IDGenText52" text="{ListItems>CORMandatoryFields}"/>
+								<Text id="_IDGenText53" text="{ListItems>TraceID}"/>
+								<Text id="_IDGenText54" text="{ListItems>SourceID}"/>
+								<Text id="_IDGenText55" text="{ListItems>Module}"/>
+								<Text id="_IDGenText56" text="{ListItems>SubModule}"/>
+								<Text id="_IDGenText57" text="{ListItems>BPCreate}"/>
+								<Text id="_IDGenText58" text="{ListItems>SCFCreate}"/>
+								<Text id="_IDGenText59" text="{ListItems>CreatedBy}"/> -->
+                    <Text id="_IDGenText60" text="{path:'ListItems>CreatedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}" />
+                    <!-- <Text id="_IDGenText61" text="{path:'ListItems>CreatedAt',formatter:'.getTimeFormat'}"/> -->
+                    <!-- <Text id="_IDGenText62" text="{ListItems>ChangedBy}"/> -->
+                    <!-- <Text id="_IDGenText63" text="{path:'ListItems>ChangedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+								<Text id="_IDGenText64" text="{path:'ListItems>ChangedAt',formatter:'.getTimeFormat'}"/> -->
+                    <!-- <Text id="_IDGenText65" text="{ListItems>Source}"/>
+								<Text id="_IDGenText66" text="{ListItems>SourceReferenceID}"/> -->
+                </cells>
+            </ColumnListItem>
+        </items>
+    </Table>
+</mvc:View>

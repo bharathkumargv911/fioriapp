@@ -1,0 +1,207 @@
+{
+  "_version": "1.65.0",
+  "sap.app": {
+    "id": "pyopcnfglist",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.15.0",
+      "toolsId": "e17b0985-ea90-4acf-9f2c-c20046967452"
+    },
+    "dataSources": {
+      "PCGW": {
+        "uri": "/PCGW/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "model/PCGW/metadata.xml"
+        }
+      },
+      "PYGWHANA": {
+        "uri": "/PYGWHANA/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "localUri": "model/PYGWHANA/metadata.xml"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "pyopcnfglist-Display": {
+          "semanticObject": "pyopcnfglist",
+          "action": "Display",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.128.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "pyopcnfglist.i18n.i18n"
+        }
+      },
+      "ppcutili18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleUrl": "/pyopcnfglist/ppcutil/utils/i18n/i18n.properties"
+        }
+      },
+      "PCGW": {
+        "dataSource": "PCGW",
+        "preload": true,
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode": "Auto",
+          "defaultUpdateMethod": "PUT",
+          "useBatch": true,
+          "defaultBindingMode": "Default",
+          "tokenHandling": true,
+          "disableHeadRequestForToken": true
+        }
+      },
+      "PYGWHANA": {
+        "dataSource": "PYGWHANA",
+        "preload": true,
+        "type": "sap.ui.model.odata.v2.ODataModel",
+        "settings": {
+          "defaultOperationMode": "Auto",
+          "defaultUpdateMethod": "PUT",
+          "useBatch": true,
+          "defaultBindingMode": "Default",
+          "tokenHandling": true,
+          "disableHeadRequestForToken": true
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "viewType": "XML",
+        "async": true,
+        "viewPath": "pyopcnfglist.view",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "clearControlAggregation": false
+      },
+      "routes": [
+        {
+          "name": "ListPage",
+          "pattern": "",
+          "target": [
+            "ListPage"
+          ]
+        },
+        {
+					"name": "Detail",
+					"pattern": "Detail/{contextPath}",
+					"target": [
+						"Detail"
+					]
+				}
+      ],
+      "targets": {
+        "TargetMain": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Main",
+          "viewName": "Main"
+        },
+        "ListPage": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "ListPage",
+          "viewName": "ListPage"
+        },
+        "List": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "List",
+          "viewName": "List"
+        },"Detail": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "Detail",
+          "viewName": "Detail"
+        },
+        "DetailBasic": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "DetailBasic",
+          "viewName": "DetailBasic"
+        },"DetailObjectHeader": {
+          "viewType": "XML",
+          "transition": "slide",
+          "clearControlAggregation": false,
+          "viewId": "DetailObjectHeader",
+          "viewName": "DetailObjectHeader"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "pyopcnfglist.view.App",
+      "type": "XML",
+      "async": true,
+      "id": "App"
+    }
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "pyopcnfglist"
+  }
+}

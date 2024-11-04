@@ -1,0 +1,160 @@
+<mvc:View
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form" controllerName="pyregisterapp.controller.RegisterBasicData"
+    xmlns:html="http://www.w3.org/1999/xhtml">
+
+    <!-- <f:SimpleForm id="SimpleFormID1" maxContainerCols="4" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="3" labelSpanM="4" columnsL="2" emptySpanL="1" emptySpanM="5" columnsM="10" visible="true">
+        <core:Title id="emptyid1" text="" tooltip=""/>
+        <Label id="labelID1" text="{PYGWHANA>/UserCustomers/Name/#@sap:label}" tooltip="Customer Name" textAlign="Begin" required="true"/>
+        <Select id="CustomerNameID" items="{Customers>/}" change="onChange">
+            <core:Item id="ItemId" key="{Customers>ID}" text="{Customers>CustomerNo}-{Customers>Name}"></core:Item>
+        </Select>
+        <Label id="labelID2" text="{i18n>BusinessType}" tooltip="{i18n>BusinessType}"/>
+        <Text id="BusinessTypeID" text="{CustomersDetails>/BusinessType}"></Text>
+        <Label id="labelID3" text="{PYGWHANA>/UserCustomers/PAN/#@sap:label}" tooltip="PAN"/>
+        <Text id="PANId" text="{CustomersDetails>/PAN}"/>
+        <Label id="labelID4" text="{PYGWHANA>/UserCustomers/GSTIN/#@sap:label}" tooltip="PAN"/>
+        <Text id="GSTINId" text="{CustomersDetails>/GSTIN}"></Text>
+        <Label id="labelID5" text="{PYGWHANA>/UserCustomers/DateOfIncorporation/#@sap:label}" tooltip="Incorporation Date"/> 
+        <DatePicker id="DP1" placeholder="Enter Date" change="handleChange" class="sapUiSmallMarginBottom" value="{CustomersDetails>/DateOfIncorporation}"/>
+        <Label id="labelID6" text="{PYGWHANA>/UserCustomers/Mobile1/#@sap:label}" tooltip="Mobile Number"/>
+        <Text id="MobileId" text="{CustomersDetails>/Mobile1}"></Text>
+        <Label id="labelID7" text="{PYGWHANA>/UserCustomers/EmailID/#@sap:label}" tooltip="Email ID"/>
+        <Text id="EmailId" text="{CustomersDetails>/EmailID}"></Text>
+        <Label id="labelID8" text="{i18n>UtilizationDistrict}" tooltip="{i18n>UtilizationDistrict}"/>
+        <Select id="UtilizationDistrictID" items="{CustomersData>/}" editable="false">
+            <core:Item id="ItemId2" text="{CustomersData>District}"/>
+        </Select>
+        <core:Title id="emptyid2" text="" tooltip=""/>
+        <Label id="labelID9" text="Address"/>
+        <VBox id="VBoxid">
+            <Input id="AddressId1" value="{CustomersDetails>/Address1}" editable="false"/>
+            <Input id="AddressId2" value="{CustomersDetails>/Address2}" editable="false"/>
+            <Input id="AddressId3" value="{CustomersDetails>/Address3}" editable="false"/>
+            <Input id="AddressId4" value="{CustomersDetails>/Address4}" editable="false"/>
+        </VBox>
+        <Label id="labelID10" text="{PYGWHANA>/UserCustomers/District/#@sap:label}" tooltip="District"/>
+        <Input id="Districtid" value="{CustomersDetails>/District}" editable="false"/>
+         <Label id="labelID11" text="{i18n>CityPostalCode}"/>
+        <HBox id="Hboxid">
+            <Input id="CityId" value="{CustomersDetails>/City}" editable="false"/>
+            <Input id="PostalId" value="{CustomersDetails>/PostalCode}" editable="false"/>
+        </HBox>
+        <Label id="RegionId" text="{i18n>Region}"/>
+        <Input id="RegionInputID" value="{CustomersDetails>/RegionDesc}" editable="false"></Input>
+         <Label id="CountryId" text="{i18n>Country}"/>
+        <Input id="CountryInputId" value="{CustomersDetails>/CountryDesc}" editable="false"></Input>
+
+    </f:SimpleForm> -->
+    <l:Grid id="GridID" defaultSpan="L12 M6 S6">
+        <f:Form id="FormId">
+               <f:layout>
+				<f:ResponsiveGridLayout
+                    id="LayoutID"
+					labelSpanXL="1"
+					labelSpanL="4"
+					labelSpanM="1"
+					labelSpanS="1"
+					adjustLabelSpan="false"
+					emptySpanXL="2"
+					emptySpanL="3"
+					emptySpanM="2"
+					emptySpanS="2"
+					columnsXL="2"
+					columnsL="2"
+					columnsM="2"
+					 />
+            </f:layout>
+            <f:formContainers>
+                <f:FormContainer id="FromContainerID">
+                    <f:formElements>
+                        <f:FormElement id="FormElementId" label="{PYGWHANA>/UserCustomers/Name/#@sap:label}" tooltip="{PYGWHANA>/UserCustomers/Name/#@sap:label}">
+                            <f:fields>
+                                <Select id="CustomerNameID" items="{Customers>/}" change="onChange">
+                                    <core:Item id="ItemId" key="{Customers>ID}" text="{Customers>CustomerNo}-{Customers>Name}"></core:Item>
+                                </Select>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID2" label="{i18n>BusinessType}">
+                            <f:fields>
+                                <Text id="BusinessTypeID" text="{CustomersDetails>/BusinessType}"></Text>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID3" label="{PYGWHANA>/UserCustomers/PAN/#@sap:label}">
+                            <f:fields>
+                               <Text id="PANId" text="{CustomersDetails>/PAN}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID4" label="{PYGWHANA>/UserCustomers/GSTIN/#@sap:label}">
+                            <f:fields>
+                               <Text id="GSTINId" text="{CustomersDetails>/GSTIN}"></Text>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID5" label="{PYGWHANA>/UserCustomers/DateOfIncorporation/#@sap:label}">
+                            <f:fields>
+                               <DatePicker id="DP1" placeholder="Enter Date" change="handleChange" class="sapUiSmallMarginBottom" value="{CustomersDetails>/DateOfIncorporation}"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID6" label="{PYGWHANA>/UserCustomers/Mobile1/#@sap:label}">
+                            <f:fields>
+                               <Text id="MobileId" text="{CustomersDetails>/Mobile1}"></Text>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID7" label="{PYGWHANA>/UserCustomers/EmailID/#@sap:label}">
+                            <f:fields>
+                               <Text id="EmailId" text="{CustomersDetails>/EmailID}"></Text>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID8" label="{i18n>UtilizationDistrict}">
+                            <f:fields>
+                               <Select id="UtilizationDistrictID" items="{CustomersData>/}" editable="false">
+                                    <core:Item id="ItemId2" text="{CustomersData>District}"/>
+                                </Select>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+                <f:FormContainer id="FromCohkntainerID">
+                    <f:formElements>
+                        <f:FormElement id="FormelementID9" label="{i18n>Address}">
+                            <f:fields>
+                               <VBox id="VBoxid">
+                                <Input id="AddressId1" value="{CustomersDetails>/Address1}" editable="false"/>
+                                <Input id="AddressId2" value="{CustomersDetails>/Address2}" editable="false"/>
+                                <Input id="AddressId3" value="{CustomersDetails>/Address3}" editable="false"/>
+                                <Input id="AddressId4" value="{CustomersDetails>/Address4}" editable="false"/>
+                              </VBox>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID10" label="{PYGWHANA>/UserCustomers/District/#@sap:label}">
+                            <f:fields>
+                               <Input id="Districtid" value="{CustomersDetails>/District}" editable="false"/>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID11" label="{i18n>CityPostalCode}">
+                            <f:fields>
+                               <HBox id="Hboxid">
+                                    <Input id="CityId" value="{CustomersDetails>/City}" editable="false"/>
+                                    <Input id="PostalId" value="{CustomersDetails>/PostalCode}" editable="false"/>
+                                </HBox>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID12" label="{i18n>Region}">
+                            <f:fields>
+                               <Input id="RegionInputID" value="{CustomersDetails>/RegionDesc}" editable="false"></Input>
+                            </f:fields>
+                        </f:FormElement>
+                        <f:FormElement id="FormelementID13" label="{i18n>Country}">
+                            <f:fields>
+                              <Input id="CountryInputId" value="{CustomersDetails>/CountryDesc}" editable="false"></Input>
+                            </f:fields>
+                        </f:FormElement>
+                    </f:formElements>
+                </f:FormContainer>
+            </f:formContainers>
+        </f:Form>
+    </l:Grid>
+</mvc:View>

@@ -1,0 +1,10 @@
+<mvc:View controllerName="pyopcnfglist.controller.Detail"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+    <Page title="Detail" navButtonPress="onBack" navButtonType="Back" showNavButton="true">
+		<content>
+			<mvc:XMLView viewName="pyopcnfglist.view.DetailObjectHeader"/>
+			<mvc:XMLView viewName="pyopcnfglist.view.DetailBasic"/>
+		</content>
+	</Page>
+</mvc:View>

@@ -1,0 +1,56 @@
+<mvc:View controllerName="pyregisterapp.controller.Register" xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:uxap="sap.uxap">
+
+    <Page id="RegisterPageID" title="Registration" navButtonPress="onBack" navButtonType="Back" showNavButton="true">
+        <uxap:ObjectPageLayout id="ObjectPageLayoutID" enableLazyLoading="false" flexEnabled="true" isChildPage="false" alwaysShowContentHeader="true" showHeaderContent="true" showTitleInHeaderContent="true">
+            <uxap:headerTitle>
+				<uxap:ObjectPageHeader id="ObjectPageHeaderID" objectImageURI="sap-icon://create-form" objectImageBackgroundColor="Transparent" objectTitle="Registration" objectImageShape="Square" isObjectTitleAlwaysVisible="false" isObjectIconAlwaysVisible="false" isObjectSubtitleAlwaysVisible="false">
+					<uxap:actions>	
+					</uxap:actions>
+				</uxap:ObjectPageHeader>
+			</uxap:headerTitle>
+			<uxap:headerContent>
+				<Text id="textID" text="Registration Date: {path:'LocalViewSettingsDetail>/getDate',formatter:'.formatDate'}"></Text>
+			</uxap:headerContent>
+            <uxap:sections>
+				<uxap:ObjectPageSection id="objectPageSectionID" title="Basic Data" visible="true">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection id="ObjectPageSubSection" title="">
+							<uxap:blocks>
+								<mvc:XMLView id="BasicDataID" viewName="pyregisterapp.view.RegisterBasicData"/>
+							</uxap:blocks>
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+				<uxap:ObjectPageSection id="objectPageSectionID2" title="Proprietor" visible="{LocalViewSettings>/proprietor}">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection id="ObjectPageSubSection2" title="">
+							<uxap:blocks>
+								<mvc:XMLView id="ProprietorID" viewName="pyregisterapp.view.ProprietorData"/>
+							</uxap:blocks>
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+				<uxap:ObjectPageSection id="objectPageSectionID3" title="{LocalViewSettings>/showCountofTable} Partner" visible="{LocalViewSettings>/partner}">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection id="ObjectPageSubSection3" title="">
+							<uxap:blocks>
+								<mvc:XMLView id="PartnerID" viewName="pyregisterapp.view.PartnerData"/>
+							</uxap:blocks>
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+            </uxap:sections>
+        </uxap:ObjectPageLayout>
+		<footer>
+		<Toolbar id="FooterToolbarId">
+			<Button id="b1" press="onshowerrorpopup" icon="{= ${LocalViewSettings>/messageLength} === 0 ? '' : 'sap-icon://alert' }" text="{= ${LocalViewSettings>/messageLength} === 0 ? '' : ${LocalViewSettings>/messageLength}}" visible="{= ${LocalViewSettings>/messageLength} === 0 ? false : true}"/>
+			<ToolbarSpacer id="SpacerID"></ToolbarSpacer>
+			<Button id="ClearBtnId" text="Clear" press="onClear" visible="{LocalViewSettings>/clearButton}"></Button>
+			<Button id="ReviewBtnID" text="Review" visible="{LocalViewSettings>/reviewButton}" press="onReview"></Button>
+		</Toolbar>
+		</footer>
+    </Page>
+
+</mvc:View>

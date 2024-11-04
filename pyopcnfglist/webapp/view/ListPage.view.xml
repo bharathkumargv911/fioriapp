@@ -1,0 +1,21 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="pyopcnfglist.controller.ListPage" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page title="{i18n>title}">
+		<content>
+			<mvc:XMLView viewName="pyopcnfglist.view.List"/>
+		</content>
+		<footer>
+			<!-- <Toolbar>
+				<Button id="oMessagePopoverButton"
+					text="{= ${LocalViewSettingsDetail>/messageLength} === 0 ? '' : ${LocalViewSettingsDetail>/messageLength} }"
+					icon="{= ${LocalViewSettingsDetail>/messageLength} === 0 ? '' : 'sap-icon://alert' }" press="showErrorPopUp"
+					type="{= ${LocalViewSettingsDetail>/messageLength} === 0 ? 'Default' : 'Emphasized' }"/>
+				<ToolbarSpacer/>
+				<Button text="Edit" tooltip="Edit" press="onEdit" type="Accept"
+					visible="{= ${LocalViewSettingsDetail>/saveBtn} ? false : ${LocalViewSettingsDetail>/Detail}}"/>
+				<Button text="Review" tooltip="Review" press="onReview" type="Accept" visible="{LocalViewSettingsDetail>/Edit}"/>
+				<Button text="Save" tooltip="Save" id="SaveButton" press="onPopupSave" type="Accept" visible="{LocalViewSettingsDetail>/saveBtn}"/>
+			</Toolbar> -->
+		</footer>
+	</Page>
+</mvc:View>

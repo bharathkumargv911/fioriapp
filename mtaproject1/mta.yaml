@@ -1,0 +1,629 @@
+_schema-version: "3.2"
+ID: mtaproject1
+version: 0.0.1
+modules:
+- name: mtaproject1-approuter
+  type: approuter.nodejs
+  path: mtaproject1-approuter
+  requires:
+  - name: mtaproject1_html_repo_runtime
+  - name: uaa_mtaproject1
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+- name: mtaproject1_ui_deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: mtaproject1_html_repo_host
+    parameters:
+      content-target: true
+resources:
+- name: mtaproject1_html_repo_runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: uaa_mtaproject1
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: mtaproject1-xsuaa-service
+    service-plan: application
+- name: mtaproject1_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+
+
+# _schema-version: "3.2"
+# ID: scfsupportapp
+# version: 0.0.1
+# parameters:
+#   deploy_mode: html5-repo
+#   keep-existing-routes: true
+# modules:
+# - name: scfsupportapp-approuter
+#   type: approuter.nodejs
+#   path: scfsupportapp-approuter
+#   properties:
+#     SEND_XFRAMEOPTIONS: false
+#     TENANT_HOST_PATTERN: ^(.*)-scfsupportapp-approuter.${default-domain}
+#   requires:
+#   - name: scfsupportapp_html_repo_runtime
+#   - name: uaa_scfsupportapp
+#   - name: scfsupportapp-portal
+#   - name: scfsupportapp-saas-reg
+#   - name: scfsupportapp-ui-log
+#   - name: scfsupportapp-destination-service
+#   - name: scfsupportapp-connectivity
+#   parameters:
+#     disk-quota: 256M
+#     memory: 256M
+#     routes:
+#     - route: ${org}-scfsupportapp-approuter.${default-domain}
+# - name: scfsupportapp-app-content
+#   type: com.sap.application.content
+#   path: .
+#   requires:
+#   - name: scfsupportapp-repo-host
+#     parameters:
+#       content-target: true
+#   build-parameters:
+#     build-result: resources
+#     requires:
+#     - artifacts:
+#       - pyaccountbalanceapi.zip
+#       name: pyaccountbalanceapi
+#       target-path: resources/
+#     - artifacts:
+#       - pyapprovereqmaker.zip
+#       name: pyapprovereqmaker
+#       target-path: resources/
+#     - artifacts:
+#       - pycfregistrationdelmaker.zip
+#       name: pycfregistrationdelmaker
+#       target-path: resources/
+#     - artifacts:
+#       - pychecker.zip
+#       name: pychecker
+#       target-path: resources/
+#     - artifacts:
+#       - pycurrentactcheck.zip
+#       name: pycurrentactcheck
+#       target-path: resources/
+#     - artifacts:
+#       - pyeinvoice1.zip
+#       name: pyeinvoice1
+#       target-path: resources/
+#     - artifacts:
+#       - pyfbl1n.zip
+#       name: pyfbl1n
+#       target-path: resources/
+#     - artifacts:
+#       - pyfbl5n.zip
+#       name: pyfbl5n
+#       target-path: resources/
+#     - artifacts:
+#       - pygetaccntstmnt.zip
+#       name: pygetaccntstmnt
+#       target-path: resources/
+#     - artifacts:
+#       - pygetattritypesets.zip
+#       name: pygetattritypesets
+#       target-path: resources/
+#     - artifacts:
+#       - pygeteffectivebal1.zip
+#       name: pygeteffectivebal1
+#       target-path: resources/
+#     - artifacts:
+#       - pygetlop.zip
+#       name: pygetlop
+#       target-path: resources/
+#     - artifacts:
+#       - pygetpgpayments.zip
+#       name: pygetpgpayments
+#       target-path: resources/
+#     - artifacts:
+#       - pygetregstatus.zip
+#       name: pygetregstatus
+#       target-path: resources/
+#     - artifacts:
+#       - pygettypemlt1.zip
+#       name: pygettypemlt1
+#       target-path: resources/
+#     - artifacts:
+#       - pygettypevalue.zip
+#       name: pygettypevalue
+#       target-path: resources/
+#     - artifacts:
+#       - pcifsccodes.zip
+#       name: pcifsccodes
+#       target-path: resources/
+#     - artifacts:
+#       - pyifsccodesupload.zip
+#       name: pyifsccodesupload
+#       target-path: resources/
+#     - artifacts:
+#       - pyinvoicedetails.zip
+#       name: pyinvoicedetails
+#       target-path: resources/
+#     - artifacts:
+#       - pymispublish.zip
+#       name: pymispublish
+#       target-path: resources/
+#     - artifacts:
+#       - pyrenewalregdelmaker.zip
+#       name: pyrenewalregdelmaker
+#       target-path: resources/
+#     - artifacts:
+#       - pyrenewalscfresetmaker.zip
+#       name: pyrenewalscfresetmaker
+#       target-path: resources/
+#     - artifacts:
+#       - pyscfaccount.zip
+#       name: pyscfaccount
+#       target-path: resources/
+#     - artifacts:
+#       - pyscfaccountapi.zip
+#       name: pyscfaccountapi
+#       target-path: resources/
+#     - artifacts:
+#       - pyscfresetmaker.zip
+#       name: pyscfresetmaker
+#       target-path: resources/
+#     - artifacts:
+#       - pyscfupdatemaker.zip
+#       name: pyscfupdatemaker
+#       target-path: resources/
+#     - artifacts:
+#       - pyscfupload.zip
+#       name: pyscfupload
+#       target-path: resources/
+#     - artifacts:
+#       - pysubinvoice.zip
+#       name: pysubinvoice
+#       target-path: resources/
+#     - artifacts:
+#       - pyuserregdeletemaker.zip
+#       name: pyuserregdeletemaker
+#       target-path: resources/
+#     - artifacts:
+#       - pyrenewaleligiblemaker.zip
+#       name: pyrenewaleligiblemaker
+#       target-path: resources/
+#     - artifacts:
+#       - pypgtxnid.zip
+#       name: pypgtxnid
+#       target-path: resources/
+#     - artifacts:
+#       - pyscfrenewalupdate.zip
+#       name: pyscfrenewalupdate
+#       target-path: resources/
+# - name: cfdestbescfsupportapp
+#   type: nodejs
+#   path: cfdestbescfsupportapp
+#   requires:
+#   - name: uaa_scfsupportapp
+#   - name: scfsupportapp-destination-service
+#   - name: scfsupportapp-portal
+#   - name: scfsupportapp-saas-reg
+#   - name: scfsupportapp-ui-log
+#   provides:
+#   - name: cfdestbescfsupportapps_api
+#     properties:
+#       backend_app_url: ${default-url}
+#   parameters:
+#     disk-quota: 256M
+#     memory: 256M
+# - name: pyaccountbalanceapi
+#   type: html5
+#   path: apps/pyaccountbalanceapi
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyapprovereqmaker
+#   type: html5
+#   path: apps/pyapprovereqmaker
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pycfregistrationdelmaker
+#   type: html5
+#   path: apps/pycfregistrationdelmaker
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pychecker
+#   type: html5
+#   path: apps/pychecker
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pycurrentactcheck
+#   type: html5
+#   path: apps/pycurrentactcheck
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyeinvoice1
+#   type: html5
+#   path: apps/pyeinvoice1
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyfbl1n
+#   type: html5
+#   path: apps/pyfbl1n
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyfbl5n
+#   type: html5
+#   path: apps/pyfbl5n
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pygetaccntstmnt
+#   type: html5
+#   path: apps/pygetaccntstmnt
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pygetattritypesets
+#   type: html5
+#   path: apps/pygetattritypesets
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pygeteffectivebal1
+#   type: html5
+#   path: apps/pygeteffectivebal1
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pygetlop
+#   type: html5
+#   path: apps/pygetlop
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pygetpgpayments
+#   type: html5
+#   path: apps/pygetpgpayments
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pygetregstatus
+#   type: html5
+#   path: apps/pygetregstatus
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pygettypemlt1
+#   type: html5
+#   path: apps/pygettypemlt1
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pygettypevalue
+#   type: html5
+#   path: apps/pygettypevalue
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pcifsccodes
+#   type: html5
+#   path: apps/pcifsccodes
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyifsccodesupload
+#   type: html5
+#   path: apps/pyifsccodesupload
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyinvoicedetails
+#   type: html5
+#   path: apps/pyinvoicedetails
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pymispublish
+#   type: html5
+#   path: apps/pymispublish
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyrenewalregdelmaker
+#   type: html5
+#   path: apps/pyrenewalregdelmaker
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyrenewalscfresetmaker
+#   type: html5
+#   path: apps/pyrenewalscfresetmaker
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyscfaccount
+#   type: html5
+#   path: apps/pyscfaccount
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyscfaccountapi
+#   type: html5
+#   path: apps/pyscfaccountapi
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyscfresetmaker
+#   type: html5
+#   path: apps/pyscfresetmaker
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyscfupdatemaker
+#   type: html5
+#   path: apps/pyscfupdatemaker
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyscfupload
+#   type: html5
+#   path: apps/pyscfupload
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pysubinvoice
+#   type: html5
+#   path: apps/pysubinvoice
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyuserregdeletemaker
+#   type: html5
+#   path: apps/pyuserregdeletemaker
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pyrenewaleligiblemaker
+#   type: html5
+#   path: apps/pyrenewaleligiblemaker
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: pypgtxnid
+#   type: html5
+#   path: apps/pypgtxnid
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# - name: scfsupportapp-portal-deployer
+#   type: com.sap.application.content
+#   path: flp
+#   requires:
+#   - name: scfsupportapp-portal
+#     parameters:
+#       content-target: true
+#       service-key:
+#         config:
+#           content-endpoint: developer
+#         name: content-deploy-key
+#   - name: scfsupportapp-repo-host
+#   - name: scfsupportapp-app-content
+#   - name: uaa_scfsupportapp
+#   - name: scfsupportapp-destination-service
+#   - name: scfsupportapp-saas-reg
+#   parameters:
+#     config:
+#       TENANT_HOST_PATTERN: ^(.*)-scfsupportapp-approuter.${default-domain}
+#   deployed-after:
+#   - scfsupportapp-app-content
+# - name: pyscfrenewalupdate
+#   type: html5
+#   path: apps/pyscfrenewalupdate
+#   build-parameters:
+#     build-result: dist
+#     builder: custom
+#     commands:
+#     - npm install
+#     - npm run build:cf
+#     supported-platforms: []
+# resources:
+# - name: scfsupportapp-saas-reg
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     config:
+#       appName: ${org}-scfsupportapp
+#       appUrls:
+#         getDependencies: https://${org}-scfsupportapp-approuter.cfapps.eu10-004.hana.ondemand.com/callback/v1.0/dependencies
+#         onSubscription: https://${org}-scfsupportapp-approuter.cfapps.eu10-004.hana.ondemand.com/callback/v1.0/tenants/{tenantId}
+#       category: Corp Connect - ${org}
+#       description: SCF Support App - ${org}
+#       displayName: SCF Support App
+#       xsappname: ${org}-scfsupportapp
+#     service: saas-registry
+#     service-plan: application
+# - name: scfsupportapp-repo-host
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     service: html5-apps-repo
+#     service-name: scfsupportapp-html5-srv
+#     service-plan: app-host
+# - name: scfsupportapp-destination-service
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     config:
+#       HTML5Runtime_enabled: false
+#       init_data:
+#         instance:
+#           destinations:
+#           - Authentication: NoAuthentication
+#             Name: ui5
+#             ProxyType: Internet
+#             Type: HTTP
+#             URL: https://ui5.sap.com
+#           existing_destinations_policy: update
+#       version: 1.0.0
+#     service: destination
+#     service-name: scfsupportapp-destination-service
+#     service-plan: lite
+# - name: scfsupportapp_html_repo_runtime
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     service: html5-apps-repo
+#     service-plan: app-runtime
+# - name: scfsupportapp-connectivity
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     service: connectivity
+#     service-plan: lite
+# - name: uaa_scfsupportapp
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     config:
+#       tenant-mode: shared
+#       xsappname: ${org}-scfsupportapp
+#     path: ./xs-security.json
+#     service: xsuaa
+#     service-name: scfsupportapp-xsuaa-service
+#     service-plan: application
+# - name: scfsupportapp-ui-log
+#   type: org.cloudfoundry.existing-service
+# - name: scfsupportapp-portal
+#   type: org.cloudfoundry.managed-service
+#   parameters:
+#     service: portal
+#     service-plan: standard
+ 
+# has context menu

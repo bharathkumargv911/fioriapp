@@ -1,0 +1,102 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	controllerName="pytabledetails.controller.DetailObjectHeader" xmlns:html="http://www.w3.org/1999/xhtml">
+	<f:SimpleForm maxContainerCols="4" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+emptySpanL="1" emptySpanM="5" columnsM="10" visible="{LocalViewSettingsDetail>/Detail}">
+<core:Title text="" tooltip=""/>
+	<Label text="{i18n>ID}" tooltip="{i18n>ID}"/>
+		<Text text="{DetailModel>/ID}" tooltip="{i18n>ID}"/>
+        <Label text="{i18n>CPGuid}" tooltip="{i18n>CPGuid}"/>
+		<Text text="{DetailModel>/CPGuid}" tooltip="{i18n>CPGuid}"/>
+        <Label text="{i18n>CPType}" tooltip="{i18n>CPType}"/>
+		<Text text="{DetailModel>/CPType}" tooltip="{i18n>CPType}"/>
+        <Label text="{i18n>CPName}" tooltip="{i18n>CPName}"/>
+		<Text text="{DetailModel>/CPName}" tooltip="{i18n>CPName}"/>
+        <Label text="{i18n>AggregatorID}" tooltip="{i18n>AggregatorID}"/>
+		<Text text="{DetailModel>/AggregatorID}" tooltip="{i18n>AggregatorID}"/>
+        <Label text="{i18n>UtilDistrict}" tooltip="{i18n>UtilDistrict}"/>
+		<Text text="{DetailModel>/UtilDistrict}" tooltip="{i18n>UtilDistrict}"/>
+        <Label text="{i18n>CreatedOn}" tooltip="{i18n>CreatedOn}"/>
+		<Text text="{path:'DetailModel>/CreatedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}" tooltip="{i18n>CreatedOn}"/>
+        <Label text="{i18n>IncorporationDate}" tooltip="{i18n>IncorporationDate}"/>
+		<Text text="{DetailModel>/IncorporationDate}" tooltip="{i18n>IncorporationDate}"/>
+        <Label text="{i18n>LegalStatus}" tooltip="{i18n>LegalStatus}"/>
+		<Text text="{DetailModel>/LegalStatus}" tooltip="{i18n>LegalStatus}"/>
+        <Label text="{i18n>Address1}" tooltip="{i18n>Address1}"/>
+		<Text text="{DetailModel>/Address1}" tooltip="{i18n>Address1}"/>
+        <Label text="{i18n>Address2}" tooltip="{i18n>Address2}"/>
+		<Text text="{DetailModel>/Address2}" tooltip="{i18n>Address2}"/>
+         <core:Title text="" tooltip=""/>
+        <Label text="{i18n>Address3}" tooltip="{i18n>Address3}"/>
+		<Text text="{DetailModel>/Address3}" tooltip="{i18n>Address3}"/>
+        <Label text="{i18n>Address4}" tooltip="{i18n>Address4}"/>
+		<Text text="{DetailModel>/Address4}" tooltip="{i18n>Address4}"/>
+        <Label text="{i18n>District}" tooltip="{i18n>District}"/>
+		<Text text="{DetailModel>/District}" tooltip="{i18n>District}"/>
+        <Label text="{i18n>City}" tooltip="{i18n>City}"/>
+		<Text text="{DetailModel>/City}" tooltip="{i18n>City}"/>
+        <Label text="{i18n>State}" tooltip="{i18n>State}"/>
+		<Text text="{DetailModel>/State}" tooltip="{i18n>State}"/>
+        <Label text="{i18n>StateDesc}" tooltip="{i18n>StateDesc}"/>
+		<Text text="{DetailModel>/StateDesc}" tooltip="{i18n>StateDesc}"/>
+        <Label text="{i18n>Country}" tooltip="{i18n>Country}"/>
+		<Text text="{DetailModel>/Country}" tooltip="{i18n>Country}"/>
+        <Label text="{i18n>CountryDesc}" tooltip="{i18n>CountryDesc}"/>
+		<Text text="{DetailModel>/CountryDesc}" tooltip="{i18n>CountryDesc}"/>
+        <Label text="{i18n>Pincode}" tooltip="{i18n>Pincode}"/>
+		<Text text="{DetailModel>/Pincode}" tooltip="{i18n>Pincode}"/>
+	
+	
+	<!-- <ObjectHeader backgroundDesign="Transparent" fullScreenOptimized="false" number="" numberState="Success" numberUnit="" responsive="true"
+		title="ID: {DetailModel>/ID}"></ObjectHeader> -->
+		</f:SimpleForm>
+		<f:SimpleForm maxContainerCols="4" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+emptySpanL="1" emptySpanM="5" columnsM="10" visible="{LocalViewSettingsDetail>/Edit}">
+<core:Title text="" tooltip=""/>
+		<Label text="{i18n>ID}" tooltip="{i18n>ID}"/>
+		<Text text="{DetailModel>/ID}" tooltip="{i18n>ID}"/>
+        <Label text="{i18n>CPGuid}" tooltip="{i18n>CPGuid}"/>
+		<Input id="idCPGuid1" value="{DetailModel>/CPGuid}" tooltip="{i18n>CPGuid}" required="true" type="Number" />
+        <Label text="{i18n>CPType}" tooltip="{i18n>CPType}"/>
+		<Input id="idCPType1" value="{DetailModel>/CPType}" tooltip="{i18n>CPType}"/>
+        <Label text="{i18n>CPName}" tooltip="{i18n>CPName}"/>
+		<Input id="idCPName1" value="{DetailModel>/CPName}" tooltip="{i18n>CPName}"/>
+        <Label text="{i18n>AggregatorID}" tooltip="{i18n>AggregatorID}"/>
+		<Input id="idAggregatorID" value="{DetailModel>/AggregatorID}" tooltip="{i18n>AggregatorID}"/>
+        <Label text="{i18n>UtilDistrict}" tooltip="{i18n>UtilDistrict}"/>
+		<Input id="idUtilDistrict1" value="{DetailModel>/UtilDistrict}" tooltip="{i18n>UtilDistrict}"/>
+        <Label text="{i18n>CreatedOn}" tooltip="{i18n>CreatedOn}"/>
+		<Input id="idCreatedOn" value="{path:'DetailModel>/CreatedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}" tooltip="{i18n>CreatedOn}"/>
+        <Label text="{i18n>IncorporationDate}" tooltip="{i18n>IncorporationDate}"/>
+		<Input id="idIncorporationDate" value="{DetailModel>/IncorporationDate}" tooltip="{i18n>IncorporationDate}"/>
+        <Label text="{i18n>LegalStatus}" tooltip="{i18n>LegalStatus}"/>
+		<Input id="idLegalStatus1" value="{DetailModel>/LegalStatus}" tooltip="{i18n>LegalStatus}"/>
+        <Label text="{i18n>Address1}" tooltip="{i18n>Address1}"/>
+		<Input id="idAddress11" value="{DetailModel>/Address1}" tooltip="{i18n>Address1}"/>
+        <Label text="{i18n>Address2}" tooltip="{i18n>Address2}"/>
+		<Input id="idAddress21" value="{DetailModel>/Address2}" tooltip="{i18n>Address2}"/>
+         <core:Title text="" tooltip=""/>
+        <Label text="{i18n>Address3}" tooltip="{i18n>Address3}"/>
+		<Input id="idAddress31" value="{DetailModel>/Address3}" tooltip="{i18n>Address3}"/>
+        <Label text="{i18n>Address4}" tooltip="{i18n>Address4}"/>
+		<Input id="idAddress41" value="{DetailModel>/Address4}" tooltip="{i18n>Address4}"/>
+        <Label text="{i18n>District}" tooltip="{i18n>District}"/>
+		<Input id="idDistrict1" value="{DetailModel>/District}" tooltip="{i18n>District}"/>
+        <Label text="{i18n>City}" tooltip="{i18n>City}"/>
+		<Input id="idCity1" value="{DetailModel>/City}" tooltip="{i18n>City}"/>
+        <Label text="{i18n>State}" tooltip="{i18n>State}"/>
+		<Input id="idState1" value="{DetailModel>/State}" tooltip="{i18n>State}"/>
+        <Label text="{i18n>StateDesc}" tooltip="{i18n>StateDesc}"/>
+		<Input id="idStateDesc1" value="{DetailModel>/StateDesc}" tooltip="{i18n>StateDesc}"/>
+        <Label text="{i18n>Country}" tooltip="{i18n>Country}"/>
+		<Input id="idCountry1" value="{DetailModel>/Country}" tooltip="{i18n>Country}"/>
+        <Label text="{i18n>CountryDesc}" tooltip="{i18n>CountryDesc}"/>
+		<Input id="idCountryDesc1" value="{DetailModel>/CountryDesc}" tooltip="{i18n>CountryDesc}"/>
+        <Label text="{i18n>Pincode}" tooltip="{i18n>Pincode}"/>
+		<Input id="idPincode1" value="{DetailModel>/Pincode}" tooltip="{i18n>Pincode}"/>
+	
+	
+	<!-- <ObjectHeader backgroundDesign="Transparent" fullScreenOptimized="false" number="" numberState="Success" numberUnit="" responsive="true"
+		title="ID: {DetailModel>/ID}"></ObjectHeader> -->
+		</f:SimpleForm>
+
+</mvc:View>

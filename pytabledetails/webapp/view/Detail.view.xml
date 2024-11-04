@@ -1,0 +1,57 @@
+<mvc:View controllerName="pytabledetails.controller.Detail" xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m" xmlns:uxap="sap.uxap">
+    <Page title="Detail" navButtonPress="onBack" navButtonType="Back" showNavButton="true">
+		<uxap:ObjectPageLayout id="ObjectPageLayoutID" enableLazyLoading="false" flexEnabled="true" isChildPage="false" alwaysShowContentHeader="true" showHeaderContent="true" showTitleInHeaderContent="true">
+			<uxap:headerTitle>
+				<uxap:ObjectPageHeader id="ObjectPageHeaderID" class="ObjectPageHeaderID" objectImageURI="sap-icon://person-placeholder" objectImageBackgroundColor="Transparent" objectTitle="Channel Partner: {DetailModel>/CPName}({DetailModel>/CPGuid})" objectImageShape="Square" isObjectTitleAlwaysVisible="false" isObjectIconAlwaysVisible="false" isObjectSubtitleAlwaysVisible="false">
+					<uxap:actions>	
+					</uxap:actions>
+			</uxap:ObjectPageHeader>
+			</uxap:headerTitle>
+			<uxap:sections>
+				<uxap:ObjectPageSection id="objectPageSectionID" title="Basic Data" visible="true">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection id="ObjectPageSubSection" title="">
+							<uxap:blocks>
+								<mvc:XMLView viewName="pytabledetails.view.DetailObjectHeader"/>
+							</uxap:blocks>
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+				<uxap:ObjectPageSection id="objectPageSectionID2" title="Business Details" visible="true">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection id="ObjectPageSubSection2" title="">
+							<uxap:blocks>
+								<mvc:XMLView viewName="pytabledetails.view.DetailBasic"/>
+							</uxap:blocks>
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+				<uxap:ObjectPageSection id="objectPageSectionID3" title="Other Details" visible="true">
+					<uxap:subSections>
+						<uxap:ObjectPageSubSection id="ObjectPageSubSection3" title="">
+							<uxap:blocks>
+								<mvc:XMLView viewName="pytabledetails.view.DetailBusiness"/>
+							</uxap:blocks>
+						</uxap:ObjectPageSubSection>
+					</uxap:subSections>
+				</uxap:ObjectPageSection>
+			</uxap:sections>
+		</uxap:ObjectPageLayout>
+		<footer>
+        <Toolbar>
+		<Button id="b2" press="onshowerrorpopup" icon="{= ${LocalViewSettingsDetail>/messageLength} === 0 ? '' : 'sap-icon://alert' }" text="{= ${LocalViewSettingsDetail>/messageLength} === 0 ? '' : ${LocalViewSettingsDetail>/messageLength}}" visible="{= ${LocalViewSettingsDetail>/messageLength} === 0 ? false : true}"/>
+            <ToolbarSpacer ></ToolbarSpacer>
+			<Button id="CancelButton" text="Cancel" press="onCancel" visible="{LocalViewSettingsDetail>/cancelbtn}"></Button>
+            <Button id="EditButtonID" text="Edit" press="onEdit" visible="{LocalViewSettingsDetail>/editBtn}"></Button>
+			<Button id="saveButton" text="Review" press="onReview" visible="{LocalViewSettingsDetail>/reviewBtn}"></Button>
+			<Button id="reviewButton" text="Save" press="onSavePopup" visible="{LocalViewSettingsDetail>/saveBtn}"></Button>
+        </Toolbar>
+    </footer>
+	</Page>
+</mvc:View>
+		<!-- <content>
+			<mvc:XMLView viewName="pytabledetails.view.DetailObjectHeader"/>
+			<mvc:XMLView viewName="pytabledetails.view.DetailBasic"/>
+		</content> -->

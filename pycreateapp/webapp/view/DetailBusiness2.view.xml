@@ -1,0 +1,65 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	controllerName="pycreateapp.controller.DetailBusiness2" xmlns:html="http://www.w4.org/1999/xhtml">
+    <f:SimpleForm id="sfDpBusiness2" maxContainerCols="6" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+emptySpanL="1" emptySpanM="1" columnsM="4" visible="{LocalViewSettingsDetail>/Detail1}">
+        <f:content>
+		<core:Title text="" tooltip=""/>
+            <Label text="{i18n>UdyamRegNo}" tooltip="{i18n>UdyamRegNo}"  required="true"/>
+			<Input id="idUdyamRegNo" value="{CreateModel>/UdyamRegNo}"/>
+			<Label text="{i18n>HgdFrgnCurrExposure}" tooltip="{i18n>HgdFrgnCurrExposure}"  required="true"/>
+			<Input id="idHgdFrgnCurrExposure" value="{CreateModel>/HgdFrgnCurrExposure}"/>
+			<Label text="{i18n>UnHgdFrgnCurrExposure}" tooltip="{i18n>UnHgdFrgnCurrExposure}"  required="true"/>
+			<Input id="idUnHgdFrgnCurrExposure" value="{CreateModel>/UnHgdFrgnCurrExposure}"/>
+			<Label text="{i18n>TotalFrgnCurrExposure}" tooltip="{i18n>TotalFrgnCurrExposure}"  required="true"/>
+			<Input id="idTotalFrgnCurrExposure" value="{CreateModel>/TotalFrgnCurrExposure}"/>
+			<Label text="{i18n>FundBasedExposure}" tooltip="{i18n>FundBasedExposure}"  required="true"/>
+			<Input id="idFundBasedExposure" value="{CreateModel>/FundBasedExposure}"/>
+			<Label text="{i18n>NonFundBasedExposure}" tooltip="{i18n>NonFundBasedExposure}"  required="true"/>
+			<Input id="idNonFundBasedExposure" value="{CreateModel>/NonFundBasedExposure}"/>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>TotalBankingExposure}" tooltip="{i18n>TotalBankingExposure}"  required="true"/>
+			<Input id="idTotalBankingExposure" value="{CreateModel>/TotalBankingExposure}"/>
+			<Label text="{i18n>CorporateIdentificationNo}" tooltip="{i18n>CorporateIdentificationNo}"  required="true"/>
+			<Input id="idCorporateIdentificationNo" value="{CreateModel>/CorporateIdentificationNo}"/>
+			<Label text="{i18n>FacilityType}" tooltip="{i18n>FacilityType}"  required="true"/>
+			<Input id="idFacilityType" value="{CreateModel>/FacilityType}"/>
+			<Label text="{i18n>BPRejectionRemarks}" tooltip="{i18n>BPRejectionRemarks}"  required="true"/>
+			<Input id="idBPRejectionRemarks" value="{CreateModel>/BPRejectionRemarks}"/>
+			<Label text="{i18n>LEINumber}" tooltip="{i18n>LEINumber}"  required="true"/>
+			<Input id="idLEINumber" value="{CreateModel>/LEINumber}"/>
+			<Label text="{i18n>ERP_CPName}" tooltip="{i18n>ERP_CPName}"  required="true"/>
+			<Input id="idERP_CPName" value="{CreateModel>/ERP_CPName}"/>
+        </f:content>
+    </f:SimpleForm>
+	<f:SimpleForm id="sfDpBusiness2a" maxContainerCols="6" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+emptySpanL="1" emptySpanM="1" columnsM="4" visible="{LocalViewSettingsDetail>/Detail}">
+		<f:content>
+		<core:Title text="" tooltip=""/>
+			<Label text="{i18n>UdyamRegNo}" tooltip="{i18n>UdyamRegNo}"/>
+			<Text text="{CreateModel>/UdyamRegNo}"/>
+			<Label text="{i18n>HgdFrgnCurrExposure}" tooltip="{i18n>HgdFrgnCurrExposure}"/>
+			<Text text="{CreateModel>/HgdFrgnCurrExposure}"/>
+			<Label text="{i18n>UnHgdFrgnCurrExposure}" tooltip="{i18n>UnHgdFrgnCurrExposure}"/>
+			<Text text="{CreateModel>/UnHgdFrgnCurrExposure}"/>
+			<Label text="{i18n>TotalFrgnCurrExposure}" tooltip="{i18n>TotalFrgnCurrExposure}"/>
+			<Text text="{CreateModel>/TotalFrgnCurrExposure}"/>
+			<Label text="{i18n>FundBasedExposure}" tooltip="{i18n>FundBasedExposure}"/>
+			<Text text="{CreateModel>/FundBasedExposure}"/>
+			<Label text="{i18n>NonFundBasedExposure}" tooltip="{i18n>NonFundBasedExposure}"/>
+			<Text text="{CreateModel>/NonFundBasedExposure}"/>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>TotalBankingExposure}" tooltip="{i18n>TotalBankingExposure}"/>
+			<Text text="{CreateModel>/TotalBankingExposure}"/>
+			<Label text="{i18n>CorporateIdentificationNo}" tooltip="{i18n>CorporateIdentificationNo}"/>
+			<Text text="{CreateModel>/CorporateIdentificationNo}"/>
+			<Label text="{i18n>FacilityType}" tooltip="{i18n>FacilityType}"/>
+			<Text text="{CreateModel>/FacilityType}"/>
+			<Label text="{i18n>BPRejectionRemarks}" tooltip="{i18n>BPRejectionRemarks}"/>
+			<Text text="{CreateModel>/BPRejectionRemarks}"/>
+			<Label text="{i18n>LEINumber}" tooltip="{i18n>LEINumber}"/>
+			<Text text="{CreateModel>/LEINumber}"/>
+			<Label text="{i18n>ERP_CPName}" tooltip="{i18n>ERP_CPName}"/>
+			<Text text="{CreateModel>/ERP_CPName}"/>
+		</f:content>
+	</f:SimpleForm>
+</mvc:View>

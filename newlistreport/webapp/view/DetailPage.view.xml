@@ -1,0 +1,33 @@
+<mvc:View controllerName="newlistreport.controller.DetailPage" xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc" xmlns:core="sap.ui.core" xmlns:tabl="sap.ui.table">
+<Page id="page1" showNavButton="true" navButtonPress="onNaviBack">
+<content>
+<ObjectHeader icon="sap-icon://customer-order-entry" title="{BPHeaderDetail1>/0/ID}">
+    <attributes>
+        <ObjectAttribute></ObjectAttribute>
+    </attributes>
+</ObjectHeader>
+<tabl:Table id="ordrTable" rows="{BPHeaderDetail>/}" visibleRowCount="5">
+                <tabl:columns >
+                 <tabl:Column >
+                        <Label text="Created On"></Label>
+                        <tabl:template>
+                            <Text text="{path:'BPHeaderDetail>CreatedOn',formatter:'.formatDate'}"></Text>
+                        </tabl:template>
+                    </tabl:Column>
+                    <tabl:Column >
+                        <Label text="Status ID"></Label>
+                        <tabl:template>
+                            <Text text="{BPHeaderDetail>StatusID}"></Text>
+                        </tabl:template>
+                    </tabl:Column>
+                    <tabl:Column >
+                        <Label text="Parent No"></Label>
+                        <tabl:template>
+                            <Text text="{BPHeaderDetail>ParentNo}"></Text>
+                        </tabl:template>
+                    </tabl:Column>
+                </tabl:columns>
+            </tabl:Table>
+        </content>
+</Page>
+</mvc:View>

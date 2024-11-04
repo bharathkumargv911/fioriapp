@@ -1,0 +1,104 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	controllerName="pycreateapp.controller.DetailBusiness1" xmlns:html="http://www.w4.org/1999/xhtml">
+<f:SimpleForm id="sfDpBusiness1" maxContainerCols="6" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+	emptySpanL="1" emptySpanM="1" columnsM="4" visible="{LocalViewSettingsDetail>/Detail1}">
+        <f:content>
+		<core:Title text="" tooltip=""/>
+            <Label text="{i18n>ParentTypeID}" tooltip="{i18n>ParentTypeID}"  required="true"/>
+			<Input id="idParentTypeID" value="{CreateModel>/ParentTypeID}"/>
+			<Label text="{i18n>ParentName}" tooltip="{i18n>ParentName}"  required="true"/>
+			<Input id="idParentName" value="{CreateModel>/ParentName}"/>
+			<Label text="{i18n>URCEntityType}" tooltip="{i18n>URCEntityType}"  required="true"/>
+			<Input id="idURCEntityType" value="{CreateModel>/URCEntityType}"/>
+			<Label text="{i18n>URCActivityType}" tooltip="{i18n>URCActivityType}"  required="true"/>
+			<Input id="idURCActivityType" value="{CreateModel>/URCActivityType}"/>
+			<Label text="{i18n>URCSectorCode}" tooltip="{i18n>URCSectorCode}"  required="true"/>
+			<Input id="idURCSectorCode" value="{CreateModel>/URCSectorCode}"/>
+			<Label text="{i18n>URCSubSectorCode}" tooltip="{i18n>URCSubSectorCode}"  required="true"/>
+			<Input id="idURCSubSectorCode" value="{CreateModel>/URCSubSectorCode}"/>
+			<Label text="{i18n>URCDocURL}" tooltip="{i18n>URCDocURL}"  required="true"/>
+			<Input id="idURCDocURL" value="{CreateModel>/URCDocURL}"/>
+			<Label text="{i18n>ODAccountNo}" tooltip="{i18n>ODAccountNo}"  required="true"/>
+			<Input id="idODAccountNo" value="{CreateModel>/ODAccountNo}"/>
+			<Label text="{i18n>URCRegistrationDate}" tooltip="{i18n>URCRegistrationDate}"  required="true"/>
+			<DatePicker
+					id="DP2"
+					placeholder="Enter Date"
+					change="handleChange"
+					class="sapUiSmallMarginBottom"
+					value="{CreateModel>/URCRegistrationDate}"/>
+			
+			<Label text="{i18n>Source}" tooltip="{i18n>Source}"  required="true"/>
+			<Input id="idSource" value="{CreateModel>/Source}"/>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"  required="true"/>
+			<Input id="idSourceReferenceID" value="{CreateModel>/SourceReferenceID}"/>
+			<Label text="{i18n>Mobile1}" tooltip="{i18n>Mobile1}"  required="true"/>
+			<Input id="idMobile1" value="{CreateModel>/Mobile1}" type="Number"/>
+			<Label text="{i18n>Mobile2}" tooltip="{i18n>Mobile2}"  required="true"/>
+			<Input id="idMobile2" value="{CreateModel>/Mobile2}" type="Number"/>
+			<Label text="{i18n>LandLine1}" tooltip="{i18n>LandLine1}"  required="true"/>
+			<Input id="idLandLine1" value="{CreateModel>/LandLine1}"/>
+			<Label text="{i18n>EmailID}" tooltip="{i18n>EmailID}"  required="true"/>
+			<Input id="idEmailID" value="{CreateModel>/EmailID}"/>
+			<Label text="{i18n>PAN}" tooltip="{i18n>PAN}"  required="true"/>
+			<Input id="idPAN" value="{CreateModel>/PAN}"/>
+			<Label text="{i18n>GSTIN}" tooltip="{i18n>GSTIN}"  required="true"/>
+			<Input id="idGSTIN" value="{CreateModel>/GSTIN}"/>
+			<Label text="{i18n>StatusID}" tooltip="{i18n>StatusID}"  required="true"/>
+			<Input id="idStatusID" value="{CreateModel>/StatusID}"/>
+			<Label text="{i18n>ApproverRemarks}" tooltip="{i18n>ApproverRemarks}"  required="true"/>
+			<Input id="idApproverRemarks" value="{CreateModel>/ApproverRemarks}"/>
+			<Label text="{i18n>MSME}" tooltip="{i18n>MSME}"  required="true"/>
+			<Input id="idMSME" value="{CreateModel>/MSME}"/>
+			
+        </f:content>
+    </f:SimpleForm>
+	<f:SimpleForm id="sfDpBusiness1a" maxContainerCols="6" editable="true" layout="ResponsiveGridLayout" title="" labelSpanL="6" labelSpanM="5" columnsL="2"
+emptySpanL="1" emptySpanM="1" columnsM="4" visible="{LocalViewSettingsDetail>/Detail}">
+		<f:content>
+		<core:Title text="" tooltip=""/>
+			<Label text="{i18n>ParentTypeID}" tooltip="{i18n>ParentTypeID}"/>
+			<Text text="{CreateModel>/ParentTypeID}"/>
+			<Label text="{i18n>ParentName}" tooltip="{i18n>ParentName}"/>
+			<Text text="{CreateModel>/ParentName}"/>
+			<Label text="{i18n>URCEntityType}" tooltip="{i18n>URCEntityType}"/>
+			<Text text="{CreateModel>/URCEntityType}"/>
+			<Label text="{i18n>URCActivityType}" tooltip="{i18n>URCActivityType}"/>
+			<Text text="{CreateModel>/URCActivityType}"/>
+			<Label text="{i18n>URCSectorCode}" tooltip="{i18n>URCSectorCode}"/>
+			<Text text="{CreateModel>/URCSectorCode}"/>
+			<Label text="{i18n>URCSubSectorCode}" tooltip="{i18n>URCSubSectorCode}"/>
+			<Text text="{CreateModel>/URCSubSectorCode}"/>
+			<Label text="{i18n>URCDocURL}" tooltip="{i18n>URCDocURL}"/>
+			<Text text="{CreateModel>/URCDocURL}"/>
+			<Label text="{i18n>ODAccountNo}" tooltip="{i18n>ODAccountNo}"/>
+			<Text text="{CreateModel>/ODAccountNo}"/>
+			<Label text="{i18n>URCRegistrationDate}" tooltip="{i18n>URCRegistrationDate}"/>
+			<Text text="{path:'CreateModel>/URCRegistrationDate',formatter:'.formatDate'}"/>
+			<Label text="{i18n>Source}" tooltip="{i18n>Source}"/>
+			<Text text="{CreateModel>/Source}"/>
+			<core:Title text="" tooltip=""/>
+			<Label text="{i18n>SourceReferenceID}" tooltip="{i18n>SourceReferenceID}"/>
+			<Text text="{CreateModel>/SourceReferenceID}"/>
+			<Label text="{i18n>Mobile1}" tooltip="{i18n>Mobile1}"/>
+			<Text text="{CreateModel>/Mobile1}"/>
+			<Label text="{i18n>Mobile2}" tooltip="{i18n>Mobile2}"/>
+			<Text text="{CreateModel>/Mobile2}"/>
+			<Label text="{i18n>LandLine1}" tooltip="{i18n>LandLine1}"/>
+			<Text text="{CreateModel>/LandLine1}"/>
+			<Label text="{i18n>EmailID}" tooltip="{i18n>EmailID}"/>
+			<Text text="{CreateModel>/EmailID}"/>
+			<Label text="{i18n>PAN}" tooltip="{i18n>PAN}"/>
+			<Text text="{CreateModel>/PAN}"/>
+			<Label text="{i18n>GSTIN}" tooltip="{i18n>GSTIN}"/>
+			<Text text="{CreateModel>/GSTIN}"/>
+			<Label text="{i18n>StatusID}" tooltip="{i18n>StatusID}"/>
+			<Text text="{CreateModel>/StatusID}"/>
+			<Label text="{i18n>ApproverRemarks}" tooltip="{i18n>ApproverRemarks}"/>
+			<Text text="{CreateModel>/ApproverRemarks}"/>
+			<Label text="{i18n>MSME}" tooltip="{i18n>MSME}"/>
+			<Text text="{CreateModel>/MSME}"/>
+		</f:content>
+	</f:SimpleForm>
+</mvc:View>
