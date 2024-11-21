@@ -1,0 +1,168 @@
+{
+	"_version": "1.1.0",
+	"sap.app": {
+		"_version": "1.1.0",
+		"id": "ssslsprsncreate",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{common.appTitle}}",
+		"description": "{{common.appDescription}}",
+		"sourceTemplate": {
+			"id": "ui5template.basicSAPUI5ApplicationProject",
+			"version": "1.32.0"
+		},
+		"dataSources": {
+			"SSGW_MST": {
+				"uri": "/sap/opu/odata/ARTEC/SSGW_MST/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/SSGW_MST/metadata.xml"
+				}
+			},
+			"SFGW_MST": {
+				"uri": "/sap/opu/odata/ARTEC/SFGW_MST/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/SFGW_MST/metadata.xml"
+				}
+			},
+			"PUGW": {
+				"uri": "/sap/opu/odata/ARTEC/PUGW/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/PUGW/metadata.xml"
+				}
+			},
+			"PCGW": {
+				"uri": "/sap/opu/odata/ARTEC/PCGW/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/PCGW/metadata.xml"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"_version": "1.1.0",
+		"technology": "UI5",
+		"icons": {
+			"icon": "/sap/fiori/ssslsprsncreate/sap/bc/ui5_ui5/ARTEC/FLPPLUGIN/images/favicon.PNG",
+			"favIcon": "/sap/fiori/ssslsprsncreate/sap/bc/ui5_ui5/ARTEC/FLPPLUGIN/images/favicon.PNG",
+			"phone": "/sap/fiori/ssslsprsncreate/sap/bc/ui5_ui5/ARTEC/FLPPLUGIN/images/favicon.PNG",
+			"phone@2": "/sap/fiori/ssslsprsncreate/sap/bc/ui5_ui5/ARTEC/FLPPLUGIN/images/favicon.PNG",
+			"tablet": "/sap/fiori/ssslsprsncreate/sap/bc/ui5_ui5/ARTEC/FLPPLUGIN/images/favicon.PNG",
+			"tablet@2": "/sap/fiori/ssslsprsncreate/sap/bc/ui5_ui5/ARTEC/FLPPLUGIN/images/favicon.PNG"
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_hcb",
+			"sap_bluecrystal"
+		]
+	},
+	"sap.ui5": {
+		"_version": "1.1.0",
+		"rootView": {
+			"viewName": "com.arteriatech.ss.slsprsn.create.view.Main",
+			"type": "XML"
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "com.arteriatech.ss.slsprsn.create.view",
+				"targetControl": "SPCreateApp",
+				"targetAggregation": "pages",
+				"clearTarget": false,
+				"bypassed": {
+					"target": "NoMatching"
+				}
+			},
+			"routes": [
+				{
+					"pattern": "",
+					"name": "spcreate",
+					"view": "SalesPersonCreate",
+					"viewType": "XML",
+					"viewPath": "com.arteriatech.ss.slsprsn.create.view",
+					"targetAggregation": "pages"
+				}
+			]
+		},
+		"dependencies": {
+			"minUI5Version": "1.30.0",
+			"libs": {
+				"sap.ui.core": {},
+				"sap.m": {},
+				"sap.ui.layout": {},
+				"sap.ui.comp": {}
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "/sap/bc/ui5_ui5/ARTEC/PPCUTIL/utils/css/Style.css"
+				},
+				{
+					"uri": "css/fullScreenStyles.css"
+				}
+			]
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "com.arteriatech.ss.slsprsn.create.i18n.i18n"
+				}
+			},
+			"ppcutili18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleUrl": "/sap/bc/ui5_ui5/ARTEC/PPCUTIL/utils/i18n/i18n.properties"
+				}
+			},
+			"SSGW_MST": {
+				"dataSource": "SSGW_MST",
+				"settings": {
+					"defaultOperationMode": "sap.ui.model.odata.OperationMode.Client"
+				}
+			},
+			"PUGW": {
+				"dataSource": "PUGW",
+				"settings": {
+					"defaultOperationMode": "sap.ui.model.odata.OperationMode.Client"
+				}
+			},
+			"PCGW": {
+				"dataSource": "PCGW",
+				"settings": {
+					"defaultOperationMode": "sap.ui.model.odata.OperationMode.Client"
+				}
+			},
+			"SFGW_MST": {
+				"dataSource": "SFGW_MST",
+				"settings": {
+					"defaultOperationMode": "sap.ui.model.odata.OperationMode.Client"
+				}
+			}
+		}
+	},
+	"sap.platform.hcp": {
+		"uri": "",
+		"_version": "1.1.0"
+	}
+}

@@ -1,0 +1,87 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc"  xmlns:f="sap.ui.layout.form"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:l="sap.ui.layout"  xmlns="sap.m"
+	controllerName="com.arteriatech.ss.slsprsn.create.controller.SalesPersonHeaderReview">
+	<l:Grid defaultSpan="L12 M12 S12" visible="{LocalViewSetting>/ReviewVisibility}" width="auto">
+		<l:content>
+			<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="false" emptySpanL="2" emptySpanM="2" labelSpanL="4" labelSpanM="4"
+				layout="ResponsiveGridLayout" maxContainerCols="2" title="Basic Data">
+				<f:content>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/CPNo/#@sap:label}"></Label>
+					<Text text="{= ${SalesPersons>/CPNo} !== '' ? ${SalesPersons>/CPName} +' ('+ ${SalesPersons>/CPNo}+')' : ${SalesPersons>/CPName} }"></Text>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/CPTypeID/#@sap:label}"></Label>
+					<Text
+						text="{= ${SalesPersons>/CPTypeID} !== '' ? ${SalesPersons>/CPTypeDesc} +' ('+ ${SalesPersons>/CPTypeID}+')' : ${SalesPersons>/CPTypeDesc} }"></Text>
+				</f:content>
+			</f:SimpleForm>
+			<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="false" emptySpanL="2" emptySpanM="2" labelSpanL="4" labelSpanM="4"
+				layout="ResponsiveGridLayout" maxContainerCols="2" title="Details : General">
+				<f:content>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/FirstName/#@sap:label}"></Label>
+					<Text text="{SalesPersons>/FirstName}"></Text>
+					<Label text="{SSGW_MST>/SalesPersons/LastName/#@sap:label}"></Label>
+					<Text text="{SalesPersons>/LastName}"></Text>
+					<Label text="{SSGW_MST>/SalesPersons/Qualification/#@sap:label}"></Label>
+					<Text text="{SalesPersons>/Qualification}"></Text>
+					<Label text="{SSGW_MST>/SalesPersons/DesignationID/#@sap:label}"></Label>
+					<Text text="{SalesPersons>/DesignationDesc}"></Text>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/Gender/#@sap:label}"></Label>
+					<Text text="{SalesPersons>/Gender}"></Text>
+					<Label text="{SSGW_MST>/SalesPersons/DOB/#@sap:label}"></Label>
+					<Text text="{path: 'SalesPersons>/DOB', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+					<Label text="{SSGW_MST>/SalesPersons/AppointmentDate/#@sap:label}"/>
+					<Text text="{path: 'SalesPersons>/AppointmentDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+				</f:content>
+			</f:SimpleForm>
+				<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="false" emptySpanL="2" emptySpanM="2" labelSpanL="4" labelSpanM="4"
+				layout="ResponsiveGridLayout" maxContainerCols="2" title="Details : Contact">
+				<f:content>
+					<core:Title text=""/>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/Address1/#@sap:label}"/>
+					<Text text="{SalesPersons>/Address1}"></Text>
+					<Label  text="{SSGW_MST>/SalesPersons/Address2/#@sap:label}"/>
+					<Text text="{SalesPersons>/Address2}"></Text>
+					<Label  text="{SSGW_MST>/SalesPersons/Address3/#@sap:label}"/>
+					<Text text="{SalesPersons>/Address3}"></Text>
+					<Label  text="{SSGW_MST>/SalesPersons/Address4/#@sap:label}"/>
+					<Text text="{SalesPersons>/Address4}"></Text>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/CityID/#@sap:label}"/>
+					<Text text="{= ${SalesPersons>/CityID} !== '' ? ${SalesPersons>/CityDesc} +' ('+ ${SalesPersons>/CityID}+')' : ${SalesPersons>/CityDesc} }"></Text>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/DistrictID/#@sap:label}"/>
+					<Text text="{= ${SalesPersons>/DistrictID} !== '' ? ${SalesPersons>/DistrictDesc} +' ('+ ${SalesPersons>/DistrictID}+')' : ${SalesPersons>/DistrictDesc} }"></Text>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/CountryID/#@sap:label}"/>
+					<Text text="{= ${SalesPersons>/CountryID} !== '' ? ${SalesPersons>/CountryDesc} +' ('+ ${SalesPersons>/CountryID}+')' : ${SalesPersons>/CountryDesc} }"></Text>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/StateID/#@sap:label}"/>
+					<Text text="{= ${SalesPersons>/StateID} !== '' ? ${SalesPersons>/StateDesc} +' ('+ ${SalesPersons>/StateID}+')' : ${SalesPersons>/StateDesc} }"></Text>
+					<Label  text="{SSGW_MST>/SalesPersons/ZoneID/#@sap:label}"/>
+					<Text text="{= ${SalesPersons>/ZoneID} !== '' ? ${SalesPersons>/ZoneDesc} +' ('+ ${SalesPersons>/ZoneID}+')' : ${SalesPersons>/ZoneDesc} }"></Text>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/PostalCode/#@sap:label}"/>
+					<Text text="{SalesPersons>/PostalCode}"></Text>
+					<core:Title text=""/>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/MobileNo/#@sap:label}"/>
+					<Text text="{SalesPersons>/MobileNo}"></Text>
+					<Label  text="{SSGW_MST>/SalesPersons/AltMobileNo/#@sap:label}"/>
+					<Text text="{SalesPersons>/AltMobileNo}"/>
+					<Label  text="{SSGW_MST>/SalesPersons/EmailID/#@sap:label}"/>
+					<Text text="{SalesPersons>/EmailID}"/>
+				</f:content>
+			</f:SimpleForm>
+			<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="false" emptySpanL="2" emptySpanM="2" labelSpanL="4" labelSpanM="4"
+				layout="ResponsiveGridLayout" maxContainerCols="2" title="Sales Data">
+				<f:content>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/ManagerSPNo/#@sap:label}"/>
+					<Text text="{= ${SalesPersons>/ManagerSPNo} !== '' ? ${SalesPersons>/ManagerSPFirstName} +' ('+ ${SalesPersons>/ManagerSPNo}+')' : ${SalesPersons>/ManagerSPFirstName} }"></Text>
+				    <Label text="{SSGW_MST>/SalesPersons/Payout/#@sap:label}"/>
+				  	<Text text="{path:'SalesPersons>/Payout'} {SalesPersons>/Currency}"></Text>
+					<core:Title text=""/>
+					<Label  text="{SSGW_MST>/SalesPersons/SPCategoryID/#@sap:label}"/>
+					<Text text="{= ${SalesPersons>/SPCategoryID} !== '' ? ${SalesPersons>/SPCategoryDesc} +' ('+ ${SalesPersons>/SPCategoryID}+')' : ${SalesPersons>/SPCategoryDesc} }"></Text>
+				</f:content>
+			</f:SimpleForm>
+		</l:content>
+	</l:Grid>
+</mvc:View>

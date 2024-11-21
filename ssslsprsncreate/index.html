@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta charset="UTF-8">
+
+		<title>Sales Person Create</title>
+	<script type="text/javascript">
+	window["sap-ushell-config"] = {
+		defaultRenderer : "fiorisandbox",
+		services : {
+			NavTargetResolution : {
+			 	// navigation target resolution service is configured to resolve the empty location hash to the application
+				config : {
+				  resolveLocal : [ {
+						"linkId" : "",
+						 resolveTo : {
+							additionalInformation : "SAPUI5.Component=com.arteriatech.ss.slsprsn.create",
+							applicationType : "URL",
+							url : "./" + window.location.search // pass URL query parameters to application
+						}
+					} ]
+				}
+			}
+		}
+	// services
+	};
+	</script>
+
+		<script id="sap-ui-bootstrap"
+			src="../resources/sap-ui-core.js"
+			data-sap-ui-libs="sap.m"
+			data-sap-ui-theme="sap_bluecrystal"
+			data-sap-ui-compatVersion="edge"
+			data-sap-ui-resourceroots='{"com.arteriatech.ss.slsprsn.create": "./"}'
+			data-sap-ui-appCacheBuster="../,/sap/bc/ui5_ui5/ARTEC/PPCUTIL/,/sap/bc/ui5_ui5/ARTEC/SSUTIL/">
+		</script>
+
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+
+		<script>
+			sap.ui.getCore().attachInit(function() {
+				new sap.m.Shell({
+					app: new sap.ui.core.ComponentContainer({
+						height : "100%",
+						name : "com.arteriatech.ss.slsprsn.create"
+					})
+				}).placeAt("content");
+			});
+		</script>
+	</head>
+
+	<body class="sapUiBody" id="content">
+	</body>
+
+</html>

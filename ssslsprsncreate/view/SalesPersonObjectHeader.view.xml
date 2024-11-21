@@ -1,0 +1,23 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteriatech.ss.slsprsn.create.controller.SalesPersonObjectHeader" xmlns:html="http://www.w3.org/1999/xhtml">
+		<ObjectHeader backgroundDesign="Transparent" fullScreenOptimized="false" id="spdetails_header"
+		number="" numberState="Success" numberUnit="" responsive="true" icon="sap-icon://company-view"
+		showMarkers="true" title="New {SalesPersons>/CPTypeID} : {SalesPersons>/FirstName} {SalesPersons>/LastName}">
+		
+		<attributes>
+			<ObjectAttribute text="{SalesPersons>/CPName} ({SalesPersons>/CPNo})" title="{SSGW_MST>/SalesPersons/CPName/#@sap:label}"/>
+			<ObjectAttribute text="{SalesPersons>/MobileNo}" title="{SSGW_MST>/SalesPersons/MobileNo/#@sap:label}"/>
+				
+		</attributes>
+			<statuses>
+			<ObjectStatus  
+			icon="sap-icon://status-inactive"
+			text="Inactive"
+			state="Error" />
+			<ObjectStatus text="Not yet Approved" 
+				state="Error" 
+				icon="sap-icon://pending"
+				/>
+		</statuses>
+		</ObjectHeader>
+</mvc:View>

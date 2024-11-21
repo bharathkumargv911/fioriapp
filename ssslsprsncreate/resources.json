@@ -1,0 +1,63 @@
+{
+    "resources": [
+        {
+            "name": "index.html"
+        },
+        {
+            "name": "view/SalesPersonHeaderReview.view.xml"
+        },
+        {
+            "name": "view/SalesPersonCreate.view.xml"
+        },
+        {
+            "name": "view/Main.view.xml"
+        },
+        {
+            "name": "view/SalesPersonObjectHeader.view.xml"
+        },
+        {
+            "name": "view/SalesPersonHeaderCreate.view.xml"
+        },
+        {
+            "name": "i18n/i18n.properties",
+            "raw": "i18n/i18n.properties"
+        },
+        {
+            "name": "model/models.js"
+        },
+        {
+            "name": "manifest.json"
+        },
+        {
+            "name": "util/Formatter.js"
+        },
+        {
+            "name": "controller/Main.controller.js"
+        },
+        {
+            "name": "controller/SalesPersonHeaderCreate.controller.js"
+        },
+        {
+            "name": "controller/SalesPersonCreate.controller.js"
+        },
+        {
+            "name": "controller/SalesPersonObjectHeader.controller.js"
+        },
+        {
+            "name": "controller/SalesPersonHeaderReview.controller.js"
+        },
+        {
+            "name": "Component.js"
+        },
+        {
+            "name": "css/style.css"
+        },
+        {
+            "name": "Component-preload.js",
+            "merged": true
+        },
+        {
+            "name": "neo-app.json"
+        }
+    ]
+}

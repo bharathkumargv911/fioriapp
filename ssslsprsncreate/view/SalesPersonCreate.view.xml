@@ -1,0 +1,28 @@
+<mvc:View controllerName="com.arteriatech.ss.slsprsn.create.controller.SalesPersonCreate" xmlns:core="sap.ui.core"   xmlns:f="sap.ui.layout.form"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout">
+	
+	<Page id="pageId" title="{i18n>SalesPersonCreate.Page.title}"
+		showNavButton="{LocalViewSetting>/ReviewVisibility}" navButtonType="Back" navButtonPress="onBack">
+		<content>
+				<mvc:XMLView viewName="com.arteriatech.ss.slsprsn.create.view.SalesPersonObjectHeader" />
+				<mvc:XMLView viewName="com.arteriatech.ss.slsprsn.create.view.SalesPersonHeaderCreate" />
+				<mvc:XMLView viewName="com.arteriatech.ss.slsprsn.create.view.SalesPersonHeaderReview" />
+		</content>
+		<footer>
+			<Toolbar>
+			<Button id="oMessagePopoverButton" 
+					text="{= ${LocalViewSetting>/messageLength} === 0 ? '' : ${LocalViewSetting>/messageLength} }" 
+					icon="{= ${LocalViewSetting>/messageLength} === 0 ? '' : 'sap-icon://alert' }" 
+					press="showPopUp" type="{= ${LocalViewSetting>/messageLength} === 0 ? 'Default' : 'Emphasized' }"
+					/>
+				<ToolbarSpacer />
+				<Button text="Review" press="onReview" icon="sap-icon://to-be-reviewed" visible="{LocalViewSetting>/CreateVisibility}"/>
+				<Button text="Save" press="onSave" icon="sap-icon://save"  visible="{LocalViewSetting>/ReviewVisibility}"/>
+			    <Button text="Cancel" press="onCancel" icon="sap-icon://sys-cancel"  visible="{LocalViewSetting>/CancelVisibility}"/>
+				
+			</Toolbar>
+
+		</footer>
+	</Page>
+	
+</mvc:View>

@@ -1,0 +1,135 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:l="sap.ui.layout"
+	xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="com.arteriatech.ss.slsprsn.create.controller.SalesPersonHeaderCreate">
+	<l:Grid defaultSpan="L12 M12 S12" visible="{LocalViewSetting>/CreateVisibility}" width="auto">
+		<l:content>
+			<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="true" emptySpanL="2" emptySpanM="2" labelSpanL="4" labelSpanM="4"
+				layout="ResponsiveGridLayout" maxContainerCols="2" title="Basic Data">
+				<f:content>
+					<core:Title text=""/>
+					<Label id="fiCPNo" text="{SSGW_MST>/SalesPersons/CPNo/#@sap:label}" visible="{LocalViewSetting>/CustomerDD}"></Label>
+					<Select autoAdjustWidth="true" change="onSelectCustomer" id="customer" items="{Customers>/}" visible="{LocalViewSetting>/CustomerDD}">
+						<core:ListItem id="CPNo_item" key="{Customers>CustomerNo}" text="{Customers>CustomerNo}{Customers>Seperator}{Customers>Name}"
+							tooltip="{Customers>Name}"></core:ListItem>
+					</Select>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/CPNo/#@sap:label}" visible="{LocalViewSetting>/CustomerVH}"></Label>
+					<MultiInput id="inputCustomerF4" maxLength="{path:'SSGW_MST>/#SalesPersons/CPNo/@maxLength', type:'sap.ui.model.type.Float'}"
+						valueHelpRequest="CustomerF4" tokenChange="onSelectCustomer" visible="{LocalViewSetting>/CustomerVH}"/>
+					<core:Title text=""/>
+				</f:content>
+			</f:SimpleForm>
+			<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="true" emptySpanL="2" emptySpanM="2" labelSpanL="4" labelSpanM="4"
+				layout="ResponsiveGridLayout" maxContainerCols="2" title="Details : General">
+				<f:content>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/FirstName/#@sap:label}" required="true" id="feFirstName"></Label>
+					<Input value="{SalesPersons>/FirstName}" id="FirstName"
+						maxLength="{path:'SSGW_MST>/#SalesPersons/FirstName/@maxLength', type:'sap.ui.model.type.Float'}"></Input>
+					<Label text="{SSGW_MST>/SalesPersons/LastName/#@sap:label}" id="feLastName"></Label>
+					<Input value="{SalesPersons>/LastName}" id="LastName"
+						maxLength="{path:'SSGW_MST>/#SalesPersons/LastName/@maxLength', type:'sap.ui.model.type.Float'}"></Input>
+					<Label text="{SSGW_MST>/SalesPersons/Qualification/#@sap:label}" id="feQualification"></Label>
+					<Input value="{SalesPersons>/Qualification}" id="Qualification"
+						maxLength="{path:'SSGW_MST>/#SalesPersons/Qualification/@maxLength', type:'sap.ui.model.type.Float'}"></Input>
+					<Label text="{SSGW_MST>/SalesPersons/DesignationID/#@sap:label}" id="fiDesignationID" required="true"/>
+					<Select autoAdjustWidth="true" id="DesignationID" items="{SPdesgDD>/}">
+						<core:ListItem id="DesignationID_item" key="{SPdesgDD>Key}" text="{SPdesgDD>Key}{SPdesgDD>Seperator}{SPdesgDD>Text}"
+							tooltip="{SPdesgDD>Text}"></core:ListItem>
+					</Select>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/Gender/#@sap:label}" id="fiGender" required="true"/>
+					<Select autoAdjustWidth="true" id="Gender" items="{genderDD>/}">
+						<core:ListItem id="Gender_item" key="{genderDD>Key}" text="{genderDD>Key}{genderDD>Seperator}{genderDD>Text}" tooltip="{genderDD>Text}"></core:ListItem>
+					</Select>
+					<Label text="{SSGW_MST>/SalesPersons/DOB/#@sap:label}"></Label>
+					<DatePicker change="onDateValidate" dateValue="{path:'SalesPersons>/DOB' }" displayFormat="{LocalViewSetting>/DateFormat}"/>
+					<Label text="{SSGW_MST>/SalesPersons/AppointmentDate/#@sap:label}"/>
+					<DatePicker change="onDateValidate" dateValue="{path:'SalesPersons>/AppointmentDate' }" displayFormat="{LocalViewSetting>/DateFormat}"/>
+				</f:content>
+			</f:SimpleForm>
+			<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="true" emptySpanL="2" emptySpanM="2" labelSpanL="4" labelSpanM="4"
+				layout="ResponsiveGridLayout" maxContainerCols="2" title="Details : Contact">
+				<f:content>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/Address1/#@sap:label}" id="feAddress1" required="true"/>
+					<Input
+						maxLength="{path: 'SSGW_MST>/SalesPersons/Address1/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						value="{SalesPersons>/Address1}" id="Address1"/>
+					<Label text="{SSGW_MST>/SalesPersons/Address2/#@sap:label}" id="feAddress2"/>
+					<Input
+						maxLength="{path: 'SSGW_MST>/SalesPersons/Address2/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						value="{SalesPersons>/Address2}" id="Address2"/>
+					<Label text="{SSGW_MST>/SalesPersons/Address3/#@sap:label}" id="feAddress3"/>
+					<Input
+						maxLength="{path: 'SSGW_MST>/SalesPersons/Address3/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						value="{SalesPersons>/Address3}" id="Address3"/>
+					<Label text="{SSGW_MST>/SalesPersons/Address4/#@sap:label}" id="feAddress4"/>
+					<Input
+						maxLength="{path: 'SSGW_MST>/SalesPersons/Address4/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						value="{SalesPersons>/Address4}" id="Address4"/>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/DistrictID/#@sap:label}" id="feDistrictID"/>
+					<MultiInput
+						maxLength="{path: 'SSGW_MST>/SalesPersons/DistrictID/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						id="DistrictID" valueHelpRequest="DitrictF4"/>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/CityID/#@sap:label}" id="feCityID"/>
+					<MultiInput id="CityID"
+						maxLength="{path: 'SSGW_MST>/SalesPersons/StateID/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						valueHelpRequest="CityF4"/>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/CountryID/#@sap:label}" id="feCountryID"/>
+					<MultiInput id="CountryID"
+						maxLength="{path: 'SSGW_MST>/SalesPersons/CountryID/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						valueHelpRequest="CountryF4"/>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/StateID/#@sap:label}" id="feStateID"/>
+					<MultiInput id="StateID"
+						maxLength="{path: 'SSGW_MST>/SalesPersons/StateID/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						valueHelpRequest="StateF4"/>
+					<Label text="{SSGW_MST>/SalesPersons/ZoneID/#@sap:label}" id="feZoneID"/>
+					<MultiInput id="ZoneID" valueHelpRequest="ZoneF4"/>
+					<Label required="true" text=" {SSGW_MST>/SalesPersons/PostalCode/#@sap:label}" id="fePostalCode"/>
+					<Input
+						maxLength="{path: 'SSGW_MST>/SalesPersons/PostalCode/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						value="{SalesPersons>/PostalCode}" id="PostalCode"/>
+					<core:Title text=""/>
+					<Label required="true" text="{SSGW_MST>/SalesPersons/MobileNo/#@sap:label}" id="feMobileNo"/>
+					<MaskInput mask="9999999999" placeholder="Enter valid Mobile No" value="{SalesPersons>/MobileNo}" id="MobileNo">
+						<rules>
+							<MaskInputRule maskFormatSymbol="9" regex="[0-9]"/>
+						</rules>
+					</MaskInput>
+					<Label text="{SSGW_MST>/SalesPersons/AltMobileNo/#@sap:label}" id="feAltMobileNo"/>
+					<MaskInput mask="9999999999" placeholder="Enter valid Mobile No" value="{SalesPersons>/AltMobileNo}" id="AltMobileNo">
+						<rules>
+							<MaskInputRule maskFormatSymbol="9" regex="[0-9]"/>
+						</rules>
+					</MaskInput>
+					<Label text="{SSGW_MST>/SalesPersons/EmailID/#@sap:label}" id="feEmailID"/>
+					<Input
+						maxLength="{path: 'SSGW_MST>/SalesPersons/EmailID/#@maxLength' ,formatter: 'com.arteriatech.ss.slsprsn.create.util.Formatter.toInteger'}"
+						value="{path: 'SalesPersons>/EmailID',type: 'sap.ui.model.type.Email'}" id="EmailID"/>
+				</f:content>
+			</f:SimpleForm>
+			<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="true" emptySpanL="2" emptySpanM="2" labelSpanL="4" labelSpanM="4"
+				layout="ResponsiveGridLayout" maxContainerCols="2" title="Sales Data">
+				<f:content>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/ManagerSPNo/#@sap:label}" id="feManagerSPNo"/>
+					<MultiInput id="ManagerSPNo" valueHelpRequest="SPF4"
+						maxLength="{path:'SSGW_MST>/#SalesPersons/ManagerSPNo/@maxLength', type:'sap.ui.model.type.Float'}" change="onSPNo"/>
+					<Label text="{SSGW_MST>/SalesPersons/SPCategoryID/#@sap:label}" id="fiSPCategoryID" required="true"/>
+					<Select autoAdjustWidth="true" id="SPCategoryID" items="{SPCategoryDD>/}">
+						<core:ListItem id="SPCategoryID_item" key="{SPCategoryDD>Key}" text="{SPCategoryDD>Key}{SPCategoryDD>Seperator}{SPCategoryDD>Text}"
+							tooltip="{SPCategoryDD>Text}"></core:ListItem>
+					</Select>
+					<core:Title text=""/>
+					<Label text="{SSGW_MST>/SalesPersons/CPTypeID/#@sap:label}" id="fiCPTypeID" required="true"/>
+					<Select autoAdjustWidth="true" id="CPTypeID" items="{CPTypeDD>/}" change="onCPTypeDDChanged">
+						<core:ListItem id="CPType_item" key="{CPTypeDD>Key}" text="{CPTypeDD>Key}{CPTypeDD>Seperator}{CPTypeDD>Text}" tooltip="{CPTypeDD>Text}"></core:ListItem>
+					</Select>
+					<Label text="{SSGW_MST>/SalesPersons/Payout/#@sap:label}" id="fePayout"/>
+					<Input value="{path:'SalesPersons>/Payout'}" id="Payout" type="Number" maxLength="15"/>
+					<Input id="Currency" enabled="false" value="{path:'SalesPersons>/Currency'}"
+						maxLength="{path:'SSGW_MST>/#SalesPersons/Currency/@maxLength', type:'sap.ui.model.type.Float'}"/>
+				</f:content>
+			</f:SimpleForm>
+		</l:content>
+	</l:Grid>
+</mvc:View>
