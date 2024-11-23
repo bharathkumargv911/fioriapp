@@ -1,0 +1,516 @@
+/*
+* Copyright (C) 2015-2016 Arteria Technologies Pvt. Ltd. All rights reserved
+*/
+
+(function(){
+	'use strict';
+
+	jQuery.sap.declare("com.arteriatech.ss.utils.js.Common");
+	jQuery.sap.require("sap.m.MessageBox");
+	jQuery.sap.require("com.arteriatech.ppc.utils.js.Common");
+	
+	var oPPCCommon = com.arteriatech.ppc.utils.js.Common;
+	com.arteriatech.ss.utils.js.Common = {};
+	
+	//global variables
+	
+	var oSSUIGlobalSettingsData = {};
+	var oSSUIConstants = {
+			inputTypeDD: "DD", 
+			inputTypeVH: "VH", 
+			applicationKey: "PD", 
+			loggedUserServiceName: "UserLogins",
+			requestTypeRead: "read",
+			ssUiGlobalMdlName: "SSUIGlobalSettings",
+			ServerDateCheck: "SRVRDTCHK",
+			SSSO: "SSSO",
+			SSSOCRT: "SSSOCRT",
+			SSRO: "SSRO",
+			SSROCRT: "SSROCRT",
+			NOITMZEROSName:"NOITMZEROS",
+			NOITMZEROSValue:"X",
+			DATEFORMAT:"DATEFORMAT"
+	};
+	var oSSUIGlobalOdataModel = null;
+	/* 
+	 * Method to Decide the Input type for Vendor(Dropdown, Value Help)
+	 * Parameter:
+	 * appCallBack: call back function
+	 */
+	com.arteriatech.ss.utils.js.Common.getCustomerInputType = function(appCallback) 
+	{
+		/**
+		getGlobalUISettingsProperty method gives you inputFieldType
+		*/
+		com.arteriatech.ss.utils.js.Common.getGlobalUISettingsProperty("customerInputType", appCallback);
+	};
+	com.arteriatech.ss.utils.js.Common.getCurrentUsers = function(sServiceName, sRequestType) {
+		var sLoginID = com.arteriatech.ss.utils.js.Common.getCurrentLoggedUser({
+			sServiceName: sServiceName,
+			sRequestType: sRequestType
+		});
+		return sLoginID;
+	},
+	/*
+	 * Method to Decide the Input type (Dropdown, Value Help)
+	 * Parameter:
+	 * oDataModel- Object (oDataModel = Model instance), 
+	 * property- this property holds the input type value which should be declare into the json model,
+	 * appCallBack- call back function
+	 * Return: String Value
+	 * 			DD : DropDown
+	 * 			VH : Value Help
+	 */
+	com.arteriatech.ss.utils.js.Common.getGlobalUISettingsProperty = function(property, appCallBack) 
+	{
+		/**
+		this if condition checks that SSUIGlobalSettings model is available in the core
+		*/
+		if(!sap.ui.getCore().getModel(oSSUIConstants.ssUiGlobalMdlName)){
+			/**
+			getCurrentLoggedUser method is from com.arteriatech.ppc.utils.js.Common
+			mParameters: service name and request type
+			Return: loginID
+			*/
+			var sLoginID = com.arteriatech.ss.utils.js.Common.getCurrentLoggedUser({sServiceName: oSSUIConstants.loggedUserServiceName +"_"+(Math.random().toFixed(2)*100).toFixed(0), sRequestType: oSSUIConstants.requestTypeRead});
+//			var sLoginID = "CFA_USR01";
+		 	/**
+			Prepare the context path, here UserLogin is the Service name which is from PUGW 
+			Into this we have to pass Application key and loginID which gives you the detail
+			*/
+//			var contextPath = "UserLogins(Application='"+oSSUIConstants.applicationKey+"',LoginID='"+sLoginID+"')";
+//			var contextPath = "UserLogins(Application='"+oSSUIConstants.applicationKey+"')";
+			var contextPath = "UserProfiles(Application='"+oSSUIConstants.applicationKey+"')";
+			/**
+			get the Odata model from getOdataModel function
+			*/
+			var oDataModel = com.arteriatech.ss.utils.js.Common.getODataModel();
+			/**
+			Call the read method from Odata model
+			*/
+			oDataModel.setHeaders({
+				"x-arteria-loginid": sLoginID
+			});
+			oDataModel.read("/"+contextPath, {
+				success: function(oData){
+					/**
+					here checks the data length from oData results if true then goes to if condition
+					roleCategoryId == 1 then inputType is a Dropdown
+					roleCategoryId == 2 then inputType is a ValueHelp
+					*/
+						var inputType = oSSUIConstants.inputTypeVH;
+						var roleCategoryId = oData.RoleCatID;
+						if(roleCategoryId != "" && roleCategoryId != null && roleCategoryId != undefined){
+							if(roleCategoryId == "1"){
+								inputType = oSSUIConstants.inputTypeDD;
+							}else if(roleCategoryId == "2"){
+								inputType = oSSUIConstants.inputTypeVH;
+							}
+						}
+						/**
+						passing the inputType to json data, passing this data to json model which is declared globally,
+						the global json model set in the core.
+						*/
+						oSSUIGlobalSettingsData[property] = inputType;
+						var oSSUIGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+						oSSUIGlobalSettingsModel.setData(oSSUIGlobalSettingsData);
+						sap.ui.getCore().setModel(oSSUIGlobalSettingsModel, oSSUIConstants.ssUiGlobalMdlName);
+						/**
+						passing the inputType to appCallBack function, In the application level based on this value input type control can be decided
+						*/
+						appCallBack(inputType, oData);
+
+				}, 
+				error: function(error)
+				{
+					/**
+					In this error call function inputType is valuehelp 
+					passing this inputType constant value to json data, passing this data to json model which is declared globally,
+					the global json model set in the core.
+					*/
+					oSSUIGlobalSettingsData[property] = oSSUIConstants.inputTypeVH;
+					var oSSUIGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+					oSSUIGlobalSettingsModel.setData(oSSUIGlobalSettingsData);
+					sap.ui.getCore().setModel(oSSUIGlobalSettingsModel, oSSUIConstants.ssUiGlobalMdlName);
+					/**
+					passing the constant inputType to appCallBack function, In the application level based on this value input type control can be decided
+					*/
+					appCallBack(oSSUIGlobalSettingsData[property]);
+				}
+			});
+		}
+		else{
+			/**
+			if SSUIGlobalSettings model is available in the core, pass the inputType which is saved globally.
+			*/
+			var oSSUIGlobalSettingsModel = sap.ui.getCore().getModel(oSSUIConstants.ssUiGlobalMdlName);
+			appCallBack(oSSUIGlobalSettingsModel.oData[property]);
+		}
+	};
+	
+	/*
+	 * Method to set the oDataModel globally
+	 * Parameter:
+	 * oDataModel: Object (oDataModel = Model instance)
+	 */
+	com.arteriatech.ss.utils.js.Common.setODataModel = function(oDataModel)
+	{
+		oSSUIGlobalOdataModel = oDataModel;
+	};
+	/* 
+	 * We call this method in the util to get oData model object which is stored in globally
+	 * Return: oData Model object
+	 */
+	com.arteriatech.ss.utils.js.Common.getODataModel = function()
+	{
+		return oSSUIGlobalOdataModel;
+	};
+	
+	
+//-----------------------------------------Suggestion for Input-------------------------------------------------
+//------------------------------------------------By GE---------------------------------------------------------
+	
+	com.arteriatech.ss.utils.js.Common.handleSuggest = function(mParemeters) 
+	{
+		var sTerm = mParemeters.oEvent.getParameter("suggestValue");
+		var aFilters = [];
+		if (sTerm) {
+			for(var i=0; i<mParemeters.aProperties.length; i++) {
+				aFilters.push(new sap.ui.model.Filter(mParemeters.aProperties[i], sap.ui.model.FilterOperator.Contains, sTerm));
+			}	
+		}
+		var allFilters = new sap.ui.model.Filter(aFilters, false);
+		mParemeters.oEvent.getSource().getBinding(mParemeters.sBinding).filter(allFilters);
+	};
+	
+	com.arteriatech.ss.utils.js.Common.suggestionItemSelected = function(mParemeters, callBack) 
+	{
+		mParemeters.oEvent.getSource().setValueState("None");
+		mParemeters.oEvent.getSource().setValueStateText("");
+		var sPath = mParemeters.oEvent.getParameter("selectedItem").getBindingContext(mParemeters.sModelName).getPath();
+		if(mParemeters.sGUID)
+		{
+			var keyGUID =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sGUID);
+			var key =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sKey);
+			var desc =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sDescription);
+			mParemeters.oEvent.getSource().removeAllTokens();
+			mParemeters.oEvent.getSource().addToken(new sap.m.Token({
+				key: keyGUID,
+				text: desc + " (" + key + ")"
+			}));
+			mParemeters.oEvent.getSource().setValue("");
+		}
+		else
+		{
+			var key =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sKey);
+			var desc =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sDescription);
+			mParemeters.oEvent.getSource().removeAllTokens();
+			mParemeters.oEvent.getSource().addToken(new sap.m.Token({
+				key: key,
+				text: desc + " (" + key + ")"
+			}));
+			mParemeters.oEvent.getSource().setValue("");
+		}
+		
+		
+	};
+	
+	com.arteriatech.ss.utils.js.Common.suggestionOnChange = function(mParemeters, callBack) 
+	{
+		mParemeters.oEvent.getSource().setValueState("None");
+		mParemeters.oEvent.getSource().setValueStateText("");
+		var key = "", desc = "";
+		var enteredVal = mParemeters.oEvent.getSource().getValue();
+		var oData = mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty("/");
+		var bFound = false;
+		if (enteredVal !== "") {
+			for (var i = 0; i < oData.length; i++) {
+				if (oData[i][mParemeters.sKey] === enteredVal || oData[i][mParemeters.sDescription] === enteredVal) {
+					key = oData[i][mParemeters.sKey]
+					desc = oData[i][mParemeters.sDescription];
+					mParemeters.oEvent.getSource().removeAllTokens();
+					var tokens = new sap.m.Token({
+						key: oData[i][mParemeters.sKey],
+						text: oData[i][mParemeters.sDescription] + " (" + oData[i][mParemeters.sKey] + ")"
+					});
+					mParemeters.oEvent.getSource().addToken(tokens);
+					mParemeters.oEvent.getSource().setValue("");
+					bFound = true;
+					break;
+				}
+			}
+			if(!bFound) {
+				mParemeters.oEvent.getSource().setValueState("Error");
+				mParemeters.oEvent.getSource().setValueStateText("Please enter valid material");
+			}
+		}
+		if(callBack){
+			callBack(enteredVal, bFound, key, desc)
+		}
+	};
+	
+//	------------------------------------------------------------------------------------------------------------------------------
+//	-------------------------------------------LoggedUser, DD, F4 by AP-------------------------------------------------------
+//	------------------------------------------------------------------------------------------------------------------------------
+	
+	
+	/*
+	 * Function to get Current Logged in User
+	 * Parameters: mParameter.IsTestRun: ""/X
+	 * 			   mParameter.sServiceName: Service/Entity set name (Ex: POs, POItems, ASNs)
+	 * 			   mParameter.sRequestType:	Service request type (Ex: read, create, update or delete)
+	 * 			   mParameter.FmName: ""/function module name
+	 * @Return: LoginID: it is a user session id
+	 */
+	com.arteriatech.ss.utils.js.Common.getCurrentLoggedUser = function(mParameter, callBack) 
+	{
+		mParameter.Application = oSSUIConstants.applicationKey; //"PS"
+		
+		if(callBack) {
+			oPPCCommon.getCurrentLoggedUser(mParameter, function(LoginID){
+				callBack(LoginID);
+			});
+		}else {
+			var sLoginID = oPPCCommon.getCurrentLoggedUser(mParameter);
+			return sLoginID;
+		}
+	};
+	
+	/*
+	 * Create Tokens from Array of key values
+	 */
+	com.arteriatech.ss.utils.js.Common.createTokens = function(F4Model, serviceName, f4Filters, key, value, TokenInput, callBack,sGUIDKey)
+	{
+		oPPCCommon.createTokens(F4Model, serviceName, f4Filters, key, value, TokenInput, callBack, oSSUIConstants.applicationKey,sGUIDKey);
+	};
+	
+	/*
+	 * Get DD values from service and midify it with (All) or (None) or Nothing
+	 */
+	com.arteriatech.ss.utils.js.Common.getDropdown = function(oModel, sEntitySet, oFilters, sKey, sText, busyDialog, view, modelName, defaultValue, requestCompleted, bLoginIDOptional, bMustAddNone, mParameters) 
+	{
+		oPPCCommon.getDropdown(oModel, sEntitySet, oFilters, sKey, sText, busyDialog, view, modelName, defaultValue, requestCompleted, bLoginIDOptional, oSSUIConstants.applicationKey, bMustAddNone, mParameters);
+	}
+	
+	/*
+	 * Create Token on enter of multiinput
+	 */
+	com.arteriatech.ss.utils.js.Common.getTokenForInput = function(args, F4Model, serviceName, f4Filters, key, value, control, errorText, requestCompleted,that,oUtilsI18n, controlID,sGUIDKey)//(args, oMultiInputObj, url, codeName, desc, view, controlId, errorText)
+	{
+		oPPCCommon.getTokenForInput(args, F4Model, serviceName, f4Filters, key, value, control, errorText, requestCompleted,that,oUtilsI18n,controlID, oSSUIConstants.applicationKey,sGUIDKey);
+	}
+	
+	//getting token by on enter by using odata call
+	com.arteriatech.ss.utils.js.Common.getTokenForInputByOdata = function(args, F4Model, serviceName, f4Filters, key, value, control, errorText, view)//(args, oMultiInputObj, url, codeName, desc, view, controlId, errorText)
+	{
+		oPPCCommon.getTokenForInputByOdata(args, F4Model, serviceName, f4Filters, key, value, control, errorText, view, oSSUIConstants.applicationKey);
+	}
+	
+	/*entered input checking by calling backend service
+	 * @input: mParameter.F4Model = oDataModel
+	 *         mParameter.serviceName = serviceName
+	 *         mParameter.f4Filters = filters to pass to backend
+	 *         mParameter.key = backendPropertyName for code
+	 *         mParameter.view = this.getView() object
+	 *         mParameter.control = input object
+	 *         mParameter.applicationKey = PS/PD/SS from ppsutil/ssutil
+	 * @output: For correct input no message will be shown
+	 *          For wrong input error message will be shown        
+	*/
+	com.arteriatech.ss.utils.js.Common.checkInputDataByServiceCall = function(mParameter, appCallBack)//(args, oMultiInputObj, url, codeName, desc, view, controlId, errorText)
+	{
+		mParameter.applicationKey = oSSUIConstants.applicationKey;
+		oPPCCommon.checkInputDataByServiceCall(mParameter, appCallBack);
+	}
+	
+	//-------------------------------------------------Product & App Generic Types by AP---------------------------------------------
+	/*
+	* Load product & app features by typeset.
+	* @input: mParameter.Typeset = PSPO (application type name will be passed by application))
+	* 		  mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	* 		  mParameter.oUtilsI18n = ppcutil i18n resource bundle
+	* @Output save product and app features globally
+	*/
+	com.arteriatech.ss.utils.js.Common.loadProductAndAppFeatures = function(mParameter){
+		//set application key to mParameter
+		mParameter.ProductTypeset = oSSUIConstants.applicationKey;
+		//call loadProductAndAppFeatures util function from ppcutil
+		return oPPCCommon.loadProductAndAppFeatures(mParameter);
+	}
+	/*
+	* Load product features by typeset.
+	* @input: mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         mParameter.oUtilsI18n = ppcutil i18n resource bundle
+	* @Output save product features globally
+	*/
+	com.arteriatech.ss.utils.js.Common.loadProductFeatures = function(mParameter){
+		//set application key to mParameter
+		mParameter.Typeset = oSSUIConstants.applicationKey;
+		//call loadProductFeatures util function from ppcutil
+		return oPPCCommon.loadProductFeatures(mParameter);
+	}
+	/*
+	* Load app features by typeset.
+	* @input: mParameter.Typeset = PSPO (application type name will be passed by application))
+	* 		  mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         mParameter.oUtilsI18n = ppcutil i18n resource bundle
+	* @Output save app features globally
+	*/
+	com.arteriatech.ss.utils.js.Common.loadAppFeatures = function(mParameter){
+		//call loadAppFeatures util function from ppcutil
+		return oPPCCommon.loadAppFeatures(mParameter);
+	}
+	/*
+	* get product typevalue.
+	* @input: mParameter.Types = F4VNDRGO (f4 name from UI)// DMSSTORE (app name from UI) // DTRNGCHK (this is the filter name)
+	*                            // WAPOMAT (app name from UI) // DateType (CRNDTCHK/SRVRDTCHK name from UI)
+	* @return: typevalue(handle the required value in the UI app)
+	*/
+	com.arteriatech.ss.utils.js.Common.getProductFeatureValue = function(mParameter){
+		//set product type
+		mParameter.isProduct = true;
+		//call loadProductAndAppFeatures util function from ppcutil
+		return oPPCCommon.getFeatureValue(mParameter);
+	}
+	/*
+	* get app typevalue.
+	* @input: mParameter.Typeset =  PSPO (application type name will be passed by application))
+	*         mParameter.Types = HDRNTTXTID (config type name will be passed by application)
+	* @return: typevalue (handle the required value in the UI app)
+	*/
+	com.arteriatech.ss.utils.js.Common.getAppFeatureValue = function(mParameter){
+		//set product type
+		mParameter.isProduct = false;
+		//call loadProductAndAppFeatures util function from ppcutil
+		return oPPCCommon.getFeatureValue(mParameter);
+	}
+	
+//	today date {ouput: Fri Dec 2015 T00:00:00 IST StandrdTime}
+	com.arteriatech.ss.utils.js.Common.getCurrentDate = function(oController) {
+		//get server date type value
+		var isServerDate = com.arteriatech.ss.utils.js.Common.getProductFeatureValue({Types:oSSUIConstants.ServerDateCheck});
+		//get the date
+		return oPPCCommon.getCurrentDate({oController:oController, isServerDate:isServerDate});
+	}
+	
+//	frmat date as per product feature value
+	com.arteriatech.ss.utils.js.Common.getFormattedDate = function(date) {
+    	if(date){
+        	//get format date type value
+        	var sFormatType = com.arteriatech.ss.utils.js.Common.getProductFeatureValue({Types:oSSUIConstants.DATEFORMAT});
+        	var dFormattedDate = com.arteriatech.ppc.utils.js.Common.getFormattedDate({
+					sFormatType: sFormatType,
+					dDate: date 
+					});
+			return dFormattedDate;
+    	}else{
+        	return date;
+    	}
+};
+
+// open manual select date, maintain display format which comes from backend
+	com.arteriatech.ss.utils.js.Common.openManualDateSelectionDialog = function(that, sSelectedKey, oDateSelect,previousSelectedKey,model,oi18n,fieldId,requestCompleted) {
+		//get format date type value
+		var sFormatType = com.arteriatech.ss.utils.js.Common.getProductFeatureValue({Types:oSSUIConstants.DATEFORMAT});
+		if(sFormatType){
+			oPPCCommon.openManualDateSelectionDialog(that, sSelectedKey, oDateSelect,previousSelectedKey,model,oi18n,fieldId,requestCompleted,sFormatType);
+		}else{
+			oPPCCommon.openManualDateSelectionDialog(that, sSelectedKey, oDateSelect,previousSelectedKey,model,oi18n,fieldId,requestCompleted,"");
+		}
+	}
+//set manual selected date , maintain display format which comes from backend
+	com.arteriatech.ss.utils.js.Common.setMaunalSelectedDate=function(that,fromDate,toDate,oModel,sField,sKey,oi18n){
+		//get format date type value
+		var sFormatType = com.arteriatech.ss.utils.js.Common.getProductFeatureValue({Types:oSSUIConstants.DATEFORMAT});
+		if(sFormatType){
+			oPPCCommon.setMaunalSelectedDate(that,fromDate,toDate,oModel,sField,sKey,oi18n, sFormatType);
+		}else{
+			oPPCCommon.setMaunalSelectedDate(that,fromDate,toDate,oModel,sField,sKey,oi18n, "");
+		}
+	}
+
+//get date format from backend
+	com.arteriatech.ss.utils.js.Common.getDateFormat=function(){
+		//get format date type value
+		var sFormatType = com.arteriatech.ss.utils.js.Common.getProductFeatureValue({Types:oSSUIConstants.DATEFORMAT});
+		if(sFormatType){
+			return sFormatType;
+		}else{
+			return "";
+		}
+	}
+//get oDate for input
+	com.arteriatech.ss.utils.js.Common.getFormattedDateForInput=function(oValue){
+		//get format date type value
+		if (oValue == undefined || oValue == "" || oValue == null) {  
+		  return;  
+		  }  
+		  return new sap.ui.model.type.Date(oValue);
+	}
+	
+	//get PPSUI Constants by reference name
+	com.arteriatech.ss.utils.js.Common.getPPSUIConstants = function(sReferenceName) {
+		return oSSUIConstants[sReferenceName];
+	}
+	
+	/*-----------------------------------------Item No format for leading zeroes by AP-----------------------------------------------------*/
+
+	/*
+	* get fromatted itemno value(without zeros) based on config typeset if X no zeros, if empty with zeros
+	* @input: ItemNo =  00010
+	*         TypesetName = ss/sf (config type name will be passed by application)
+	* @return: ItemNo (00010/10)
+	*/
+
+	com.arteriatech.ss.utils.js.Common.formatItemNo=function(ItemNo,TypesetName)
+	{
+		if(TypesetName!==undefined && TypesetName!==null && TypesetName!=="")
+		{
+			var formatFlag=com.arteriatech.ss.utils.js.Common.getAppFeatureValue({
+					Typeset: TypesetName,
+					Types: oSSUIConstants.NOITMZEROSName
+				});
+			if(formatFlag===oSSUIConstants.NOITMZEROSValue)
+			{
+				return oPPCCommon.formatItemNo(ItemNo);
+			}
+			else
+			{
+				return ItemNo;
+			}
+		}
+		else
+		{
+			return ItemNo;
+		}
+	}
+	
+	// Prevent the backspace key from navigating back.
+	/*$(document).unbind('keydown').bind('keydown', function (event) {
+	    var doPrevent = false;
+	    if (event.keyCode === 8) {
+	        var d = event.srcElement || event.target;
+	        if ((d.tagName.toUpperCase() === 'INPUT' && 
+	             (
+	                 d.type.toUpperCase() === 'TEXT' ||
+	                 d.type.toUpperCase() === 'PASSWORD' || 
+	                 d.type.toUpperCase() === 'FILE' || 
+	                 d.type.toUpperCase() === 'SEARCH' || 
+	                 d.type.toUpperCase() === 'EMAIL' || 
+	                 d.type.toUpperCase() === 'NUMBER' || 
+	                 d.type.toUpperCase() === 'DATE' )
+	             ) || 
+	             d.tagName.toUpperCase() === 'TEXTAREA') {
+	            doPrevent = d.readOnly || d.disabled;
+	        }
+	        else {
+	            doPrevent = true;
+	        }
+	    }
+
+	    if (doPrevent) {
+	        event.preventDefault();
+	    }
+	});*/
+	
+}());
