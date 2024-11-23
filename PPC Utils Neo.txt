@@ -1,0 +1,5417 @@
+/*
+ * Copyright (C) 2015-2016 Arteria Technologies Pvt. Ltd. All rights reserved
+ */
+
+/**
+ * @fileOverview This is a collection of useful functions for the application
+ */
+
+(function(){
+	'use strict';
+
+	jQuery.sap.declare("com.arteriatech.ppc.utils.js.Common");
+	jQuery.sap.require("sap.m.MessageBox");
+	jQuery.sap.require("sap.ui.core.format.NumberFormat");
+	jQuery.sap.require("sap.ui.core.util.Export");
+	jQuery.sap.require("sap.ui.core.util.ExportTypeCSV");
+	jQuery.sap.require("sap.ui.core.util.MockServer");
+	com.arteriatech.ppc.utils.js.Common = {};
+
+	//declare global variables
+	var gPPCUtilPreviousMultiInputUrl = "";
+	var gPPCUtilPreviousMultiInputControl = "";
+//	message manager variables
+	var gPPCUtilMsgPopover = null;
+	var gPPCUtilMsgManager = "";
+	var gPPCUtilMsgProcessor = "";
+	var gPPCUtilMsgMgrModel = "";
+	var bShowServiceErrorPopup = false;
+	var iMinimumUITableRowCount = 2;		
+	var iMaximumUITableRowCount = 10;
+	var sShowServiceErrorPopupMessage = "";
+	//declare constants
+	var oPPCUICommonConstants = {
+			applicationKey: "PS", 
+			usrssndestname: "pugw_utils_op",
+			LoginIDURL: "/sap/opu/odata/ARTEC/PUGW_UTILS/",
+			PrintServiceUrl: "/sap/opu/odata/ARTEC/PCGW_UTILS/",
+			DocumentServiceUrl: "/sap/opu/odata/ARTEC/PCGW_UTILS/",
+			PPCDateGlobalMdlName: "PPCDateGlobalModel",
+			isServerDate: "isServerDate",
+			PPCNavTargetGlobalMdlName: "PPCNavTargetGlobalModel",
+			NavTargetName: "NavTargetName",
+			PPCDateRangeGlobalMdlName: "PPCDateRangGlobalModel",
+			DateRange: "DateRange",
+			PPCStoredValGlobalMdlName: "PPCStoredValGlobalModel",
+			StoredValue: "StoredValue",
+			ProductFeaturesModelName: "ProductFeatures",
+			AppFeaturesModelName: "AppFeatures",
+			Constant_X: "X",
+			dtCh: "/",
+			minYear:"00",
+			maxYear:"9999"
+	};
+	var SAPMultiOriginPropertyName = "SAP__Origin";
+	
+//global variables
+	
+	var oPPCUIGlobalSettings = {};
+	
+	
+	//--------------------------------------------------------By AP-----Updated by GE---------------------------------------------------------------
+	/*
+	 * Function to get Current Logged in User
+	 * Parameters: mParameter.Application: PS/SS/PD
+	 * 			   mParameter.IsTestRun: ""/X
+	 * 			   mParameter.sServiceName: Service/Entity set name (Ex: POs, POItems, ASNs)
+	 * 			   mParameter.sRequestType:	Service request type (Ex: read, create, update or delete)
+	 * 			   mParameter.FmName: ""/function module name
+	 * @Return: LoginID: It is a user session id
+	 */
+	com.arteriatech.ppc.utils.js.Common.getCurrentLoggedUser = function(mParameter, callBack)
+	{
+		var bASync = false;
+		if(callBack){
+			bASync = true;
+		}
+		var sLoginID = ""; 
+		var href = window.location.href;
+		if(!(location.href.indexOf("testService.html") > -1)){
+			var mRequestData = {};
+			mRequestData.destname = oPPCUICommonConstants.usrssndestname;
+			
+			if(mParameter.Application != "" && mParameter.Application != null && mParameter.Application != undefined){
+				mRequestData.Application = mParameter.Application;
+			}else{
+				mRequestData.Application = oPPCUICommonConstants.applicationKey;
+			}
+			if(mParameter.sServiceName != "" && mParameter.sServiceName != null && mParameter.sServiceName != undefined){
+				mRequestData.Object = mParameter.sServiceName + "_"+(Math.random().toFixed(2)*100).toFixed(0);
+			}else{
+				mRequestData.Object = "";
+			}
+			if(mParameter.sRequestType != "" && mParameter.sRequestType != null && mParameter.sRequestType != undefined){
+				mRequestData.Method = mParameter.sRequestType;
+			}else{
+				mRequestData.Method = "";
+			}
+			if(mParameter.FmName != "" && mParameter.FmName != null && mParameter.FmName != undefined){
+				mRequestData.FmName = mParameter.FmName;
+			}else{
+				mRequestData.FmName = "";
+			}
+			if(mParameter.IsTestRun != "" && mParameter.IsTestRun != null && mParameter.IsTestRun != undefined){
+				mRequestData.IsTestRun = mParameter.IsTestRun;
+			}else{
+				mRequestData.IsTestRun = "";
+			}
+			oPPCUICommonConstants.LoginIDURL = com.arteriatech.ppc.utils.js.Common.getFeatureValue({isProduct: true, Types:"LOGINIDURL"});
+			if(oPPCUICommonConstants.LoginIDURL !== undefined && oPPCUICommonConstants.LoginIDURL !== "") {	
+				var sUrl = oPPCUICommonConstants.LoginIDURL+"GetLoginID/";
+				//Call the ajax to get the logged id.
+				 $.ajax({    
+					url : sUrl,
+					jsonpCallback : 'getJSON',    
+					contentType : "text/plain",    
+					async: bASync,
+					data : mRequestData,
+					success : function(data, textStatus, jqXHR) 
+					{
+						if(data.Error != "" && data.Error != null && data.Error != undefined){
+							//alert("LoginID Error: "+data.Error);
+							com.arteriatech.ppc.utils.js.Common.showServiceErrorPopup({
+								statusCode: "404",
+								statusText: "User Session Not Found",
+								responseText: data.Error
+							})
+						}else{
+							sLoginID = data.UserSession;
+						}
+						if(callBack){
+							callBack(sLoginID);
+						}
+					},
+				  error:function(xhr, status, e)
+				  {
+					  sLoginID = "";
+					  
+					  if(com.arteriatech.ppc.utils.js.Common.isUshell() && e !== "Forbidden")
+					  {	
+						setTimeout(function() {
+							sap.m.MessageToast.show("Your session has expired, please login again");
+						}, 5);
+						setTimeout(function() {
+							var URLOrigin = window.location.origin;
+							var URLPathname = window.location.pathname;
+							var URLSearch = "";
+							if(window.location.search) {
+								URLSearch = window.location.search;
+								URLSearch.replace("?undefined", "");
+							}
+							var logoutPageURL = URLOrigin+"/logout/logoff.html?returnUrl="+URLPathname+URLSearch;
+							window.open(logoutPageURL, "_self");
+						}, 500);
+						
+					  }else {
+					  if(callBack){
+							callBack(sLoginID);
+						}
+					  }
+				  }
+				 });
+			 }else {
+				sLoginID = "";
+				if(callBack){
+							callBack(sLoginID);
+						}
+			 }
+		}
+		return sLoginID;
+	};
+		
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Print PDF, Document URL, Multiinput, dropdown, odatafilter, contextpath, crossappNavigation, Nav Back with/withought History and tablebusy By GR~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	
+	/*jQuery(document).ajaxComplete(function(e, jqXHR) {
+			if (jqXHR.getResponseHeader("com.sap.cloud.security.login")) {
+			    if(!com.arteriatech.ppc.utils.js.Common.isUshell())
+		        {
+				setTimeout(function() {
+						sap.m.MessageToast.show("Session is expired, page shall be reloaded.");
+					}, 5);
+					setTimeout(function() {
+						window.location.reload(true);
+					}, 500);
+		        }
+			}
+		});*/
+	
+com.arteriatech.ppc.utils.js.Common.addHoursAndMinutesToDate = function(mParameter)
+	{
+		var oFormat = sap.ui.core.format.DateFormat.getDateInstance();
+		
+		if(mParameter.dDate !== undefined && mParameter.dDate !== null) {
+			/*mParameter.dDate.setHours(5);
+        	  mParameter.dDate.setMinutes(30);*/
+			if(mParameter.dDate) {
+				if(mParameter.dDate.getHours() === 0) {
+					mParameter.dDate = oFormat.parse(oFormat.format(mParameter.dDate), true);
+				}
+			}
+		}
+		return mParameter.dDate;
+	};
+	
+	/*
+	* Format List oData to single array
+	*/
+	com.arteriatech.ppc.utils.js.Common.formatItemsOData = function(mParameter)
+	{	
+		if(mParameter.oData !== undefined && mParameter.oData !== null) {
+			if(mParameter.oData.results) {
+				mParameter.oData = mParameter.oData.results; 
+			}
+		}
+		return mParameter.oData;
+	};
+
+	
+	/*
+	 * Function to Print PDF 
+	 * Parameters: mParameter.sServiceUrl: Service URL to be used to print service
+	 * @Return: If oPPCUICommonConstants.PrintServiceUrl is not empty window.open called with concatination of oPPCUICommonConstants.PrintServiceUrl and mParameter.sServiceUrl else window.open with mParameter.sServiceUrl      
+	 */
+	com.arteriatech.ppc.utils.js.Common.PrintPDF = function(mParameter)
+	{
+		if(mParameter.sServiceUrl !== undefined && mParameter.sServiceUrl !== "") {
+		oPPCUICommonConstants.PrintServiceUrl = com.arteriatech.ppc.utils.js.Common.getFeatureValue({isProduct: true, Types:"PRNTSRVURL"});
+			if(oPPCUICommonConstants.PrintServiceUrl !== undefined && oPPCUICommonConstants.PrintServiceUrl !== "") {	
+				var sUrl = oPPCUICommonConstants.PrintServiceUrl+"Print?service=";
+				if(mParameter.sApplication) {
+//					mParameter.sServiceUrl+"&application="+mParameter.sApplication;
+					mParameter.sServiceUrl = mParameter.sServiceUrl+"&application="+mParameter.sApplication;
+				}
+				window.open(sUrl+mParameter.sServiceUrl);
+			}else {
+				window.open(mParameter.sServiceUrl);
+			}
+		}
+	};
+	
+	/*
+	 * Function to get Document URL 
+	 * Parameters: mParameter.sServiceUrl: Service URL to be used to print service
+	 * @Return: If oPPCUICommonConstants.DocumentServiceUrl is not empty sDocURL returned with concatination of oPPCUICommonConstants.PrintServiceUrl and mParameter.sServiceUrl else sDocURL returned with mParameter.sServiceUrl      
+	 */
+	com.arteriatech.ppc.utils.js.Common.getDocumentURL = function(mParameter)
+	{
+		var sDocURL = "";
+		if(mParameter.sServiceUrl !== undefined && mParameter.sServiceUrl !== "") {
+		oPPCUICommonConstants.DocumentServiceUrl = com.arteriatech.ppc.utils.js.Common.getFeatureValue({isProduct: true, Types:"DOCSRVURL"});
+		if(oPPCUICommonConstants.DocumentServiceUrl !== undefined && oPPCUICommonConstants.DocumentServiceUrl !== "") {	
+			if(mParameter.sApplication) {
+//				mParameter.sServiceUrl+"&application="+mParameter.sApplication;
+				mParameter.sServiceUrl = mParameter.sServiceUrl+"&application="+mParameter.sApplication;
+			}
+			sDocURL = oPPCUICommonConstants.DocumentServiceUrl+"Document?service="+mParameter.sServiceUrl;
+		}else {
+			sDocURL = mParameter.sServiceUrl;
+		}
+		}else {
+			sDocURL = "#";
+		}
+		return sDocURL; 
+	};
+	
+	/*
+	 * Prepare Filter for the oData read request based type of value
+	 */
+	com.arteriatech.ppc.utils.js.Common.setODataModelReadFilter = function(view, controlID, serviceFilter, path, operator, values, isMultiValue, isToken, isAnd, bGUIDString)
+	{
+		try
+		{
+			if((values != null && values != undefined && values.length > 0) || (isMultiValue || isToken))
+			{
+				for (var i = 0; i < values.length; i++)
+				{
+					if(values[i] instanceof Date) {
+						values[i] = com.arteriatech.ppc.utils.js.Common.addHoursAndMinutesToDate({dDate:values[i]});
+					}
+				}
+				if(isMultiValue || isToken)
+				{
+					var filters;
+					if(isToken)
+					{
+						if(view.byId(controlID).getTokens().length > 0)
+						{
+							var aFilter = new Array();
+							for (var i = 0; i < view.byId(controlID).getTokens().length; i++)
+							{
+//								var value = view.byId(controlID).getTokens()[i].mProperties.key;
+								
+								
+								var value="";										
+								var value = view.byId(controlID).getTokens()[i].mProperties.key;
+								if(bGUIDString)		
+								{		
+									 value = (view.byId(controlID).getTokens()[i].mProperties.key).split("-").join('');		
+								}		
+								else		
+								{		
+									value = view.byId(controlID).getTokens()[i].mProperties.key;		
+								}		
+								
+								
+								
+								if(operator === null || operator === undefined || operator.trim() === "")
+								{
+									var filter = com.arteriatech.ppc.utils.js.Common.getFilterOperatorForValue(path, [value]);
+									serviceFilter.push(filter);
+								}
+								else
+								{
+									var filter = new sap.ui.model.Filter(path, operator, value);
+									serviceFilter.push(filter);
+								}
+							}
+							//filters = new sap.ui.model.Filter({filters: aFilter, and: isAnd});
+							//serviceFilter.push(filters);
+						}
+					}
+					else
+					{
+						var aFilter = new Array();
+						for (var i = 0; i < values.length; i++)
+						{
+							if(values[i] != null && values[i] != undefined && values[i] != "")
+							{
+								if(operator === null || operator === undefined || operator.trim() === "")
+								{
+									var filter = com.arteriatech.ppc.utils.js.Common.getFilterOperatorForValue(path, values[i]);
+									serviceFilter.push(filter);
+								}
+								else
+								{
+									var filter = new sap.ui.model.Filter(path, operator, values[i]);
+									serviceFilter.push(filter);
+								}
+							}
+						}
+						if(aFilter.length > 0)
+						{
+							//filters = new sap.ui.model.Filter({filters: aFilter, and: isAnd});
+							//serviceFilter.push(filters);
+						}
+					}
+				}
+				else
+				{
+					if(operator === sap.ui.model.FilterOperator.BT)
+					{
+						if(values[0] != null && values[0] != undefined && values[0] != "")
+						{
+							if(values[1] != null && values[1] != undefined && values[1] != "")
+							{
+								var filter = new sap.ui.model.Filter(path, operator, values[0], values[1]);
+								serviceFilter.push(filter);
+							}
+							else
+							{
+								var filter = new sap.ui.model.Filter(path, sap.ui.model.FilterOperator.GE, values[0]);
+								serviceFilter.push(filter);
+							}
+						}
+						else if(values[1] != null && values[1] != undefined && values[1] != "")
+						{
+							var filter = new sap.ui.model.Filter(path, sap.ui.model.FilterOperator.LE, values[1]);
+							serviceFilter.push(filter);
+						}
+					}
+					else 
+					{
+						if(values.length >= 1 && values[0] != null && values[0] != undefined && values[0] != "")
+						{
+							var filter;
+							if(operator === null || operator === undefined || operator.trim() === "")
+							{
+								filter = com.arteriatech.ppc.utils.js.Common.getFilterOperatorForValue(path, values[0]);
+							}
+							else
+							{
+								filter = new sap.ui.model.Filter(path, operator, values[0]);
+							}
+							serviceFilter.push(filter);
+						}
+					}
+				}
+			}
+		}
+		catch (e) 
+		{
+			sap.m.MessageBox.show(e, sap.m.MessageBox.Icon.ERROR, "Syntax Error", [sap.m.MessageBox.Action.OK]);
+		}
+		finally
+		{
+			return serviceFilter;
+		}
+	};
+	/*
+	 * Indentify the Operator for the given value and generate oData filter 
+	 */
+	com.arteriatech.ppc.utils.js.Common.getFilterOperatorForValue = function(path, value)
+	{
+		var operator;
+		try
+		{
+			if(value != null && value != undefined)
+			{
+				if(value.indexOf("*") > -1)
+				{
+					if(value.charAt(0) === "*")
+					{
+						value = value.replace("*", "");
+						if(value.indexOf("*") > -1)
+						{
+							value = value.replace("*", "");
+							operator = sap.ui.model.FilterOperator.Contains;
+						}
+						else
+						{
+							operator = sap.ui.model.FilterOperator.EndsWith;
+						}
+					}
+					else if(value.charAt(value.length -1) === "*")
+					{
+						value = value.replace("*", "");
+						if(value.indexOf("*") > -1)
+						{
+							value = value.replace("*", "");
+							operator = sap.ui.model.FilterOperator.Contains;
+						}
+						else
+						{
+							operator = sap.ui.model.FilterOperator.StartsWith;
+						}
+					}
+					else
+					{
+						value = value.replace("*", "");
+						if(value.indexOf("*") > -1)
+						{
+							value = value.replace("*", "");
+							operator = sap.ui.model.FilterOperator.Contains;
+						}
+						else
+						{
+							operator = sap.ui.model.FilterOperator.Contains;
+						}
+					}
+				}
+				else
+				{
+					operator = sap.ui.model.FilterOperator.EQ;
+				}
+			}
+		}
+		catch (e) 
+		{
+			sap.m.MessageBox.show(e, sap.m.MessageBox.Icon.ERROR, "Syntax Error", [sap.m.MessageBox.Action.OK]);
+		}
+		finally
+		{
+			var filter = new sap.ui.model.Filter(path, operator, value);
+			return filter;
+		}
+	};
+
+	/*
+	 * Set Table Busy true or false 
+	 */
+	com.arteriatech.ppc.utils.js.Common.setTableBusy = function(view, tablesID, busy)
+	{
+		try
+		{
+			for(var i=0; i< tablesID.length; i++)
+			{
+				view.byId(tablesID[i]).setBusy(busy);
+				if(view.byId(tablesID[i]).getInfoToolbar()) {
+					view.byId(tablesID[i]).getInfoToolbar().setVisible(false);
+				}
+			}
+		}
+		catch (e) 
+		{
+			//sap.m.MessageBox.show(e, sap.m.MessageBox.Icon.ERROR, "Syntax Error", [sap.m.MessageBox.Action.OK]);
+		}
+	};
+	/*
+	 * Getter: Property Value from router context
+	 */
+	com.arteriatech.ppc.utils.js.Common.getPropertyValueFromContextPath = function(contextPath, property)
+	{
+		var propertyValue = "";
+		try
+		{
+			//propertyValue = contextPath.split(property+"=")[1].split(",")[0].replace("'", "").replace("'", "").replace(")", ""); 
+			propertyValue = contextPath.split(property+"=")[1];
+			if(propertyValue){
+				propertyValue = propertyValue.split(",")[0].replace("'", "").replace("'", "").replace(")", ""); 
+			}
+		}
+		catch (e) 
+		{
+			sap.m.MessageBox.show(e, sap.m.MessageBox.Icon.ERROR, "Syntax Error", [sap.m.MessageBox.Action.OK]);
+		}
+		finally
+		{
+			return propertyValue;
+		}
+	};
+	/*
+	 * Getter: Multi-Origin Property Name
+	 */
+	com.arteriatech.ppc.utils.js.Common.getSAPMultiOriginPropertyName = function()
+	{
+		return SAPMultiOriginPropertyName;
+	};
+	/*
+	 * Check of the Service Multi-Origin
+	 */
+	com.arteriatech.ppc.utils.js.Common.isMultiOrigin = function(oModelContext)
+	{
+		var isMultiOrigin = false;
+		try
+		{
+			if(oModelContext.getProperty(SAPMultiOriginPropertyName))
+			{
+				isMultiOrigin = true;
+			}
+			else
+			{
+				isMultiOrigin = false;
+			}
+		}
+		catch (e) 
+		{
+			sap.m.MessageBox.show(e, sap.m.MessageBox.Icon.ERROR, "Syntax Error", [sap.m.MessageBox.Action.OK]);
+		}
+		finally
+		{
+			return isMultiOrigin;
+		}
+	};
+
+	/*
+	 * Create Tokens from Array of key values
+	 */
+	com.arteriatech.ppc.utils.js.Common.createTokens = function(F4Model, serviceName, f4Filters, key, value, TokenInput, callBack, appKey,sGUIDKey)
+	{
+		var oDialog = new sap.m.BusyDialog();
+		/*F4Model.attachRequestSent(
+				function()
+				{
+					oDialog.open();
+				}
+		);  
+		F4Model.attachRequestCompleted(function(){
+			oDialog.close();
+		});  */
+		TokenInput.removeAllTokens();
+		f4Filters = com.arteriatech.ppc.utils.js.Common.setODataModelReadFilter("", "", f4Filters, "LoginID", "", [com.arteriatech.ppc.utils.js.Common.getCurrentLoggedUser({sServiceName: serviceName, sRequestType: "read", Application:appKey})], false, false, false);
+		F4Model.read("/"+serviceName, {
+			filters: f4Filters,
+			success: function(oData){
+
+				var aData = oData.results;
+				var aTokens = new Array();
+				for(var i=0; i<aData.length; i++)
+				{
+					var oToken = "";
+					var oTokenKey = "";
+					var oTokenText = "";
+					if(sGUIDKey)
+					{
+						if(key != "" && key != null && key != undefined){
+								oTokenKey = aData[i][sGUIDKey];
+								if(value != "" && value != null && value != undefined){
+									if(aData[i][value] != undefined && aData[i][value] != "" ){
+										oTokenText = aData[i][value]+" ("+aData[i][key]+")";
+									}
+								}
+						}
+					}
+					else
+					{
+						if(key != "" && key != null && key != undefined){
+							oTokenKey = aData[i][key];
+							if(value != "" && value != null && value != undefined){
+								if(aData[i][value] != undefined && aData[i][value] != "" ){
+									oTokenText = aData[i][value]+" ("+aData[i][key]+")";
+								}
+							}
+						}
+					}
+					
+					oToken = new sap.m.Token({key: oTokenKey, text: oTokenText});
+					aTokens.push(oToken);
+				}
+				TokenInput.setTokens(aTokens);
+				oDialog.close();
+				callBack(aData);
+			}, 
+			error: function(error){
+				oDialog.close();
+				com.arteriatech.ppc.utils.js.Common.showServiceErrorPopup(error);
+				//callBack();
+			}
+		});
+	};
+	/*
+	 * Getter key values from the Tokens
+	 */
+	com.arteriatech.ppc.utils.js.Common.getKeysFromTokens = function(view, controlID)
+	{
+		var tokens = "";
+		if(view.byId(controlID).getTokens().length > 0)
+		{
+			tokens += view.byId(controlID).getTokens()[0].mProperties.key; 
+			for (var i = 1; i < view.byId(controlID).getTokens().length; i++)
+			{
+				tokens += ";"+view.byId(controlID).getTokens()[i].mProperties.key; 
+			}
+		}
+		return tokens;
+	};
+
+	/*
+	 * Getter Text values from the Tokens
+	 */
+	com.arteriatech.ppc.utils.js.Common.getTextFromTokens = function(view, controlID)
+	{
+		var tokens = "";
+		if(view.byId(controlID).getTokens().length > 0)
+		{
+			tokens += view.byId(controlID).getTokens()[0].mProperties.text; 
+			for (var i = 1; i < view.byId(controlID).getTokens().length; i++)
+			{
+				tokens += "; "+view.byId(controlID).getTokens()[i].mProperties.text; 
+			}
+		}
+		return tokens;
+	};
+
+	/*
+	 * Getter key values from the MultiCombo
+	 */
+	com.arteriatech.ppc.utils.js.Common.getKeysFromMultiCombo = function(view, controlID)
+	{
+		var sKeys = "";
+		var aKeys = view.byId(controlID).getSelectedKeys();
+		if(aKeys.length > 0)
+		{
+			sKeys = aKeys[0]
+			for(var i=1; i<aKeys.length; i++)
+			{
+				if(aKeys[i] != "")
+					sKeys = sKeys+";"+aKeys[i];
+			}
+		}
+		return sKeys;
+	};
+	/*
+	 * Cross App navigation for Fiori Launchpad, HCP Stand-alone or BSP App
+	 */
+	com.arteriatech.ppc.utils.js.Common.crossAppNavigation = function(sourceHCPAppName, targetHCPAppName, targetHCPAppAction, sourceBSPAppName, targetBSPAppName, routingPattern, flpNavTargetName, flpAppAction)
+	{
+		if(com.arteriatech.ppc.utils.js.Common.isUshell())
+		{
+			if(routingPattern != null && routingPattern != undefined && routingPattern.trim() != "")
+			{
+				targetHCPAppAction = targetHCPAppAction+"&"+routingPattern;
+				flpAppAction = flpAppAction+"&"+routingPattern;
+			}
+			var oCrossAppNavigator = sap.ushell.Container.getService("CrossApplicationNavigation");  
+			if(flpNavTargetName != null && flpNavTargetName != undefined && flpNavTargetName.trim() != ""){
+				oCrossAppNavigator.toExternal({  
+					target : { 
+						semanticObject : flpNavTargetName, 
+						action : flpAppAction 
+					}
+				});  
+			}
+			else{
+				oCrossAppNavigator.toExternal({  
+					target : { 
+						semanticObject : targetHCPAppName, 
+						action : targetHCPAppAction 
+					}
+				});  
+			}
+		}
+		else if(location.href.indexOf("ondemand.com") > -1)
+		{
+			var presentHref = location.href.split( '#' );
+			var appUrl = presentHref[0].replace(sourceHCPAppName, targetHCPAppName);
+			if(routingPattern != null && routingPattern != undefined && routingPattern.trim() != "")
+			{
+				appUrl = appUrl+"#"+routingPattern;
+			}
+			window.location.assign(appUrl);
+		}
+		else if(location.href.indexOf("bc/ui5_ui5") > -1)
+		{
+			var presentHref = location.href.split('bc/ui5_ui5');
+			//targetHCPAppName = com.arteriatech.ppc.utils.js.Common.getBSPAppName(targetHCPAppName);
+			var appUrl = presentHref[0]+"bc/ui5_ui5/"+targetBSPAppName+"/webapp/index.html";
+			if(routingPattern != null && routingPattern != undefined && routingPattern.trim() != "")
+			{
+			 var sGWHostURL = com.arteriatech.ppc.utils.js.Common.getFeatureValue({Types:"WAGWHOST", isProduct: true}); 
+			 var sGWClient = com.arteriatech.ppc.utils.js.Common.getFeatureValue({Types:"WAGWCLIENT", isProduct: true}); 
+			 var sGWThemeName = com.arteriatech.ppc.utils.js.Common.getFeatureValue({Types:"WAGWTHEME", isProduct: true}); 
+				if(sGWThemeName !== undefined && sGWThemeName !==null && sGWThemeName!=="")
+				{
+					appUrl = appUrl+"?sap-theme="+sGWThemeName+"@"+sGWHostURL+"/sap/public/bc/themes/~client-"+sGWClient+"#"+routingPattern;
+				}
+				else
+				{
+					appUrl = appUrl+"#"+routingPattern;
+				}
+			
+				
+			}
+			window.location.assign(appUrl);
+		}  
+	};
+
+	com.arteriatech.ppc.utils.js.Common.getBSPAppName = function(targetHCPAppName)
+	{
+		return "/artec/"+targetHCPAppName
+	};
+
+	com.arteriatech.ppc.utils.js.Common.isUshell = function()
+	{
+		//if(location.href.indexOf("ushell-app") > -1 && sap.ushell && sap.ushell.Container && sap.ushell.Container.getService)
+		if(sap.ushell && sap.ushell.Container && sap.ushell.Container.getService)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	};
+
+	com.arteriatech.ppc.utils.js.Common.isHCP = function()
+	{
+		if(location.href.indexOf("ondemand.com") > -1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	};
+
+	com.arteriatech.ppc.utils.js.Common.isBSP = function()
+	{
+		if(location.href.indexOf("bc/ui5_ui5") > -1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	};
+
+	/*
+	 * Get DD values from service and midify it with (All) or (None) or Nothing
+	 */
+	com.arteriatech.ppc.utils.js.Common.getDropdown = function(oModel, sEntitySet, oFilters, sKey, sText, busyDialog, view, modelName, defaultValue, requestCompleted, bLoginIDOptional, appKey, bMustAddNone, mParameters) 
+	{
+		var aDDValue = new Array();
+		/*oModel.attachRequestSent(
+				function()
+				{
+					busyDialog.open();
+				});  
+		oModel.attachRequestCompleted(
+				function()
+				{ 
+					busyDialog.close();
+				}); */
+		if(oModel) {		
+		if ((bLoginIDOptional === undefined || !bLoginIDOptional) && sEntitySet !== "ConfigTypesetTypes" && sEntitySet !== "ConfigTypsetTypeValues")  {
+				com.arteriatech.ppc.utils.js.Common.getCurrentLoggedUser({sServiceName: sEntitySet+"_"+(Math.random().toFixed(2)*100).toFixed(0), sRequestType: "read", Application: appKey}, function(LoginID){
+					oFilters = com.arteriatech.ppc.utils.js.Common.setODataModelReadFilter("", "", oFilters, "LoginID", "", [LoginID], false, false, false);
+						oModel.read("/"+sEntitySet, {
+						filters: oFilters,
+						success: function(oData){
+							if(oData.results.length > 0)
+							{
+								if(defaultValue != null && defaultValue != undefined && defaultValue != "" && (oData.results.length != 1 || ((defaultValue == "None" || defaultValue == "Select") && bMustAddNone)))
+								{
+									aDDValue.push({Key: "", Text: "("+defaultValue+")"});
+								}
+								for(var i=0; i<oData.results.length; i++)
+								{
+									aDDValue.push({
+										Key 	:	oData.results[i][sKey],
+										Text :	oData.results[i][sText],
+										Seperator 	:	" - "
+									});
+								}
+								var oDDModel = new sap.ui.model.json.JSONModel();    
+								oDDModel.setData(aDDValue); 
+								if(mParameters){
+                                    if(mParameters.bSetSizeLimit){
+                                        oDDModel.setSizeLimit(aDDValue.length);
+                                    }
+                                }
+								view.setModel(oDDModel, modelName);
+							}
+							if(requestCompleted) 
+								requestCompleted(aDDValue);
+						}, 
+						error: function(error)
+						{
+							busyDialog.close();
+							com.arteriatech.ppc.utils.js.Common.showServiceErrorPopup(error);
+						}
+					});	
+				});
+			}else {
+				oModel.read("/"+sEntitySet, {
+					filters: oFilters,
+					success: function(oData){
+						if(oData.results.length > 0)
+						{
+							if((oData.results.length != 1 || ((defaultValue == "None" || defaultValue == "Select") && bMustAddNone)) && defaultValue != null && defaultValue != undefined && defaultValue != "")
+							{
+								aDDValue.push({Key: "", Text: "("+defaultValue+")"});
+							}
+							for(var i=0; i<oData.results.length; i++)
+							{
+								aDDValue.push({
+									Key 	:	oData.results[i][sKey],
+									Text :	oData.results[i][sText],
+									Seperator 	:	" - "
+								});
+							}
+							var oDDModel = new sap.ui.model.json.JSONModel();    
+							oDDModel.setData(aDDValue); 
+							if(mParameters){
+                                if(mParameters.bSetSizeLimit){
+                                    oDDModel.setSizeLimit(aDDValue.length);
+                                }
+                            }
+							view.setModel(oDDModel, modelName);
+						}
+						if(requestCompleted) 
+							requestCompleted(aDDValue);
+					}, 
+					error: function(error)
+					{
+						busyDialog.close();
+						com.arteriatech.ppc.utils.js.Common.showServiceErrorPopup(error);
+					}
+				});
+			}
+		}else {
+			var oDDModel = new sap.ui.model.json.JSONModel();    
+			oDDModel.setData([]);
+			view.setModel(oDDModel, modelName);
+			if(requestCompleted) {
+				requestCompleted([]);
+			}
+		}
+	};
+	
+	
+	com.arteriatech.ppc.utils.js.Common.showServiceErrorPopup = function(mArguments) {
+	
+			var TextArea = new sap.m.TextArea({
+				width: "100%",
+				visible: false,
+				editable: false
+			});
+			
+			var serviceError = "Status Code: " + mArguments.statusCode + "\n" +
+				"Status Text: " + mArguments.statusText + "\n" +
+				"Message: " + mArguments.responseText;
+				
+		if(!bShowServiceErrorPopup) {
+			bShowServiceErrorPopup = true;
+			sShowServiceErrorPopupMessage = serviceError;
+			
+			var bCompact = true;
+			
+			var Link = new sap.m.Link({
+				text: "Show Details",
+				press: function() {
+					TextArea.setVisible(true);
+					Link.setVisible(false);
+					TextArea.setValue(sShowServiceErrorPopupMessage);
+				}
+			});
+			var dialog = new sap.m.Dialog({
+				title: 'Launchpad has failed to load',
+				type: 'Message',
+				state: 'Error',
+				content: [
+					new sap.m.Text({
+						text: 'The launchpad is currently experiencing an issue. We are working with highest priority to find the root cause and resume service. \n\nIf you require urgent technical assistance, please contact support.'
+					}),
+					Link,
+					TextArea
+				],
+				beginButton: new sap.m.Button({
+					text: 'Contact Support',
+					press: function() {
+						window.open("http://arteriatech.info/contact-us/");
+					}
+				}),
+				endButton: new sap.m.Button({
+					text: 'Try Again',
+					press: function() {
+						window.location.reload();
+					}
+				}),
+				afterClose: function() {
+					dialog.destroy();
+				}
+			});
+			dialog.open();
+			dialog.attachBrowserEvent("keydown", function(oEvent) {
+				oEvent.stopPropagation();
+				oEvent.preventDefault();
+			});
+			
+		  }else{
+			sShowServiceErrorPopupMessage += "\n-------------------------\n"+serviceError;
+			TextArea.setValue(TextArea.getValue()+"\n-------------------------\n"+serviceError);
+		  }
+		}
+
+	/*
+	 * Grouping the Table Column.
+	 * 
+	 * Parameters: oView : Current View, oTableId : ID of the Table, sKey : Key Property of the model to be grouped, 
+	 * bDescending: Boolean value to decide sorting order for grouping, sLable: Label for Grouped Column, sText: The text property of Group if available
+	 */
+	com.arteriatech.ppc.utils.js.Common.setGroupInTable = function(oView, sTableId, sKey, bDescending, sLabel, sText, aDefaultSorters, bLocalGroupingFunction, oThis)
+	{
+		var oTable = oView.byId(sTableId);
+		var oBinding = oTable.getBinding("items");
+		var aSorters = [];
+		com.arteriatech.ppc.utils.js.Common.sLabel = sLabel;
+		com.arteriatech.ppc.utils.js.Common.sKey = sKey;
+		com.arteriatech.ppc.utils.js.Common.sText = sText;
+		var vGroup;
+		if(sKey !== "") {
+			if(bLocalGroupingFunction !== undefined && bLocalGroupingFunction && oThis !== undefined) {
+				vGroup = oThis.mGroupFunctions[sKey];
+			}else {
+				vGroup = com.arteriatech.ppc.utils.js.Common.mGroupFunctions[sKey];
+			}
+			aSorters.push(new sap.ui.model.Sorter(sKey, bDescending, vGroup));
+		}else{
+			aSorters.push(new sap.ui.model.Sorter(sKey, bDescending));
+			
+			if(oTable.getItems().length > 0 && Object.keys(oTable.getItems()[0].oBindingContexts).length > 0) {
+				var modelName = Object.keys(oTable.getItems()[0].oBindingContexts)[0];
+				var oData = oView.byId(sTableId).getModel(modelName).getProperty("/");
+				oView.byId(sTableId).getModel(modelName).setProperty("/", []);
+				oView.byId(sTableId).getModel(modelName).setProperty("/", oData);
+			}
+		}
+		
+		if(aDefaultSorters !== undefined && aDefaultSorters !== null && aDefaultSorters !== "") {
+			for(var i=0; i<aDefaultSorters.length; i++) {
+				aSorters.push(aDefaultSorters[i]);
+			}
+		}
+		oBinding.sort(aSorters);
+	};
+	com.arteriatech.ppc.utils.js.Common.mGroupFunctions = {
+			VendorNo: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+					name = name+" ("+key+")";
+				else
+					name = key;
+
+				return {
+					key: key,
+					text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			CPNo: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+					name = name+" ("+key+")";
+				else
+					name = key;
+
+				return {
+					key: key,
+					text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			Application: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+					name = name;
+				else
+					name = key;
+
+				return {
+					key: key,
+					text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			CustomerNo: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+					name = name+" ("+key+")";
+				else
+					name = key;
+
+				return {
+					key: key,
+					text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			CPParentNo: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+					name = name+" ("+key+")";
+				else
+					name = key;
+
+				return {
+					key: key,
+					text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			BusinessAreaID: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+				 name = name+" ("+key+")";
+				else
+				 name = key;
+
+				return {
+				 key: key,
+				 text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			SoldToID: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+				 name = name+" ("+key+")";
+				else
+				 name = key;
+
+				return {
+				 key: key,
+				 text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			PlantID: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+				 name = name+" ("+key+")";
+				else
+				 name = key;
+
+				return {
+				 key: key,
+				 text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			ToNo: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+				 name = name+" ("+key+")";
+				else
+				 name = key;
+
+				return {
+				 key: key,
+				 text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			ParentID: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+				 name = name+" ("+key+")";
+				else
+				 name = key;
+
+				return {
+				 key: key,
+				 text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			FOSMobileNo: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+				 name = name+" ("+key+")";
+				else
+				 name = key;
+
+				return {
+				 key: key,
+				 text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			},
+			SPNo: function(oContext) {
+				var key = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sKey);
+				var name = oContext.getProperty(com.arteriatech.ppc.utils.js.Common.sText);
+				if(name != null && name != undefined && name != "")
+				 name = name+" ("+key+")";
+				else
+				 name = key;
+
+				return {
+				 key: key,
+				 text: com.arteriatech.ppc.utils.js.Common.sLabel+": "+ name
+				};
+			}
+	}
+	//UI Table
+	com.arteriatech.ppc.utils.js.Common.setGroupInUITable = function(oView, sTableID, iPosition) {
+		var oTable = oView.byId(sTableID);
+		if(oTable.getColumns().length > iPosition) {
+			//oTable.getColumns()[iPosition].setVisible(true);
+			//oTable.setGroupBy(oTable.getColumns()[iPosition].getId());
+		}
+	}
+	
+	//Set Table Count		
+	com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount = function(count){		
+		if(count === 0) {		
+			return iMinimumUITableRowCount;		
+		}else if(count <= iMaximumUITableRowCount){		
+			return count;		
+		}else if(count > iMaximumUITableRowCount) {		
+			return iMaximumUITableRowCount;		
+		}else {		
+			return iMinimumUITableRowCount;		
+		}		
+	}		
+	
+	com.arteriatech.ppc.utils.js.Common.clearUITable = function(oView, sTableID, oModelName) {
+		var oTable = oView.byId(sTableID);
+		oTable.setEnableGrouping(false);
+		if(oTable.getColumns().length > 0) {
+			if(oTable.getColumns()[0].getProperty("filterProperty") === "VendorName") {
+				oTable.getColumns()[0].setVisible(false);
+			}
+			for (var i=0; i<oTable.getColumns().length; i++) {
+				oTable.getColumns()[i].setSorted(false);
+				oTable.getColumns()[i].setFiltered(false);
+				oTable.getColumns()[i].setGrouped(false);
+			}
+		}
+		oTable.setEnableGrouping(false);
+	}
+	
+	//Copy and Apply Sorting, Filtering from UI Table to sap.m.Table
+	com.arteriatech.ppc.utils.js.Common.copyAndApplySortingFilteringFromUITable = function(mParameter) {
+		
+		var oBinding = mParameter.mTable.getBinding("items");
+		var UITableColumns = mParameter.uiTable.getColumns();
+		var UITableFilters = [];
+		if(mParameter.DefaultFilter !== null && mParameter.DefaultFilter !== undefined) {
+			UITableFilters = mParameter.DefaultFilter;
+		}
+		var UITableSorter = [];
+		if(oBinding && oBinding.aIndices.length > 0)
+		{
+			for (var i = 0; i < UITableColumns.length; i++) {
+				//Sorter
+				if (UITableColumns[i].getSorted()) {
+					var sortProperty = UITableColumns[i].getSortProperty();
+					var sortinDescendingOrder = false;
+					if (UITableColumns[i].getSortOrder() === "Descending") {
+						sortinDescendingOrder = true;
+					}
+					UITableSorter.push(new sap.ui.model.Sorter(sortProperty, sortinDescendingOrder));
+				}
+				//Filter
+				if (UITableColumns[i].getFiltered()) {
+					var filterProperty = UITableColumns[i].getFilterProperty();
+					var filterValue = UITableColumns[i].getFilterValue();
+					var filterOperator = sap.ui.model.FilterOperator.Contains;
+					if(UITableColumns[i].getFilterType()) {
+						filterOperator = sap.ui.model.FilterOperator.EQ;
+					}
+					UITableFilters.push(new sap.ui.model.Filter({
+						path: filterProperty,
+						operator: filterOperator,
+						value1: filterValue
+					}));
+				}
+			}
+			oBinding.sort(UITableSorter);
+			oBinding.filter(UITableFilters);
+		}
+				
+		/*if (mParameter.thisController.sVendorInpuType === "DD") {
+			if (mParameter.thisController.getView().byId("partner").getSelectedKey() === "") {
+				oPPCCommon.setGroupInTable(mParameter.thisController.getView(), mParameter.mTable.getId().split("--")[1], "VendorNo", true, "Vendor", "VendorName", UITableSorter);
+			}
+		} else if (mParameter.thisController.sVendorInpuType === "MC") {
+			if (mParameter.thisController.getView().byId("partnerMultiCombo").getSelectedKeys().length !== 1) {
+				oPPCCommon.setGroupInTable(mParameter.thisController.getView(), mParameter.mTable.getId().split("--")[1], "VendorNo", true, "Vendor", "VendorName", UITableSorter);
+			}
+		} else if (mParameter.thisController.sVendorInpuType === "VH") {
+			if (mParameter.thisController.getView().byId("inputVendorF4").getTokens().length !== 1) {
+				oPPCCommon.setGroupInTable(mParameter.thisController.getView(), mParameter.mTable.getId().split("--")[1], "VendorNo", true, "Vendor", "VendorName", UITableSorter);
+			}
+		}*/
+	};
+	
+
+	com.arteriatech.ppc.utils.js.Common.dialogErrorMessage = function(response, title, callback) 
+	{
+		try
+		{
+			var message="";
+			if (response) {
+				message = com.arteriatech.ppc.utils.js.Common.parseoDataErrorMessage(response);
+				var dialog = new sap.m.Dialog({
+					title: title,
+					type: 'Message',
+					state: 'Error',
+					content: new sap.m.Text({
+						text: message
+					}),
+					beginButton: new sap.m.Button({
+						text: 'OK',
+						press: function () {
+							dialog.destroy();
+							if(callback != undefined)
+								callback();
+						}
+					}),
+					afterClose: function() {
+						dialog.destroy();
+					}
+				});
+				dialog.open();
+			}
+		}
+		catch (e) 
+		{
+			sap.m.MessageBox.show(e, sap.m.MessageBox.Icon.ERROR, "Syntax Error", [sap.m.MessageBox.Action.OK]);
+		}
+	};
+	com.arteriatech.ppc.utils.js.Common.parseoDataErrorMessage = function(response) 
+	{
+		var message="";
+		try
+		{
+			if (response) {
+				var body = response.responseText;
+				var indexValue = body.indexOf("value");
+				var indexValueEnd = body.substring(indexValue).indexOf("}");
+				if (indexValueEnd > -1) 
+				{
+					message = body.substring(indexValue+8,indexValue+indexValueEnd-1);			
+				}
+				else
+				{
+					message = response.statusText+": "+body;
+				}
+			}
+		}
+		catch (e) 
+		{
+			sap.m.MessageBox.show(e, sap.m.MessageBox.Icon.ERROR, "Syntax Error", [sap.m.MessageBox.Action.OK]);
+		}
+		finally
+		{
+			return message;
+		}
+	};
+	com.arteriatech.ppc.utils.js.Common.parseoDataXMLErrorMessage = function(response) 
+	{
+		var message="";
+		try
+		{
+			if (response) {
+				var body = response;
+				var indexValue = body.indexOf("<message");
+				var indexValueEnd = body.substring(indexValue).indexOf("</message");
+				if (indexValueEnd > -1) 
+				{
+					message = body.substring(indexValue+23,indexValue+indexValueEnd);			
+				}
+			}
+		}
+		catch (e) 
+		{
+			sap.m.MessageBox.show(e, sap.m.MessageBox.Icon.ERROR, "Syntax Error", [sap.m.MessageBox.Action.OK]);
+		}
+		finally
+		{
+			return message;
+		}
+	};
+	com.arteriatech.ppc.utils.js.Common.parseoDataSuccessMessage = function(response, title, callback, msg) 
+	{
+		var message="";
+		try
+		{	if(!msg) {
+				if (response) {
+					var xml = response.headers["sap-message"];
+					message = response.headers["sap-message"].split(",")[1].split(":")[1].replace('"', "").replace('"', "");
+				}
+			}else{ 
+				message = msg;
+			}
+			var dialog = new sap.m.Dialog({
+					title: title,
+					type: 'Message',
+					state: 'Success',
+					content: new sap.m.Text({
+						text: message
+					}),
+					beginButton: new sap.m.Button({
+						text: 'OK',
+						press: function () {
+							dialog.destroy();
+							callback();
+						}
+					}),
+					afterClose: function() {
+						dialog.destroy();
+					}
+				});
+				dialog.open();
+			}
+		catch (e) 
+		{
+			sap.m.MessageBox.show(e, sap.m.MessageBox.Icon.ERROR, "Syntax Error", [sap.m.MessageBox.Action.OK]);
+		}
+		finally
+		{
+			return message;
+		}
+	};	
+	/*
+	 * Create Token on enter of multiinput
+	 */
+	com.arteriatech.ppc.utils.js.Common.getTokenForInput = function(args, F4Model, serviceName, f4Filters, key, value, control, label, requestCompleted,that,oUtilsI18n,controlID,appKey,sGUIDKey)
+	 {
+	 
+	var oData = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+	for (var i = 0; i < oData.length; i++) {
+		var msgObj = oData[i];
+		if (msgObj.id === controlID) {
+			com.arteriatech.ppc.utils.js.Common.removeMsgsInMsgMgrById(msgObj.id);
+		}
+	}
+	  var enteredVal = control.getValue();
+	  var oDialog = new sap.m.BusyDialog();
+	  F4Model.attachRequestSent(
+	    function()
+	    {
+	     oDialog.open();
+	    }
+	  );  
+	  F4Model.attachRequestCompleted(function(){oDialog.close();});  
+	  f4Filters = com.arteriatech.ppc.utils.js.Common.setODataModelReadFilter("", "", f4Filters, "LoginID", "", [com.arteriatech.ppc.utils.js.Common.getCurrentLoggedUser({sServiceName: serviceName, sRequestType: "read",Application:appKey})], false, false, false);
+	  F4Model.read("/"+serviceName, {
+	   filters: f4Filters,
+	   success: function(oData){
+				var aData = oData.results;
+				if(aData.length > 0)
+				{
+					var oToken = "";
+					var oTokenKey = "";
+					var oTokenText = "";
+					
+					if(sGUIDKey)
+					{
+							for(var i=0;i<aData.length;i++)
+							{
+								oTokenKey = aData[i][sGUIDKey];
+								 if(value != "" && value != null && value != undefined){
+								  if(aData[i][value] != undefined && aData[i][value] != "" ){
+								   oTokenText = aData[i][value]+" ("+aData[i][key]+")";
+								  }
+								 }
+							oToken = new sap.m.Token({key: oTokenKey, text: oTokenText});
+							args.asyncCallback(oToken);
+						 }
+					}
+					else
+					{
+						if(key != "" && key != null && key != undefined){
+						 oTokenKey = aData[0][key];
+						 if(value != "" && value != null && value != undefined){
+						  if(aData[0][value] != undefined && aData[0][value] != "" ){
+						   oTokenText = aData[0][value]+" ("+aData[0][key]+")";
+						  }else{
+						   oTokenText="("+aData[0][key]+")";
+						  }
+						 }
+						}else {
+                            if(aData[0][value] != undefined && aData[0][value] != "" ){
+                                oTokenText = aData[0][value];
+                            }
+                        }
+						oToken = new sap.m.Token({key: oTokenKey, text: oTokenText});
+							args.asyncCallback(oToken);
+					}
+					
+					
+					oDialog.close();
+					control.setValueState(sap.ui.core.ValueState.None);
+					control.setValueStateText("");
+					com.arteriatech.ppc.utils.js.Common.removeMsgsInMsgMgrByMsgCode(controlID);
+					if(requestCompleted)
+					 requestCompleted(oToken,true, aData);
+					return sap.m.MultiInput.WaitForAsyncValidation;
+				}else {
+					var message = "Please enter valid "+label;
+					if(oUtilsI18n){
+						message = oUtilsI18n.getText("common.Message.Error.code.164",[label])
+					}
+					control.setValueState(sap.ui.core.ValueState.Error);
+					control.setValueStateText(message);
+					sap.m.MessageBox.error(
+						message,
+						{	
+							styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+						}
+					);
+					
+					if(controlID !== undefined && controlID !== "" && controlID !== null)
+						{
+							com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(message, "error", controlID);
+						}
+					
+					if(requestCompleted)
+						 requestCompleted(null,false);
+				}
+	   }, 
+	   error: function(error){
+	    oDialog.close();
+
+	    if(that=== undefined ||oUtilsI18n === undefined ||controlID ===undefined)
+	    {
+	     control.setValueState(sap.ui.core.ValueState.Error);
+	     control.setValueStateText("Please enter valid "+label);
+	     sap.m.MessageBox.error(
+	       "Please enter valid "+label,
+	       {
+	        styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+	       }
+	     );
+	    }
+	    else
+	    {
+	     com.arteriatech.ppc.utils.js.Common.removeDuplicateMsgsInMsgMgr();
+	     com.arteriatech.ppc.utils.js.Common.getMessageForErrorCode(label,control,oUtilsI18n,controlID);
+	     var message  = com.arteriatech.ppc.utils.js.Common.getMsgsFromMsgMgr();
+	    
+	      if(requestCompleted)
+	       requestCompleted(null,false);
+	    }
+
+
+
+	   }
+	  });
+	 };
+	 
+	 com.arteriatech.ppc.utils.js.Common.navigateBack = function(mParameters) {
+		var oHistory, sPreviousHash;
+		oHistory = sap.ui.core.routing.History.getInstance();
+		sPreviousHash = oHistory.getPreviousHash();
+		if (com.arteriatech.ppc.utils.js.Common.isUshell()) {
+			if(sPreviousHash) {
+				window.history.go(-1);
+			}else{ 
+				if (document.referrer !== "")
+					window.history.go(-1);
+				else
+					mParameters.router.navTo(mParameters.sDefaultView);
+			}
+		} else {
+			if (sPreviousHash !== undefined) {
+				window.history.go(-1);
+			} else {
+				if (document.referrer !== "")
+					window.history.go(-1);
+				else
+					mParameters.router.navTo(mParameters.sDefaultView);
+			}
+		}
+	 }
+	 
+
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Validation, Formmatter and Call Back functions By AP~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	
+	 
+//entered date is valid or not stars here
+  com.arteriatech.ppc.utils.js.Common.isDateInteger=function(s){
+		var i;
+	    for (i = 0; i < s.length; i++){   
+	        // Check that current character is number.
+	        var c = s.charAt(i);
+	        if (((c < "0") || (c > "9"))) return false;
+	    }
+	    // All characters are numbers.
+	    return true;
+	};
+
+  com.arteriatech.ppc.utils.js.Common.stripCharsInBag=function(s, bag){
+		var i;
+	    var returnString = "";
+	    // Search through string's characters one by one.
+	    // If character is not in bag, append to returnString.
+	    for (i = 0; i < s.length; i++){   
+	        var c = s.charAt(i);
+	        if (bag.indexOf(c) == -1) returnString += c;
+	    }
+	    return returnString;
+	};
+
+  com.arteriatech.ppc.utils.js.Common.daysInFebruary=function(year){
+		// February has 29 days in any year evenly divisible by four,
+	    // EXCEPT for centurial years which are not also divisible by 400.
+	    return (((year % 4 == 0) && ( (!(year % 100 == 0)) || (year % 400 == 0))) ? 29 : 28 );
+	};
+  com.arteriatech.ppc.utils.js.Common.DaysArray=function(n) {
+		for (var i = 1; i <= n; i++) {
+			this[i] = 31
+			if (i==4 || i==6 || i==9 || i==11) {this[i] = 30}
+			if (i==2) {this[i] = 29}
+	   } 
+	   return this
+	};
+
+  com.arteriatech.ppc.utils.js.Common.checkValidDateFormat=function(dtStr){
+		var daysInMonth = com.arteriatech.ppc.utils.js.Common.DaysArray(12)
+		var pos1=dtStr.indexOf(oPPCUICommonConstants.dtCh)
+		var pos2=dtStr.indexOf(oPPCUICommonConstants.dtCh,pos1+1)
+		var strMonth=dtStr.substring(0,pos1)
+		var strDay=dtStr.substring(pos1+1,pos2)
+		var strYear=dtStr.substring(pos2+1)
+		strYr=strYear
+		if (strDay.charAt(0)=="0" && strDay.length>1) strDay=strDay.substring(1)
+		if (strMonth.charAt(0)=="0" && strMonth.length>1) strMonth=strMonth.substring(1)
+		for (var i = 1; i <= 3; i++) {
+			if (strYr.charAt(0)=="0" && strYr.length>1) strYr=strYr.substring(1)
+		}
+		var month=parseInt(strMonth)
+		var day=parseInt(strDay)
+		var year=parseInt(strYr)
+		if (pos1==-1 || pos2==-1){
+			// alert("The date format should be : mm/dd/yyyy")
+			return false
+		}
+		if (strMonth.length<1 || month<1 || month>12){
+			// alert("Please enter a valid month")
+			return false
+		}
+		if (strDay.length<1 || day<1 || day>31 || (month==2 && day>com.arteriatech.ppc.utils.js.Common.daysInFebruary(year)) || day > daysInMonth[month]){
+			// alert("Please enter a valid day")
+			return false
+		}
+	/*	if (strYear.length < 2){
+			alert("Please enter a valid 4 digit year between "+oPPCUICommonConstants.minYear+" and "+oPPCUICommonConstants.maxYear)
+			return false
+		}
+			if (year==0){
+			alert("Please enter a valid 4 digit year between "+oPPCUICommonConstants.minYear+" and "+oPPCUICommonConstants.maxYear)
+			return false
+		}*/
+			if (year<parseInt(oPPCUICommonConstants.minYear)){
+			// alert("Please enter a valid 4 digit year between "+oPPCUICommonConstants.minYear+" and "+oPPCUICommonConstants.maxYear)
+			return false
+		}
+			if (year>parseInt(oPPCUICommonConstants.maxYear)){
+			// alert("Please enter a valid 4 digit year between "+oPPCUICommonConstants.minYear+" and "+oPPCUICommonConstants.maxYear)
+			return false
+		}
+		if (dtStr.indexOf(oPPCUICommonConstants.dtCh,pos2+1)!=-1 || com.arteriatech.ppc.utils.js.Common.isDateInteger(com.arteriatech.ppc.utils.js.Common.stripCharsInBag(dtStr, oPPCUICommonConstants.dtCh))==false){
+			// alert("Please enter a valid date")
+			return false
+		}
+	return true
+	};
+//entered date is valid or not ends here
+		
+//	Date formatter { input: /Date(082340823)/  // output: 07/12/2015}
+	com.arteriatech.ppc.utils.js.Common.getDateforAjaxCall = function(fValue) {
+		if(fValue)
+		{
+			var sJsonDate = fValue;/\/(.+)\//.exec(sJsonDate);  
+			var oDate = eval("new " + RegExp.$1); 
+			var day 	= ('0'+(oDate.getDate())).slice(-2);
+			var month = ('0'+(oDate.getMonth()+1)).slice(-2);
+			var year 	= oDate.getFullYear();
+			var date 	= day+"/"+month+"/"+year;
+			return date;
+		}
+		else {
+			return "";
+		}
+	};
+
+//	from and to dates validation {input: fromdate, todate // output: boolean }
+	com.arteriatech.ppc.utils.js.Common.isToDateLessthanFromDate = function(date1, date2){
+		var dateFrom =new Date(date1);
+		var dateTo =new Date(date2);
+		dateFrom.setHours(0,0,0,0);
+		dateTo.setHours(0,0,0,0);
+		var diffDays = (dateTo - dateFrom)/(1000*60*60*24); 
+		var valid = false;
+		if(diffDays<0)
+		{
+			valid = true;
+		}
+		return valid;
+	};
+
+//	future date validation {input: date // output: boolean }
+	com.arteriatech.ppc.utils.js.Common.isFutureDate = function(value) {
+		var CurrentDate = com.arteriatech.ppc.utils.js.Common.getCurrentDate();
+		var dateFrom =new Date(value);
+		CurrentDate.setHours(0,0,0,0);
+		dateFrom.setHours(0,0,0,0);
+		var dateDifference = (CurrentDate - dateFrom)/(1000*60*60*24);
+		var valid = false;
+		if(dateDifference <0)
+		{
+			valid =  true;
+		}
+		return valid;
+	};
+
+	//past date validation {input: date // output: boolean }
+	com.arteriatech.ppc.utils.js.Common.isPastDate = function(date) {
+		var currentDate = com.arteriatech.ppc.utils.js.Common.getCurrentDate();
+		var dateFrom =new Date(date);
+		currentDate.setHours(0,0,0,0);
+		dateFrom.setHours(0,0,0,0);
+		var difference = ((currentDate - dateFrom)/(1000*60*60*24));
+		var valid = true;
+		if(difference >= 1)
+		{
+			valid=false;
+		}
+		return valid; 
+	};
+
+//	subtracted date based on input number {input: no.of days  
+//	output: if today date Fri Dec 2015 IST standardTime and noOfDays are 30 then result is Fri Nov 2015 IST standardTime }
+	com.arteriatech.ppc.utils.js.Common.getDateDaysAgo = function(value) {
+		var date = com.arteriatech.ppc.utils.js.Common.getCurrentDate();
+		date.setDate(date.getDate() - value);
+		return date;
+	};
+
+//	added date  {input: no.of days   
+//	output: if today date Fri Dec 2015 IST standardTime and noOfDays are 30 then result is Fri Jan 2016 IST standardTime }
+	com.arteriatech.ppc.utils.js.Common.getDateDaysAfter = function(noOfDays) {
+		var cur = com.arteriatech.ppc.utils.js.Common.getCurrentDate();
+		cur.setDate(cur.getDate() + noOfDays);
+		return cur;
+	};
+
+//	Dates difference validation {input: frmDate, Todate, noOfDays // output: boolean }
+	com.arteriatech.ppc.utils.js.Common.isDateRangeEqualToDays = function(date1,date2,noOfDays) {
+		var dateFrom =new Date(date1);
+		var dateTo =new Date(date2);	
+		var diffDays = (dateTo - dateFrom)/(1000*60*60*24); 
+		var valid = false;
+		if(diffDays <= noOfDays){
+			valid = true;
+		}
+		return valid;
+	};
+
+//	Date formatter {input:Fri Dec 2015 IST standardTime  output:YY-MM-DDT00:00:00}
+	com.arteriatech.ppc.utils.js.Common.getOdataDateFormatWhileSave = function(oInputDate) {
+		var oInputDate_var = oInputDate.toString();
+		//Changing the From date format
+		var aInputDate = oInputDate_var.split(" ");
+		var odateNum = aInputDate[2];
+		var oMonthStr = "JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(aInputDate[1]) / 3 + 1 ;
+		var oMonthNum = "00"+oMonthStr;
+		oMonthNum = oMonthNum.slice(-2);
+		var oYearNum = aInputDate[3];
+		return oYearNum+"-"+oMonthNum+"-"+odateNum+"T00:00:00";
+	};
+
+	com.arteriatech.ppc.utils.js.Common.toInteger= function(stringVal){
+		if(stringVal != null)
+			return parseInt(stringVal);
+	}
+
+//	Landline number validation {input:entered landline no  output: boolean}
+	com.arteriatech.ppc.utils.js.Common.isValidLandline = function(landline) {
+		var re = /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$/i;
+		return re.test(landline);
+
+	};
+
+//	phone number validation {input:entered landline no  output: boolean}
+	com.arteriatech.ppc.utils.js.Common.isValidPhone = function(phone) {
+		var re = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
+		return re.test(phone);
+
+	};
+
+//	email validation {input:entered landline no  output: boolean}
+	com.arteriatech.ppc.utils.js.Common.isValidEmail = function(email) {
+		var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		return re.test(email);
+
+	};
+
+//	Landline number validation {input:entered postal code,  output: boolean}
+	com.arteriatech.ppc.utils.js.Common.isValidPostalCode = function(postalCode) {
+		var re = (/^-?\d*(\.\d+)?$/);
+		return re.test(postalCode);
+	};
+	
+// PAN No validation {input:entered PAN no  output: boolean} //by SJ
+	 com.arteriatech.ppc.utils.js.Common.isValidPAN = function(pan) {
+	  var regpan = /^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$/;
+	  return regpan.test(pan);
+	 };
+
+//	ajax error call function {input:respons, this.getView(), output:Popup displays with error message}
+	com.arteriatech.ppc.utils.js.Common.showMsgOnAjaxErr_MsgBox = function(err,view) {
+		if(err != null && err != undefined && err != ""){
+			var displayMsg = "";
+			var msg = "<html>";
+
+			if(err.responseText.startsWith(msg)){
+				parser=new DOMParser();
+				htmlDoc=parser.parseFromString(err.responseText, "text/html");
+				var aH2 = htmlDoc.getElementsByTagName('H2');
+				displayMsg = aH2[0].innerHTML;
+			}
+			else{
+				var msgSize= err.responseJSON.error.innererror.errordetails.length;
+				var oMessage = ""; 
+				var arrMsg = err.responseJSON.error.innererror.errordetails;
+
+
+				var arr = {};
+				for ( var i=0; i < arrMsg.length; i++ )
+					arr[arrMsg[i]['message']] = arrMsg[i];
+
+				arrMsg = new Array();
+				for ( var key in arr )
+					arrMsg.push(arr[key]);
+
+				for(var i=0;i<arrMsg.length;i++)
+				{
+					oMessage = arrMsg[i].message;
+					displayMsg = displayMsg+"\n"+oMessage;
+				}  
+			}
+			if(view != undefined && view != null && view != ""){
+				com.arteriatech.ppc.utils.js.Common.displayMsg_MsgBox(view,displayMsg, "error");
+			}
+
+		}
+	};
+
+//	oData success call function {input:response, fnCloseEvent, this.getView(), output:Popup displays with success message}
+	com.arteriatech.ppc.utils.js.Common.showMsgOnAjaxSucc_MsgBox = function(message, fnClose, view) {
+		var messageText = "";
+		var xml= message["sap-message"];
+		var oXML = jQuery.parseXML(xml);
+		$( oXML ).find("message").each(function(a, b){
+			messageText = messageText+"\n"+ $(b).text();
+		})
+		if(view != undefined && view != null && view != ""){
+			com.arteriatech.ppc.utils.js.Common.displayMsg_MsgBox(view,messageText, "success", fnClose);
+		}
+	};
+
+//	oData error call function {input:response, this.getView(), output:Popup displays with error message}
+	com.arteriatech.ppc.utils.js.Common.showMsgOnoDataErr_MsgBox = function(error, view) {
+		var displayMsg = "";
+		var oXMLMsg1 = [];
+		var message=error.response;
+		if(message.statusCode != "403"){
+			var xml=message["body"];
+			var oXML = jQuery.parseXML(xml);
+			$( oXML ).find("message").each(function(a, b){
+				oXMLMsg1.push($(b).text());
+			})
+
+			var oMessage = "";
+
+			var arr = {};
+			for ( var i=0; i < oXMLMsg1.length; i++ )
+				arr[oXMLMsg1[i]] = oXMLMsg1[i];
+
+			var arrXMLMsg2 = new Array();
+			for ( var key in arr )
+				arrXMLMsg2.push(arr[key]);
+
+			for(var i=0;i<arrXMLMsg2.length;i++)
+			{
+				oMessage = arrXMLMsg2[i];
+				displayMsg = displayMsg+"\n"+oMessage;
+			} 
+		}
+		else{
+			displayMsg = message.statusCode +" "+ message.statusText+ " error" ;
+		}
+		if(view != undefined && view != null && view != ""){
+			com.arteriatech.ppc.utils.js.Common.displayMsg_MsgBox(view,displayMsg, "error");
+		}
+	};
+
+//	pdf opens in new window (input: required service url)
+	com.arteriatech.ppc.utils.js.Common.viewPDF = function(loginUrl) {
+
+		window.open(loginUrl,'winname','directories=no,titlebar=no,navigationtoolbar=no,addressbar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no');
+
+	};
+
+//	date formatter. For ex: from "/Date(1449619200000)/" to "Wed Dec 09 2015 00:00:00 GMT+0530 (India Standard Time)"
+//	{input: oDataArr, array of properties ex:[deliverydate, currentdate],  output: oDataArr with formatted dates }
+	com.arteriatech.ppc.utils.js.Common.getDateArrayForAjaxCall = function(aData,arrData) {
+		var dateStr = "";
+		for(var j=0; j<arrData.length; j++){
+			dateStr = "";
+			dateStr = arrData[j];
+			for(var i=0; i<aData.length; i++ )
+			{
+				var fValue=aData[i][dateStr];
+				if(fValue != null && fValue != "" && fValue != undefined){
+					var sJsonDate = fValue;/\/(.+)\//.exec(sJsonDate);  
+					var oDate = eval("new " + RegExp.$1); 
+					oDate.setHours("00");
+					oDate.setMinutes("00");
+					oDate.setSeconds("00");
+					aData[i][dateStr]=oDate;
+				}
+			}
+		}
+		return aData;
+	};
+
+//	Amount formatter {input: amount(1710.00) , output: amount(1,710.00)}
+	com.arteriatech.ppc.utils.js.Common.getFormatAmount = function(fAmount) {
+		var oNumberFormat = sap.ui.core.format.NumberFormat.getFloatInstance({
+			//  maxFractionDigits: 2,
+			groupingEnabled: true,
+			groupingSeparator: ",",
+			decimalSeparator: "."
+		}); //Returns a NumberFormat instance for float
+		if(fAmount != "" && fAmount != null && fAmount != undefined){
+			var amnt = oNumberFormat.format(fAmount);
+			return amnt;
+		}else{
+			return fAmount;
+		}
+	};
+
+//	Quantity formatter {input: quantity(1710.0000) , output: quantity(1,710.000)}
+	com.arteriatech.ppc.utils.js.Common.getFormatQuantity = function(fQty, fUOM) {
+		var oNumberFormat = sap.ui.core.format.NumberFormat.getFloatInstance({
+			maxFractionDigits: 3,
+			groupingEnabled: true,
+			groupingSeparator: ",",
+			decimalSeparator: "."
+		}); //Returns a NumberFormat instance for float
+		if(fQty != "" && fQty != null && fQty != undefined){
+			var qty = oNumberFormat.format(fQty);
+			return qty;
+		}else{
+			return fQty;
+		}
+	};
+
+//	converting into token for multiinput, will be Single token in the field and if entered input wrong error message will display on the popup
+//	{input:arguments, mutiinputobj, serviceurl, decriptionPropertyName, codePropertyName, this.getView()}
+//	{output:shows token in multiinput field ex: 123(desc)}
+	com.arteriatech.ppc.utils.js.Common.getTokenForSingleInputField = function(args, oMultiInputObj,url,desc,codeName,view) {
+
+		if(gPPCUtilPreviousMultiInputUrl != url){
+			var oDialog = new sap.m.BusyDialog();
+			oDialog.open();
+			$.ajax({       
+				url :url,
+				jsonpCallback : 'getJSON',    
+				contentType : "application/json",    
+				dataType : 'json', 
+				success : function(data, textStatus, jqXHR) 
+				{   
+					gPPCUtilPreviousMultiInputUrl = "";
+					oMultiInputObj.removeAllTokens();
+					var oModel1 = new sap.ui.model.json.JSONModel();    
+					oModel1.setData(data); 
+					var aData = oModel1.getProperty("/d/results"); 
+					var oToken = "";
+					var codeVal = "";
+					var nameVal = "";
+
+					if(codeName != "" && codeName != null && codeName != undefined){
+						codeVal = aData[0][codeName];
+					}else{
+						codeVal = args.text;
+					}
+					if(desc == "" || desc == null || desc == undefined){
+						nameVal = args.text;
+					}else{
+						if(aData[0][desc] == undefined && aData[0][desc] == "" ){
+							nameVal = args.text;
+						}else{
+							nameVal = aData[0][desc]+" ("+args.text+")";
+						}
+					}
+					oToken = new sap.m.Token({key: codeVal, text: nameVal});
+
+					args.asyncCallback(oToken);
+					oDialog.close();
+					return sap.m.MultiInput.WaitForAsyncValidation;
+				},
+				error : function (err){ 
+					oDialog.close();
+					com.arteriatech.ppc.utils.js.Common.showMsgOnAjaxErr_MsgBox(err,view);
+					gPPCUtilPreviousMultiInputUrl = url;
+				}
+			});
+		}
+
+	};
+
+//	converting into token for multiinput, will be Multiple tokens in the field and if entered input wrong error message will display on the popup
+//	{input:arguments, mutiinputobj, serviceurl, decriptionPropertyName, this.getView()}
+//	{output:shows token in multiinput field ex: 123(desc), 345(desc)}
+	com.arteriatech.ppc.utils.js.Common.getTokenForMultiInputField = function(args, oMultiInputObj,url,desc,view) {
+
+		if(gPPCUtilPreviousMultiInputUrl != url){
+			var oDialog = new sap.m.BusyDialog();
+			oDialog.open();
+			$.ajax({       
+				url :url,
+				jsonpCallback : 'getJSON',    
+				contentType : "application/json",    
+				dataType : 'json', 
+				success : function(data, textStatus, jqXHR) 
+				{  
+					gPPCUtilPreviousMultiInputUrl = "";
+					var oModel1 = new sap.ui.model.json.JSONModel();    
+					oModel1.setData(data); 
+					var aData = oModel1.getProperty("/d/results"); 
+					var oToken = "";
+					if(desc == "" || desc == null || desc == undefined){
+						oToken = new sap.m.Token({key: args.text, text: args.text});
+					}else{
+						if(aData[0][desc] == undefined && aData[0][desc] == "" ){
+							oToken = new sap.m.Token({key: args.text, text: args.text});
+						}else{
+							oToken = new sap.m.Token({key: args.text, text: aData[0][desc]+" ("+args.text+")"});
+						}
+					}
+					args.asyncCallback(oToken);
+					oDialog.close();
+					return sap.m.MultiInput.WaitForAsyncValidation;
+				},
+				error : function (err){ 
+					oDialog.close();
+					com.arteriatech.ppc.utils.js.Common.showMsgOnAjaxErr_MsgBox(err,view);
+					gPPCUtilPreviousMultiInputUrl = url;
+				}
+			});
+		}
+
+	};
+
+//	attaching 'm' char to the quantity
+//	input: quantity(10.01), output: quantity with m (10.01m)}
+	com.arteriatech.ppc.utils.js.Common.getQtyFormatForFilterURL = function(qty) {
+		var parsedVal = parseFloat(qty);
+		var fixedVal = parsedVal.toFixed(3);
+		var concatVal = fixedVal+"m";
+		return concatVal;
+	};
+
+//	displays popup with message & error icon
+//	{input: this.getView, message,  output: popup with message}
+	com.arteriatech.ppc.utils.js.Common.displayMsg_MsgBox = function(view,message, messageType, fnClose) {
+		var bCompact = true;
+		
+		if (sap.ui.Device.support.touch === false) 
+		{
+			bCompact = false;
+		}
+		
+		if(messageType == "success"){
+			if(fnClose != undefined && fnClose != null && fnClose != ""){
+				sap.m.MessageBox.success(
+						message,
+						{
+							styleClass: bCompact? "sapUiSizeCompact" : "",
+									onClose: fnClose,
+						}
+				);
+			}else{
+				sap.m.MessageBox.success(
+						message,
+						{
+							styleClass: bCompact? "sapUiSizeCompact" : ""
+						}
+				);
+			}
+		}
+		else{
+			sap.m.MessageBox.error(
+					message,
+					{
+						styleClass: bCompact? "sapUiSizeCompact" : ""
+					}
+			);
+		}
+	};
+
+
+
+//	busy dialog close here if counter is zero
+//	{input:counter, oBusyDialog,  output: counter-1}
+	com.arteriatech.ppc.utils.js.Common.checkCountAndCloseBusyDialog = function(counter,oDialog) {
+
+		counter = counter-1;
+		if(counter == 0){
+			oDialog.close();
+		}
+		return counter;
+
+	};
+	
+//	today date {ouput: Fri Dec 2015 T00:00:00 IST StandrdTime}
+	/*com.arteriatech.ppc.utils.js.Common.getCurrentDate = function(oController) {
+		var oPPCDateGlobalSettingsModel = sap.ui.getCore().getModel(oPPCUICommonConstants.PPCDateGlobalMdlName);
+		var todayDate = new Date();
+		if(oController != undefined && oController != null){
+			if(oPPCDateGlobalSettingsModel){
+				if(oPPCDateGlobalSettingsModel.oData != null && oPPCDateGlobalSettingsModel.oData != undefined ){
+					var bServerDate = oPPCDateGlobalSettingsModel.oData[oPPCUICommonConstants.isServerDate];
+					if(bServerDate){
+						todayDate = com.arteriatech.ppc.utils.js.Common.getCurrentServerDate(oController);
+					}
+				}
+			}
+		}
+		
+		return todayDate;
+	};*/
+	
+//	today date {ouput: Fri Dec 2015 T00:00:00 IST StandrdTime}
+	com.arteriatech.ppc.utils.js.Common.getCurrentDate = function(mParameter) {
+		var dCurrentSystemDate = new Date();
+		var todayDate = new Date(Date.UTC(dCurrentSystemDate.getFullYear(), dCurrentSystemDate.getMonth(), dCurrentSystemDate.getDate()));
+		if(mParameter != undefined  && mParameter != null && mParameter != ""){
+			if(mParameter.isServerDate != undefined  && mParameter.isServerDate != null && mParameter.isServerDate != ""){
+				if(mParameter.isServerDate == oPPCUICommonConstants.Constant_X){
+					if(mParameter.oController != undefined  && mParameter.oController != null && mParameter.oController != "")
+					todayDate = com.arteriatech.ppc.utils.js.Common.getCurrentServerDate(mParameter.oController);
+				}
+			}
+		}
+		return todayDate;
+	}
+
+//	today date from R3 server{ouput: Fri Dec 2015 T00:00:00 IST StandrdTime}
+	com.arteriatech.ppc.utils.js.Common.getCurrentServerDate = function(oController) {
+		//get odata model object from the ui5 app
+		var oModelData = oController._oComponent.getModel("PCGW");  
+		var sUrl = oModelData.sServiceUrl;
+		sUrl = sUrl+"/Today";
+		var currentDate = new Date();
+		
+		var oResponse = jQuery.sap.sjax({
+            url: sUrl,
+            dataType: "json"
+        });
+		try {  
+	          if (oResponse.success) {  
+	        	  //handle response and retrive the
+	                 var oServerCfg = {};  
+                     oServerCfg = oResponse.data;  
+                     var sJsonDate = oServerCfg.d.Today.Now;
+                     currentDate = new Date(parseInt(sJsonDate.substr(6)));
+	          }else{
+	        	  currentDate = new Date();  
+	          }   
+		} catch(error){  
+			//handle error
+			currentDate = new Date();  
+		}  
+		
+		//it will return server date
+		return currentDate;
+	};
+
+//	future date validation with server date {input: selectedDate output: boolean}
+	com.arteriatech.ppc.utils.js.Common.isFutureDate_ServerDate = function(value) {
+
+		var CurrentDate = com.arteriatech.ppc.utils.js.Common.getCurrentServerDate();
+		var dateFrom =new Date(value);
+		CurrentDate.setHours(0,0,0,0);
+		dateFrom.setHours(0,0,0,0);
+		var dateDifference = (CurrentDate - dateFrom)/(1000*60*60*24);
+		var valid = false;
+		if(dateDifference <0)
+		{
+			valid =  true;
+		}
+		return valid;
+
+	};
+
+//	past date validation with server date {input: selectedDate output: boolean}
+	com.arteriatech.ppc.utils.js.Common.isPastDate_ServerDate = function(deliveryDate) {
+		var currentDate = com.arteriatech.ppc.utils.js.Common.getCurrentServerDate();
+		var difference = ((currentDate - deliveryDate)/(1000*60*60*24));
+		var valid = true;
+		if(difference >= 1)
+		{
+			valid=false;
+		}
+		return valid; 
+	};
+
+//	subtracted server date based on input number {input: no.of days  
+//	output: if today date Fri Dec 2015 IST standardTime and noOfDays are 30 then result is Fri Nov 2015 IST standardTime }
+	com.arteriatech.ppc.utils.js.Common.getDateDaysAgo_ServerDate = function(value) {
+		var date = com.arteriatech.ppc.utils.js.Common.getCurrentServerDate();
+		date.setDate(date.getDate() - value);
+		return date;
+	};
+
+//	added server date based on input number 
+//	{output: if today date Fri Dec 2015 IST standardTime and noOfDays are 30 then result is Fri Jan 2016 IST standardTime }
+	com.arteriatech.ppc.utils.js.Common.getDateDaysAfter_ServerDate = function(noOfDays) {
+		var cur = com.arteriatech.ppc.utils.js.Common.getCurrentServerDate();
+		cur.setDate(cur.getDate() + noOfDays);
+		return cur;
+	};
+
+//	creating oData model with this alias name PDGW_COM 
+//	{input: serviceUrl(/sap/opu/odata/ARTEC/PDGW_COM)}
+	com.arteriatech.ppc.utils.js.Common.setCommonModel = function(sServiceUrl) {
+		var oModel = new sap.ui.model.odata.ODataModel(sServiceUrl, true);
+		oModel.setCountSupported(false);
+		sap.ui.getCore().setModel(oModel,"PDGW_COM");
+	};
+	
+//	getting numeric from a string
+//	{input: mParameter.sNumber}
+	com.arteriatech.ppc.utils.js.Common.getNumericFromString = function(mParameter) {
+		var sNumber = mParameter.sNumber;
+		sNumber=sNumber.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+		sNumber = sNumber.replace(/[A-Z]/g, '');
+		return sNumber;
+	};
+
+//add leading zeros to the number
+//input: mParameter.sNumber
+//	  mParameter.sLength
+//zeroPad("3", 3);  => "003" //	zeroPad("123", 3);  => "123" //	zeroPad("1234", 3); => "1234"
+	com.arteriatech.ppc.utils.js.Common.zeroPad= function(mParameter) {
+		  var zero = mParameter.sLength - mParameter.sNumber.toString().length + 1;
+		  return Array(+(zero > 0 && zero)).join("0") + mParameter.sNumber;
+	};
+
+	//generate guid
+	//output:a617e75e-e93a-4f4c-8fa5-dd77117251db
+	com.arteriatech.ppc.utils.js.Common.generateUUID= function() {
+	    var d = new Date().getTime();
+	    if(window.performance && typeof window.performance.now === "function"){
+	        d += performance.now();; //use high-precision timer if available
+	    }
+	    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+	        var r = (d + Math.random()*16)%16 | 0;
+	        d = Math.floor(d/16);
+	        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+	    });
+	    return uuid;
+	};
+	com.arteriatech.ppc.utils.js.Common.isInBetween= function(x, min, max) {
+		 return x >= min && x <= max;
+	};
+	
+	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~File Size Formatter by SJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	/* for format file size in attachments
+	  @sSize: Parameter will hold size of the file
+	  */
+	com.arteriatech.ppc.utils.js.Common.fileSizeFormatter = function (sSize) {
+	   jQuery.sap.require("sap.ui.core.format.FileSizeFormat");
+	   //Check whether value is numeric or not
+	   if (jQuery.isNumeric(sSize)) {
+		    return sap.ui.core.format.FileSizeFormat.getInstance({
+		     //binaryFilesize: if true, base 2 is used: 1 Kibibyte = 1024 Byte, ... , otherwise base 10 is used: 1 Kilobyte = 1000 Byte (Default is false)
+		     binaryFilesize : false,
+		     //no of digits to display for fraction 
+		     maxFractionDigits : 1,
+		     //no of digits  to display for Integer 
+		     maxIntegerDigits : 3
+		    }).format(sSize);/*Returns a NumberFormat instance for float*/
+	   } 
+	   else {
+	    return sSize;/*If not numeric it will return with out formatting*/
+	   }
+	 };
+	  /*  format file size in attachments method end*/
+
+
+//	------------------------------------------------------------------------------------------------------------------------------
+//	--------------------------------------------------- Message Manger Part By AP-------------------------------------------------------
+//	------------------------------------------------------------------------------------------------------------------------------
+
+//	initializing objects which are popover, manger and processor
+	com.arteriatech.ppc.utils.js.Common.initMsgMangerObjects = function() {
+		com.arteriatech.ppc.utils.js.Common.setMessagePopover();
+		com.arteriatech.ppc.utils.js.Common.setMessageManager();
+		com.arteriatech.ppc.utils.js.Common.setMessageModel();
+		com.arteriatech.ppc.utils.js.Common.setMessageProcessor();
+		gPPCUtilMsgManager.registerMessageProcessor(gPPCUtilMsgProcessor);
+		gPPCUtilMsgPopover.setModel (sap.ui.getCore().getMessageManager().getMessageModel(),"message");
+	};
+//	set message processor object to a global variable
+	com.arteriatech.ppc.utils.js.Common.setMessageProcessor = function(){
+		gPPCUtilMsgProcessor = new sap.ui.core.message.ControlMessageProcessor();
+	}
+//	get message processor object
+	com.arteriatech.ppc.utils.js.Common.getMessageProcessor = function(){
+		return gPPCUtilMsgProcessor;
+	}
+
+//	set message manager object to a global variable
+	com.arteriatech.ppc.utils.js.Common.setMessageManager = function(){
+		gPPCUtilMsgManager  = sap.ui.getCore().getMessageManager();
+	}
+//	get message manager object
+	com.arteriatech.ppc.utils.js.Common.getMessageManager = function(){
+		return gPPCUtilMsgManager;
+	}
+
+//	set message popover object to a global variable
+	com.arteriatech.ppc.utils.js.Common.setMessagePopover = function(){
+		gPPCUtilMsgPopover = new sap.m.MessagePopover({
+			items: {
+				path:"message>/",
+				template: new sap.m.MessagePopoverItem({ description: "{message>description}", type: "{message>type}", title: "{message>message}"})
+			}
+		});
+	}
+//	get message popover object
+	com.arteriatech.ppc.utils.js.Common.getMessagePopover = function(){
+		return gPPCUtilMsgPopover;
+	}
+//	set message model object to a global variable
+	com.arteriatech.ppc.utils.js.Common.setMessageModel = function(){
+		gPPCUtilMsgMgrModel = sap.ui.getCore().getMessageManager().getMessageModel();
+	}
+//	get message manager model object
+	com.arteriatech.ppc.utils.js.Common.getMessageModel = function(){
+		return gPPCUtilMsgMgrModel;
+	}
+
+//	add error/success/warning messages to message manager
+	com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr = function(msg, msgType, id, desc) {
+		if(desc){
+			if(msgType == "success"){
+					 var msgObj = new sap.ui.core.message.Message({
+						message:msg,
+						description: desc,
+						type: sap.ui.core.MessageType.Success,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				gPPCUtilMsgManager.addMessages(msgObj);
+			}
+			else if(msgType == "warning"){
+				if(id != "" && id != null && id != undefined){
+					var msgObj = new sap.ui.core.message.Message({
+						id:id,
+						message:msg,
+						description: desc,
+						type: sap.ui.core.MessageType.Warning,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				}else{
+					var msgObj = new sap.ui.core.message.Message({
+						message:msg,
+						description: desc,
+						type: sap.ui.core.MessageType.Warning,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				}
+				
+				gPPCUtilMsgManager.addMessages(msgObj);
+			}
+			else{
+				if(id != "" && id != null && id != undefined){
+					var msgObj = new sap.ui.core.message.Message({
+						message:msg,
+						description: desc,
+						id:id,
+						type: sap.ui.core.MessageType.Error,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				}else{
+					var msgObj = new sap.ui.core.message.Message({
+						message:msg,
+						description: desc,
+						type: sap.ui.core.MessageType.Error,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				}
+				gPPCUtilMsgManager.addMessages(msgObj);
+			}
+		}
+		else{
+			if(msgType == "success"){
+				var msgObj = new sap.ui.core.message.Message({
+						message:msg,
+						type: sap.ui.core.MessageType.Success,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				gPPCUtilMsgManager.addMessages(msgObj);
+			}
+			else if(msgType == "warning"){
+				if(id != "" && id != null && id != undefined){
+					var msgObj = new sap.ui.core.message.Message({
+						id:id,
+						message:msg,
+						type: sap.ui.core.MessageType.Warning,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				}else{
+					var msgObj = new sap.ui.core.message.Message({
+						message:msg,
+						type: sap.ui.core.MessageType.Warning,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				}
+				
+				gPPCUtilMsgManager.addMessages(msgObj);
+			}
+			else{
+				if(id != "" && id != null && id != undefined){
+					var msgObj = new sap.ui.core.message.Message({
+						message:msg,
+						id:id,
+						type: sap.ui.core.MessageType.Error,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				}else{
+					var msgObj = new sap.ui.core.message.Message({
+						message:msg,
+						type: sap.ui.core.MessageType.Error,
+						target: "/inputObjId/value",
+						processor: gPPCUtilMsgProcessor
+					});
+				}
+				gPPCUtilMsgManager.addMessages(msgObj);
+			}
+		}
+		return msgObj;
+	
+	};
+
+//	remove all messages from message manager
+	com.arteriatech.ppc.utils.js.Common.removeAllMsgs = function() {
+		gPPCUtilMsgManager.removeAllMessages();
+	};
+
+//	show the popover with messages
+	com.arteriatech.ppc.utils.js.Common.showMessagePopover = function(viewObj) {
+		var msgBtnObj = viewObj.getParent().getFooter().getContent()[0];
+		gPPCUtilMsgPopover.openBy(msgBtnObj);
+	};
+
+//	hide the popover
+	com.arteriatech.ppc.utils.js.Common.hideMessagePopover = function() {
+		gPPCUtilMsgPopover.close();
+	};
+
+//	checks error messages are there in message manager
+	com.arteriatech.ppc.utils.js.Common.doErrMessageExist = function() {
+		var validate = true;
+		var msgsCount = sap.ui.getCore().getMessageManager().getMessageModel().getData().length;
+		if(msgsCount >0){
+			var aMessageObjects = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+			for(var i=0; i<msgsCount; i++){
+				var messageModel = aMessageObjects[i];
+				if(messageModel.type == "Error"){
+					validate = false;
+				}
+			}
+		}
+		return validate;
+	};
+
+//	checks warning messages are there in message manager
+	com.arteriatech.ppc.utils.js.Common.doWarnMessageExist = function() {
+		var validate = true;
+		var msgsCount = sap.ui.getCore().getMessageManager().getMessageModel().getData().length;
+		if(msgsCount >0){
+			var aMessageObjects = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+			for(var i=0; i<msgsCount; i++){
+				var messageModel = aMessageObjects[i];
+				if(messageModel.type == "Warning"){
+					validate = false;
+					break;
+				}
+			}
+		}
+		return validate;
+	};
+
+//	save warning messages in an array
+	com.arteriatech.ppc.utils.js.Common.getWarnMsgs = function() {
+		var aMessageObjects = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+		return aMessageObjects;
+	};
+
+//	ajax error call function, here it displays popover with message
+	com.arteriatech.ppc.utils.js.Common.addMsgForAjaxCall_MsgMgr = function(err,viewObj) {
+		if(err != null && err != undefined && err != ""){
+			var displayMsg = "";
+			var msg = "<html>";
+
+			if(err.responseText.startsWith(msg)){
+				parser=new DOMParser();
+				htmlDoc=parser.parseFromString(err.responseText, "text/html");
+				var aH2 = htmlDoc.getElementsByTagName('H2');
+				displayMsg = aH2[0].innerHTML;
+			}
+			else{
+				var msgSize= err.responseJSON.error.innererror.errordetails.length;
+				var oMessage = ""; 
+				var arrMsg = err.responseJSON.error.innererror.errordetails;
+
+
+				var arr = {};
+				for ( var i=0; i < arrMsg.length; i++ )
+					arr[arrMsg[i]['message']] = arrMsg[i];
+
+				arrMsg = new Array();
+				for ( var key in arr )
+					arrMsg.push(arr[key]);
+
+				for(var i=0;i<arrMsg.length;i++)
+				{
+					oMessage = arrMsg[i].message;
+					displayMsg = displayMsg+"\n"+oMessage;
+				}  
+			}
+			com.arteriatech.ppc.utils.js.Common.removeAllMsgs();
+			com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(displayMsg, "error");
+			com.arteriatech.ppc.utils.js.Common.showMessagePopover(viewObj);
+		}
+	};
+
+//	oData success call function, here it displays popover with message
+	com.arteriatech.ppc.utils.js.Common.addMsgForoDataSuccCall_MsgMgr = function(message, fnClose, viewObj) {
+		var messageText = "";
+		var xml= message["sap-message"];
+		var oXML = jQuery.parseXML(xml);
+		$( oXML ).find("message").each(function(a, b){
+			messageText = messageText+"\n"+ $(b).text();
+		})
+		com.arteriatech.ppc.utils.js.Common.removeAllMsgs();
+		com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(messageText, "success");
+		com.arteriatech.ppc.utils.js.Common.showMessagePopover(viewObj);
+		fnClose;
+	};
+
+//	oData error call function, here it displays popover with message
+	com.arteriatech.ppc.utils.js.Common.addMsgForoDataErrCall_MsgMgr = function(error, viewObj) {
+		var displayMsg = "";
+		var oXMLMsg1 = [];
+		var message=error.response;
+		if(message.statusCode != "403"){
+			var xml=message["body"];
+			var oXML = jQuery.parseXML(xml);
+			$( oXML ).find("message").each(function(a, b){
+				oXMLMsg1.push($(b).text());
+			})
+
+			var oMessage = "";
+
+			var arr = {};
+			for ( var i=0; i < oXMLMsg1.length; i++ )
+				arr[oXMLMsg1[i]] = oXMLMsg1[i];
+
+			var arrXMLMsg2 = new Array();
+			for ( var key in arr )
+				arrXMLMsg2.push(arr[key]);
+
+			for(var i=0;i<arrXMLMsg2.length;i++)
+			{
+				oMessage = arrXMLMsg2[i];
+				displayMsg = displayMsg+"\n"+oMessage;
+			} 
+		}
+		else{
+			displayMsg = message.statusCode +" "+ message.statusText+ " error" ;
+		}
+		com.arteriatech.ppc.utils.js.Common.removeAllMsgs();
+		com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(displayMsg, "error");
+		com.arteriatech.ppc.utils.js.Common.showMessagePopover(viewObj);
+	};
+
+//	converting into token for multiinput, will be Single token in the field
+	com.arteriatech.ppc.utils.js.Common.getTokenForSingleInputField_MsgMgr = function(args, oMultiInputObj,url,desc,codeName,viewObj) {
+
+		if(gPPCUtilPreviousMultiInputUrl != url){
+			var oDialog = new sap.m.BusyDialog();
+			oDialog.open();
+			$.ajax({       
+				url :url,
+				jsonpCallback : 'getJSON',    
+				contentType : "application/json",    
+				dataType : 'json', 
+				success : function(data, textStatus, jqXHR) 
+				{   
+					gPPCUtilPreviousMultiInputUrl = "";
+					oMultiInputObj.removeAllTokens();
+					var oModel1 = new sap.ui.model.json.JSONModel();    
+					oModel1.setData(data); 
+					var aData = oModel1.getProperty("/d/results"); 
+					var oToken = "";
+					var codeVal = "";
+					var nameVal = "";
+
+					if(codeName != "" && codeName != null && codeName != undefined){
+						codeVal = aData[0][codeName];
+					}else{
+						codeVal = args.text;
+					}
+					if(desc == "" || desc == null || desc == undefined){
+						nameVal = args.text;
+					}else{
+						if(aData[0][desc] == undefined && aData[0][desc] == "" ){
+							nameVal = args.text;
+						}else{
+							nameVal = aData[0][desc]+" ("+args.text+")";
+						}
+					}
+					oToken = new sap.m.Token({key: codeVal, text: nameVal});
+
+					args.asyncCallback(oToken);
+					oDialog.close();
+					return sap.m.MultiInput.WaitForAsyncValidation;
+				},
+				error : function (err){ 
+					oDialog.close();
+					com.arteriatech.ppc.utils.js.Common.addMsgForAjaxCall_MsgMgr(err,viewObj);
+					gPPCUtilPreviousMultiInputUrl = url;
+				}
+			});
+		}
+
+	};
+
+//	converting into token for multiinput, will be Multiple tokens in the field
+	com.arteriatech.ppc.utils.js.Common.getMultipleTokenAndErrMsgOnMsgPopOver = function(args, oMultiInputObj,url,desc,viewObj)
+	{
+		if(gPPCUtilPreviousMultiInputUrl != url){
+			var oDialog = new sap.m.BusyDialog();
+			oDialog.open();
+			$.ajax({       
+				url :url,
+				jsonpCallback : 'getJSON',    
+				contentType : "application/json",    
+				dataType : 'json', 
+				// async : false,
+				success : function(data, textStatus, jqXHR) 
+				{  
+					gPPCUtilPreviousMultiInputUrl = "";
+					var oModel1 = new sap.ui.model.json.JSONModel();    
+					oModel1.setData(data); 
+					var aData = oModel1.getProperty("/d/results"); 
+					var oToken = "";
+					if(desc == "" || desc == null || desc == undefined){
+						oToken = new sap.m.Token({key: args.text, text: args.text});
+					}else{
+						if(aData[0][desc] == undefined && aData[0][desc] == "" ){
+							oToken = new sap.m.Token({key: args.text, text: args.text});
+						}else{
+							oToken = new sap.m.Token({key: args.text, text: aData[0][desc]+" ("+args.text+")"});
+						}
+					}
+					args.asyncCallback(oToken);
+					oDialog.close();
+					return sap.m.MultiInput.WaitForAsyncValidation;
+				},
+				error : function (err){ 
+					oDialog.close();
+					com.arteriatech.ppc.utils.js.Common.addMsgForAjaxCall_MsgMgr(err,viewObj);
+					gPPCUtilPreviousMultiInputUrl = url;
+				}
+			});
+		}
+	};
+
+
+// field value null or not checking here, if null adding message to message manager
+	com.arteriatech.ppc.utils.js.Common.isFieldPopulated= function(that, formElementId, fieldId, ppcUtilsI18n){
+
+		var formElementObj = that.getView().byId(formElementId);
+		var labelTxt = "";  var fieldObj = null; var msgObj = null;
+		if(formElementObj instanceof sap.ui.comp.filterbar.FilterItem){
+			labelTxt = formElementObj.getLabel();
+			fieldObj = that.getView().byId(fieldId);
+		}else{
+			var labelObj = formElementObj.getLabel();
+			if(labelObj != null && labelObj !="" && labelObj != undefined){
+				labelTxt = labelObj.getText();
+			}
+			fieldObj = formElementObj.getFields()[0];
+		}
+
+		//MultiInput
+		if(fieldObj instanceof sap.m.MultiInput){
+			fieldObj.setValueState(sap.ui.core.ValueState.None);
+			if(fieldObj.getTokens().length == 0)
+			{
+				fieldObj.setValueState(sap.ui.core.ValueState.Error);
+				var msg = ppcUtilsI18n.getText("common.Message.Error.Mandatory.Select", labelTxt);
+				fieldObj.setValueStateText(msg);
+				msgObj = com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(msg, "error");
+			}
+		}
+		//Dropdown box
+		else if(fieldObj instanceof sap.m.Select){
+			if(fieldObj.getSelectedKey() == "" || fieldObj.getSelectedKey() == null || fieldObj.getSelectedKey() == undefined){
+				var msg = ppcUtilsI18n.getText("common.Message.Error.Mandatory.Select", labelTxt);
+				msgObj = com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(msg, "error");
+			}
+		}
+		//Input field
+		else if(fieldObj instanceof sap.m.Input){
+			fieldObj.setValueState(sap.ui.core.ValueState.None);
+			if(fieldObj.getValue() == "" || fieldObj.getValue() == null || fieldObj.getValue() == undefined){
+				fieldObj.setValueState(sap.ui.core.ValueState.Error);
+				var msg = ppcUtilsI18n.getText("common.Message.Error.Mandatory.Select", labelTxt);
+				fieldObj.setValueStateText(msg);
+				msgObj = com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(msg, "error");
+			}
+		}
+		//DatePicker
+		else if(fieldObj instanceof sap.m.DatePicker){
+			fieldObj.setValueState(sap.ui.core.ValueState.None);
+			var isError = false;
+			var msg = "";
+			if(fieldObj.getValue() != "" && fieldObj.getValue() != null && fieldObj.getValue() != undefined)
+			{
+				var InputDate = fieldObj.getDateValue();
+				if(!fieldObj._bValid)
+				{
+					msg = ppcUtilsI18n.getText("common.Message.Error.Date.Invalid", labelTxt);
+					isError = true;
+				}
+			}else{
+				var msg =  ppcUtilsI18n.getText("common.Message.Error.Mandatory.Select", labelTxt);
+				fieldObj.setValueState(sap.ui.core.ValueState.Error);
+				fieldObj.setValueStateText(msg);
+				msgObj = com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(msg, "error");
+			}
+		}
+		return msgObj;
+	};
+
+	//converting message to string by using line space
+	com.arteriatech.ppc.utils.js.Common.getMsgsFromMsgMgr = function() {
+		var message = "";
+		var aMessageObjects =  sap.ui.getCore().getMessageManager().getMessageModel().getData();
+		for(var i=0; i<aMessageObjects.length; i++){
+			var messageModel = aMessageObjects[i];
+			if(messageModel.type == "Error"){
+				message = message +"\n"+messageModel.message;
+			}
+			if(messageModel.type == "Information"){
+				message = message +"\n"+messageModel.message;
+			}
+			if(messageModel.type == "Success"){
+				message = message +"\n"+messageModel.message;
+			}
+		}
+		return message;
+	};
+
+	//getting token by on enter by using odata call
+	com.arteriatech.ppc.utils.js.Common.getTokenForInputByOdata = function(args, F4Model, serviceName, f4Filters, key, value, control, errorText, view, appKey)//(args, oMultiInputObj, url, codeName, desc, view, controlId, errorText)
+	{
+		var enteredVal = control.getValue();
+		if(gPPCUtilPreviousMultiInputUrl != enteredVal){
+			var oDialog = new sap.m.BusyDialog();
+
+			F4Model.attachRequestSent(
+					function()
+					{
+						oDialog.open();
+					}
+			);  
+			F4Model.attachRequestCompleted(function(){oDialog.close();});  
+			f4Filters = com.arteriatech.ppc.utils.js.Common.setODataModelReadFilter("", "", f4Filters, "LoginID", "", [com.arteriatech.ppc.utils.js.Common.getCurrentLoggedUser({sServiceName: serviceName, sRequestType: "read", Application:appKey})], false, false, false);
+			F4Model.read("/"+serviceName, {
+				filters: f4Filters,
+				success: function(oData){
+					gPPCUtilPreviousMultiInputUrl = "";
+					var aData = oData.results;
+					var oToken = "";
+					var oTokenKey = "";
+					var oTokenText = "";
+
+					if(key != "" && key != null && key != undefined){
+						oTokenKey = aData[0][key];
+						if(value != "" && value != null && value != undefined){
+							if(aData[0][value] != undefined && aData[0][value] != "" ){
+								oTokenText = aData[0][value]+" ("+aData[0][key]+")";
+							}
+						}
+					}
+					oToken = new sap.m.Token({key: oTokenKey, text: oTokenText});
+
+					args.asyncCallback(oToken);
+					oDialog.close();
+					return sap.m.MultiInput.WaitForAsyncValidation;
+
+					control.setValueState(sap.ui.core.ValueState.None);
+					control.setValueStateText("");
+					oDialog.close();
+				}, 
+				error: function(error){
+					oDialog.close();
+					gPPCUtilPreviousMultiInputUrl = enteredVal; 
+					var message = com.arteriatech.ppc.utils.js.Common.getMsgsFromMsgMgr();
+					com.arteriatech.ppc.utils.js.Common.displayMsg_MsgBox(view, message, "error");
+				}
+			});
+		}
+	}
+	
+//-----------------------------------------------------BY AP-----------------------------------------------------------------------------------------
+	
+	/*entered input checking by calling backend service
+	 * @input: mParameter.F4Model = oDataModel
+	 *         mParameter.serviceName = serviceName
+	 *         mParameter.f4Filters = filters to pass to backend
+	 *         mParameter.key = backendPropertyName for code
+	 *         mParameter.view = this.getView() object,
+	 *         mParameter.control = input object
+	 *         mParameter.applicationKey = PS/PD/SS from ppsutil/ssutil
+	 * @output: For correct input no message will be shown
+	 *          For wrong input error message will be shown        
+	*/
+	com.arteriatech.ppc.utils.js.Common.checkInputDataByServiceCall = function(mParameter, appCallBack)
+	{
+		var enteredVal = mParameter.control.getValue();
+		if(gPPCUtilPreviousMultiInputUrl != enteredVal){
+			var oDialog = new sap.m.BusyDialog();
+
+			mParameter.F4Model.attachRequestSent(
+					function()
+					{
+						oDialog.open();
+					}
+			);  
+			mParameter.F4Model.attachRequestCompleted(function(){oDialog.close();});  
+			mParameter.f4Filters = com.arteriatech.ppc.utils.js.Common.setODataModelReadFilter("", "", mParameter.f4Filters, "LoginID", "", [com.arteriatech.ppc.utils.js.Common.getCurrentLoggedUser({sServiceName: mParameter.serviceName, sRequestType: "read", Application:mParameter.applicationKey})], false, false, false);
+			mParameter.F4Model.read("/"+mParameter.serviceName, {
+				filters: mParameter.f4Filters,
+				success: function(oData){
+					gPPCUtilPreviousMultiInputUrl = "";
+					var aData = oData.results;
+					var oToken = "";
+					var oTokenKey = "";
+					var oTokenText = "";
+					oDialog.close();
+					if(aData.length > 0){
+					if(mParameter.key != "" && mParameter.key != null && mParameter.key != undefined)
+						oTokenKey = aData[0][mParameter.key];
+						mParameter.control.setValueState(sap.ui.core.ValueState.None);
+						mParameter.control.setValueStateText("");	
+						appCallBack(true);
+					}else{
+						appCallBack(false);
+					}
+					
+				}, 
+				error: function(error){
+					oDialog.close();
+					gPPCUtilPreviousMultiInputUrl = enteredVal; 
+					/*var message = com.arteriatech.ppc.utils.js.Common.getMsgsFromMsgMgr();
+					com.arteriatech.ppc.utils.js.Common.displayMsg_MsgBox(mParameter.view, message, "error");*/
+					appCallBack(false);
+				}
+			});
+		}
+	}
+	//----------------------------------------------------end--------------------------------------------------------------
+// remove duplicate message by using R3 code
+	com.arteriatech.ppc.utils.js.Common.removeDuplicateMsgsInMsgMgr = function(){
+		var oData = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+		for(var i=0; i<oData.length; i++){
+			var msgObj = oData[i];
+			if(msgObj.code == "/IWBEP/CX_SD_GEN_DPC_BUSINS"){
+				sap.ui.getCore().getMessageManager().removeMessages(msgObj);
+			}
+		}
+	}
+	// adding custom messages to message manager by using backend error codes
+	com.arteriatech.ppc.utils.js.Common.getMessageForErrorCode = function(label,control,oUtilsI18n,controlID){
+		
+		  var oData = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+		  for(var i=0; i<oData.length; i++){
+		   var msgObj = oData[i];
+		   if(msgObj.code === "/ARTEC/PS/164"){
+		    com.arteriatech.ppc.utils.js.Common.removeMsgsInMsgMgrByMsgCode(msgObj.code);
+		    control.setValueState(sap.ui.core.ValueState.Error);
+		    control.setValueStateText(oUtilsI18n.getText("common.Message.Error.code.164",[label]));
+		    com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(oUtilsI18n.getText("common.Message.Error.code.164",[label]), "error",controlID);
+		   }
+		   else if(msgObj.code === "/ARTEC/PS/033"){
+		    com.arteriatech.ppc.utils.js.Common.removeMsgsInMsgMgrByMsgCode(msgObj.code);
+		    control.setValueState(sap.ui.core.ValueState.Error);
+		    control.setValueStateText(oUtilsI18n.getText("common.Message.Error.code.33",[label]));
+		    com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(oUtilsI18n.getText("common.Message.Error.code.33",[label]), "error",controlID);
+		   }
+		   else if(msgObj.code !== undefined)
+		   {
+		    com.arteriatech.ppc.utils.js.Common.removeMsgsInMsgMgrByMsgCode(msgObj.code);
+		    control.setValueState(sap.ui.core.ValueState.Error);
+		    control.setValueStateText(oUtilsI18n.getText("common.Message.Error.code.33",[label]));
+		    com.arteriatech.ppc.utils.js.Common.addMsg_MsgMgr(oUtilsI18n.getText("common.Message.Error.code.33",[label]), "error",controlID);
+		   }
+		  }
+		  com.arteriatech.ppc.utils.js.Common.removeDuplicateMsgsInMsgMgr();
+	};
+	 
+// remove message object by using header target
+	com.arteriatech.ppc.utils.js.Common.removeServerMsgsInMsgMgrByTarget = function(target){
+		  var oData = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+		   for(var i=0; i<oData.length; i++){
+		    var msgObj = oData[i];
+		    if(msgObj.target !== target){
+		     sap.ui.getCore().getMessageManager().removeMessages(msgObj);
+		    }
+		   }
+	}
+	
+	//--------------------------------BY SJ------------------------------------------
+	// remove  message by using R3 code
+	com.arteriatech.ppc.utils.js.Common.removeMsgsInMsgMgrByMsgCode = function(code){
+		var oData = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+		for(var i=0; i<oData.length; i++){
+			var msgObj = oData[i];
+			if(msgObj.code === code){
+				sap.ui.getCore().getMessageManager().removeMessages(msgObj);
+			}
+		}
+	};
+	
+	// remove  message by using Control Id
+	com.arteriatech.ppc.utils.js.Common.removeMsgsInMsgMgrById =function(Id){
+		var oData = sap.ui.getCore().getMessageManager().getMessageModel().getData();
+		for(var i=0; i<oData.length; i++){
+			var msgObj = oData[i];
+			if(msgObj.id === Id){
+				sap.ui.getCore().getMessageManager().removeMessages(msgObj);
+			}
+		}
+	};
+
+//	------------------------------------------------------------------------------------------------------------------------------
+//	--------------------------------------------------- Export to excel By AP-------------------------------------------------------
+//	-----------------------------------------------------Edited by GE-------------------------------------------------------------------------
+
+	com.arteriatech.ppc.utils.js.Common.exportToExcel = function(table, oModel, mParameters)
+	{
+		if(mParameters == null || mParameters === undefined) {
+			mParameters = false;
+		}
+		
+		if(mParameters === true || mParameters === false) {
+			var mParameter = {bExportAll: mParameters, bLabelFromMetadata: false }
+			com.arteriatech.ppc.utils.js.Common.doTableExport(table, oModel, mParameter);
+		}else{ 
+			com.arteriatech.ppc.utils.js.Common.doTableExport(table, oModel, mParameters);
+		}
+	}
+	
+	
+	
+	//-------------------New by GE
+	com.arteriatech.ppc.utils.js.Common.doTableExport =  function(oTable, oModel, mParameters) {
+			if(oTable.getBinding("items") && oTable.getBinding("items").iLength > 0){
+				var aColumns = com.arteriatech.ppc.utils.js.Common.getTableColumns(oTable, mParameters);
+				var oExport = new sap.ui.core.util.Export({
+					exportType: new sap.ui.core.util.ExportTypeCSV({
+						separatorChar: ",",
+						charset: "utf-8"
+					}),
+					models: oModel,
+					rows: {
+						path: oTable.getBinding("items").getPath()
+					},
+					columns: aColumns
+				});
+				
+				var aTableId = oTable.getId().split("--"); 
+				
+				var tableName = aTableId[aTableId.length-1].replace("Table", "").replace("table", "");
+				
+				if(mParameters.sFileName) {
+					tableName = mParameters.sFileName; 
+				}
+
+				oExport.saveFile(tableName+" ("+com.arteriatech.ppc.utils.js.Common.getCurrentDate().toLocaleString()+")").always(function() {
+					this.destroy();
+				});
+			}else {
+				sap.m.MessageToast.show("Sorry, No Records to Export");
+			}
+		}
+
+		com.arteriatech.ppc.utils.js.Common.getTableColumns = function(oTable, mParameters) {
+			var aColumns = oTable.getColumns();
+			var aItems = oTable.getItems();
+			var aTemplate = [];
+			var bGroupingColumnAdded = false;
+			for (var i = 0; i < aColumns.length; i++) {
+				if (aColumns[i].getVisible() || mParameters.bExportAll) {
+					var columnHeader = "";
+					if (aColumns[i].getHeader().mProperties.text !== undefined) {
+						columnHeader = aColumns[i].getHeader().mProperties.text;
+					} else {
+						if (aColumns[i].getHeader().mProperties.tooltip !== undefined) {
+							columnHeader = aColumns[i].getHeader().mProperties.tooltip;
+						} else if (aColumns[i].getHeader().getAggregation("items") && aColumns[i].getHeader().getAggregation("items").length > 0) {
+							columnHeader = aColumns[i].getHeader().getAggregation("items")[0].mProperties.text;
+						}
+					}
+					if (aItems.length > 0) {
+					var g = 0;
+					if(aItems[0].mProperties.title !== null && aItems[0].mProperties.title !== undefined) {
+						if(!bGroupingColumnAdded) {
+							if(aItems[0].mProperties.title.split(":").length > 0) { 
+								var oColumn = {
+									name: aItems[0].mProperties.title.split(":")[0],
+									template: {
+										content: {
+											path: "",
+											formatter: function() {
+												return aItems[0].mProperties.title.split(":")[1].trim()
+											}
+										}
+									}
+								};
+								if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+									aTemplate.push(oColumn);
+								}
+							}
+						}
+						bGroupingColumnAdded = true;
+						g = g + 1;
+					}
+						var cellId = aItems[g].getCells()[i].getId();
+						var cellObj = sap.ui.getCore().byId(cellId);
+						var cellPath = "";
+						if (cellObj instanceof sap.m.Text || cellObj instanceof sap.m.Label || cellObj instanceof sap.m.Link) {
+							cellPath = aItems[g].getCells()[i].getBinding("text").getPath(); // cellObj.getText();
+							//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+							if (cellPath && mParameters.bLabelFromMetadata) {
+								var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+									oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+									sEntityType: mParameters.sEntityType,
+									sPropertyName: cellPath,
+									oUtilsI18n: mParameters.oUtilsI18n
+								});
+							}
+						} else if (cellObj instanceof sap.ui.core.Icon) {
+							//if (cellObj.getTooltip() != undefined && cellObj.getTooltip() != "" && cellObj.getTooltip() != null) {
+							cellPath = aItems[g].getCells()[i].getBinding("tooltip").getPath(); //cellObj.getTooltip(); 
+							//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+							//	}
+						} else if (cellObj instanceof sap.m.ObjectStatus) {
+							if (cellObj.getText() != undefined && cellObj.getText() != "" && cellObj.getText() != null) {
+								cellPath = aItems[g].getCells()[i].getBinding("text").getPath(); //cellObj.getText(); 
+								//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+							}else {
+								cellPath = aItems[g].getCells()[i].getBinding("tooltip").getPath();
+								//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+								if(cellPath === null && aItems[g].getCells()[i].getBinding("tooltip").getBindings() &&
+								aItems[g].getCells()[i].getBinding("tooltip").getBindings().length > 1) {
+									cellPath = aItems[g].getCells()[i].getBinding("tooltip").getBindings()[1].getPath();
+									//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+								}
+							}
+						} else if (cellObj instanceof sap.m.Button) {
+							cellPath = "";
+						} else if (cellObj instanceof sap.m.HBox) {
+							cellPath = cellObj.getAggregation("items")[g].getBinding("text").getPath();
+							//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+						}
+
+						if (cellObj instanceof sap.m.ObjectNumber) {
+							cellPath = aItems[g].getCells()[i].getBinding("number").getPath(); //cellObj.getNumber();
+							//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+							if (cellPath && mParameters.bLabelFromMetadata) {
+								var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+									oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+									sEntityType: mParameters.sEntityType,
+									sPropertyName: cellPath,
+									oUtilsI18n: mParameters.oUtilsI18n
+								});
+							}
+							if(cellPath === null) {
+									if (aItems[g].getCells()[i].getBinding("number") && (aItems[g].getCells()[i].getBinding("number").getBindings() && aItems[g].getCells()[i].getBinding("number").getBindings()
+									.length > 0)) {
+										var length = aItems[g].getCells()[i].getBinding("number").getBindings().length
+										cellPath = aItems[g].getCells()[i].getBinding("number").getBindings()[length - 1].getPath();
+									}
+								}
+							var oColumn = {
+								name: columnHeader,
+								template: {
+									content: {
+										path: cellPath
+									}
+								}
+							};
+							if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+								aTemplate.push(oColumn);
+							}
+							if (aItems[g].getCells()[i].getBinding("unit") !== null && aItems[g].getCells()[i].getBinding("unit") !== undefined) {
+								cellPath = aItems[g].getCells()[i].getBinding("unit").getPath();
+								//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+								if (cellPath && mParameters.bLabelFromMetadata) {
+									var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+										oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+										sEntityType: mParameters.sEntityType,
+										sPropertyName: cellPath,
+										oUtilsI18n: mParameters.oUtilsI18n
+									});
+								}else {
+									var columnHeader = "Unit"
+								}
+								if(cellPath === null) {
+									if (aItems[g].getCells()[i].getBinding("unit").getBindings() && aItems[g].getCells()[i].getBinding("unit").getBindings()
+									.length > 0) {
+										var length = aItems[g].getCells()[i].getBinding("unit").getBindings().length
+										cellPath = aItems[g].getCells()[i].getBinding("unit").getBindings()[length - 1].getPath();
+									}
+								}
+								var oColumn = {
+									name: columnHeader,
+									template: {
+										content: {
+											path: cellPath
+										}
+									}
+								};
+								if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+									aTemplate.push(oColumn);
+								}
+							}
+						} else if (cellObj instanceof sap.m.ObjectIdentifier) {
+							cellPath = aItems[g].getCells()[i].getBinding("title").getPath(); //cellObj.getNumber();
+							//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+							if (cellPath && mParameters.bLabelFromMetadata) {
+								var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+									oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+									sEntityType: mParameters.sEntityType,
+									sPropertyName: cellPath,
+									oUtilsI18n: mParameters.oUtilsI18n
+								});
+							}
+							if(cellPath == null) {
+								if (aItems[g].getCells()[i].getBinding("title") && (aItems[g].getCells()[i].getBinding("title").getBindings() && aItems[g].getCells()[i].getBinding("title").getBindings()
+									.length > 0)) {
+									for (var j = 0; j < aItems[g].getCells()[i].getBinding("title").getBindings().length; j++) {
+
+										cellPath = aItems[g].getCells()[i].getBinding("title").getBindings()[j].getPath();
+										if (cellPath && mParameters.bLabelFromMetadata) {
+											var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+												oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+												sEntityType: mParameters.sEntityType,
+												sPropertyName: cellPath,
+												oUtilsI18n: mParameters.oUtilsI18n
+											});
+										}
+
+										var oColumn = {
+											name: columnHeader,
+											template: {
+												content: {
+													path: cellPath
+												}
+											}
+										};
+										if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+											aTemplate.push(oColumn);
+										}
+									}
+								}
+							}else {
+								var oColumn = {
+									name: columnHeader,
+									template: {
+										content: {
+											path: cellPath
+										}
+									}
+								};
+								if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+									aTemplate.push(oColumn);
+								}
+							}
+							if (aItems[g].getCells()[i].getBinding("text") !== null && aItems[g].getCells()[i].getBinding("text") !== undefined) {
+								cellPath = aItems[g].getCells()[i].getBinding("text").getPath();
+								//columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+								if (cellPath && mParameters.bLabelFromMetadata) {
+									var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+										oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+										sEntityType: mParameters.sEntityType,
+										sPropertyName: cellPath,
+										oUtilsI18n: mParameters.oUtilsI18n
+									});
+								}
+								var oColumn = {
+									name: "",
+									template: {
+										content: {
+											path: cellPath
+										}
+									}
+								};
+								if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+									aTemplate.push(oColumn);
+								}
+							}
+						} else if (cellPath === null || cellPath === undefined) {
+							if (aItems[g].getCells()[i].getBinding("text") && (aItems[g].getCells()[i].getBinding("text").getPath() === null || aItems[g].getCells()[i].getBinding("text").getPath() ===
+								undefined)) {
+								if (aItems[g].getCells()[i].getBinding("text").getBindings() && aItems[g].getCells()[i].getBinding("text").getBindings()
+									.length > 0) {
+									var oldColumnHeader = columnHeader;
+									if(aItems[g].getCells()[i].getBinding("text").getBindings().length === 2) {
+										
+										for (var j = aItems[g].getCells()[i].getBinding("text").getBindings().length - 1; j >=0; j--) {
+
+											cellPath = aItems[g].getCells()[i].getBinding("text").getBindings()[j].getPath();
+											columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, oldColumnHeader);
+											if (cellPath && mParameters.bLabelFromMetadata) {
+												var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+													oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+													sEntityType: mParameters.sEntityType,
+													sPropertyName: cellPath,
+													oUtilsI18n: mParameters.oUtilsI18n
+												});
+											}
+
+											var oColumn = {
+												name: columnHeader,
+												template: {
+													content: {
+														path: cellPath
+													}
+												}
+											};
+											if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+												aTemplate.push(oColumn);
+											}
+										}
+									}else {
+										for (var j = 0; j <aItems[g].getCells()[i].getBinding("text").getBindings().length; j++) {
+
+											cellPath = aItems[g].getCells()[i].getBinding("text").getBindings()[j].getPath();
+											columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, oldColumnHeader);
+											if (cellPath && mParameters.bLabelFromMetadata) {
+												var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+													oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+													sEntityType: mParameters.sEntityType,
+													sPropertyName: cellPath,
+													oUtilsI18n: mParameters.oUtilsI18n
+												});
+											}
+
+											var oColumn = {
+												name: columnHeader,
+												template: {
+													content: {
+														path: cellPath
+													}
+												}
+											};
+											if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+												aTemplate.push(oColumn);
+											}
+										}
+									}
+								}
+							} else if(aItems[g].getCells()[i].getBinding("tooltip")){
+								cellPath = aItems[g].getCells()[i].getBinding("tooltip").getPath();
+								columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, columnHeader);
+								if(aItems[g].getCells()[i].getBinding("tooltip").getPath()) {
+										
+										var oColumn = {
+											name: columnHeader,
+											template: {
+												content: {
+													path: cellPath
+												}
+											}
+										};
+										if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+											aTemplate.push(oColumn);
+										}
+										
+								}else if (aItems[g].getCells()[i].getBinding("tooltip") && (aItems[g].getCells()[i].getBinding("tooltip").getPath() === null || aItems[g].getCells()[i].getBinding("tooltip").getPath() ===
+								undefined)) {
+								var oldColumnHeader = columnHeader;
+								if (aItems[g].getCells()[i].getBinding("tooltip").getBindings() && aItems[g].getCells()[i].getBinding("tooltip").getBindings()
+									.length > 0) {
+									
+									if(aItems[g].getCells()[i].getBinding("tooltip").getBindings().length === 2) {
+										for (var j = aItems[g].getCells()[i].getBinding("tooltip").getBindings().length - 1; j >=0; j--) {
+
+											cellPath = aItems[g].getCells()[i].getBinding("tooltip").getBindings()[j].getPath();
+											columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, oldColumnHeader);
+											if (cellPath && mParameters.bLabelFromMetadata) {
+												var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+													oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+													sEntityType: mParameters.sEntityType,
+													sPropertyName: cellPath,
+													oUtilsI18n: mParameters.oUtilsI18n
+												});
+											}
+
+											var oColumn = {
+												name: columnHeader,
+												template: {
+													content: {
+														path: cellPath
+													}
+												}
+											};
+											if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+												aTemplate.push(oColumn);
+											}
+										}
+									}else {
+										for (var j = 0; j <aItems[g].getCells()[i].getBinding("tooltip").getBindings().length; j++) {
+
+											cellPath = aItems[g].getCells()[i].getBinding("tooltip").getBindings()[j].getPath();
+											columnHeader = com.arteriatech.ppc.utils.js.Common.modifyHeaderText(cellPath, oldColumnHeader);
+											
+											if (cellPath && mParameters.bLabelFromMetadata) {
+												var columnHeader = com.arteriatech.ppc.utils.js.Common.getLableFromMetadata({
+													oDataModel: mParameters.oController.getView().getModel(mParameters.sModel),
+													sEntityType: mParameters.sEntityType,
+													sPropertyName: cellPath,
+													oUtilsI18n: mParameters.oUtilsI18n
+												});
+											}
+
+											var oColumn = {
+												name: columnHeader,
+												template: {
+													content: {
+														path: cellPath
+													}
+												}
+											};
+											if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+												aTemplate.push(oColumn);
+											}
+										}
+									}
+								}
+							}
+								
+								
+
+								
+							}
+						} else {
+						
+							if(cellPath === null) {
+									if (aItems[g].getCells()[i].getBinding("unit") && (aItems[g].getCells()[i].getBinding("unit").getBindings() && aItems[g].getCells()[i].getBinding("unit").getBindings()
+									.length > 0)) {
+										var length = aItems[g].getCells()[i].getBinding("unit").getBindings().length
+										cellPath = aItems[g].getCells()[i].getBinding("unit").getBindings()[length - 1].getPath();
+									}
+								}
+							
+							
+								if(cellPath !== null && cellPath !== undefined && cellPath.trim() !== "") {
+									var oColumn = {
+										name: columnHeader,
+										template: {
+											content: {
+												path: cellPath,
+												formatter: function(cellPath) {
+													if(cellPath !== null && cellPath !== undefined && cellPath instanceof Date) {
+														var date = new Date(cellPath),
+															mnth = ("0" + (date.getMonth()+1)).slice(-2),
+															day  = ("0" + date.getDate()).slice(-2);
+														return [ date.getFullYear(), mnth, day ].join("-");
+													}else if(cellPath !== null && cellPath !== undefined && cellPath.ms !== undefined) {
+														var CreatedMs = cellPath;
+														var time;
+														var timeFormat = sap.ui.core.format.DateFormat.getTimeInstance({
+															pattern: "KK:mm:ss a"
+														});
+														var TZOffsetMs = new Date(0).getTimezoneOffset()*60*1000;
+														var CreatedtimeStr = timeFormat.format(new Date(CreatedMs + TZOffsetMs));
+														var ConfirmtimeStr = timeFormat.format(new Date(cellPath.ms + TZOffsetMs));
+														time = ConfirmtimeStr;
+													   return time; 
+													}else {
+														return cellPath; 
+													}
+												}
+											}
+										}
+									};
+									aTemplate.push(oColumn);
+								}
+							
+						}
+					}
+				}
+			}
+			return aTemplate;
+		}
+
+	com.arteriatech.ppc.utils.js.Common.modifyHeaderText = function(cellPath, columnHeader) {
+		if(cellPath && cellPath.substr(cellPath.length - 4, 4) === "Desc") {
+			columnHeader = columnHeader + " Desc";
+		}else if(cellPath && cellPath.substr(cellPath.length - 4, 4) === "Name") {
+			columnHeader = columnHeader + " Name";
+		}else if(cellPath && cellPath.indexOf("UOM") !== -1){
+			columnHeader = "UOM";
+		}else if(cellPath && cellPath.indexOf("Currency") !== -1){
+			columnHeader = "Currency";
+		}
+		return columnHeader;
+	};
+	
+
+	com.arteriatech.ppc.utils.js.Common.doExport = function(oTable, oModel) {
+		var aColumns = getColumns(oTable);
+		var oExport  = new sap.ui.core.util.Export({
+			exportType : new sap.ui.core.util.ExportTypeCSV({
+				separatorChar : ",",
+				charset : "utf-8",
+			}),
+			models : oModel,
+			rows : {
+				path : oTable.getBinding("items").getPath(),
+			},
+			columns : aColumns
+		});
+
+		oExport.saveFile(table.getId().split("--")[1]+" ("+com.arteriatech.ppc.utils.js.Common.getCurrentDate().toLocaleString()+")").always(function() {
+			this.destroy();
+		});
+	}
+
+	function getColumns(oTable) {
+		var aColumns  = oTable.getColumns();
+		var aItems;
+		if(oTable instanceof sap.m.Table)
+		{
+			aItems = oTable.getItems();
+		}
+		else
+		{
+			aItems = oTable.getRows();
+		}
+		var aTemplate = [];
+		var oControl; var sType;
+
+		for (var i = 0; i< aColumns.length; i++) {
+			var oColumn = { 
+					name : aColumns[i].getHeader().getText(),
+					template : {
+						content : {
+							path : null
+						}
+					}
+			};
+			if (aItems.length > 0) {
+				oControl = sap.ui.getCore().byId(aItems[0].getCells()[i].getId());
+				sType = oControl.getMetadata().getName();
+				if(sType == "sap.m.Text"){
+					oColumn.template.content.path = aItems[0].getCells()[i].getBinding("text").getPath();
+				}
+			}
+			aTemplate.push(oColumn);
+		}
+		return aTemplate;
+	}
+
+	com.arteriatech.ppc.utils.js.Common.exportToExcelUsingUI = function(table, oModel, exportAll)
+	{
+		var cols = table.getColumns();
+		var items; // = table.getItems();
+		if(table instanceof sap.m.Table)
+		{
+			items = table.getItems();
+		}
+		else
+		{
+			items = table.getRows();
+		}
+		var cellId = null; 
+		var cellObj = null;
+		var cellVal = null;
+		var headerColId = null;
+		var headerColObj = null;
+		var headerColVal = null;
+		var column = null;
+		var json = {}; var aColumn = []; var aRows = [];
+		//push header column names to array
+		var bIsGrouping = false;
+		if(items.length > 0) {
+			if(items[0].getAggregation("cells") == null)
+			{
+				if(items[0].getTitle())
+				{
+					bIsGrouping = true;
+					var json={ name:  items[0].getTitle().split(":")[0]};
+					aColumn.push(json);
+					if(items[0].getTitle().split(":")[1].indexOf("(") > -1){
+						aColumn.push({name:  items[0].getTitle().split(":")[0]+" desc"});
+					}
+				}
+			}
+		}else {
+			sap.m.MessageToast.show("Sorry, No Records to Export");
+		}
+
+		for(var j=0; j<cols.length;j++){
+			column = "";
+			column = cols[j];
+//			headerColId = column.getAggregation("header").getId();
+			if(column.getAggregation("header") != undefined && column.getAggregation("header") != null)
+			{
+				headerColId = column.getAggregation("header").getId();
+			}
+			else
+			{
+				headerColId = column.getAggregation("label").getId();
+			}
+			headerColObj = sap.ui.getCore().byId(headerColId);
+			if(headerColObj instanceof sap.m.Text ||headerColObj instanceof sap.m.Label ||headerColObj instanceof sap.m.Link) {
+				if(headerColObj.getText() !== "")
+					headerColVal = headerColObj.getText();
+				else
+					headerColVal = headerColObj.getTooltip();
+			}else if(headerColObj instanceof sap.ui.core.Icon){
+				headerColVal = headerColObj.getTooltip();
+			}else if(headerColObj !== undefined && headerColObj.mProperties !== undefined && headerColObj.mProperties.text !== undefined){
+			    headerColVal = headerColObj.getText();
+			}else{
+			    headerColVal = "";
+			}
+
+			if(exportAll){
+				json={name: headerColVal};
+				aColumn.push(json);
+				aColumn = com.arteriatech.ppc.utils.js.Common.getHeadingJson(items, j, headerColVal, json, aColumn);
+			}else{
+				if(column.getVisible() && headerColVal != ""){
+					json={name: headerColVal};
+					aColumn.push(json);
+				}
+				aColumn = com.arteriatech.ppc.utils.js.Common.getHeadingJson(items, j, headerColVal, json, aColumn);
+			}
+		}
+		aRows.push(aColumn);
+		var sGroupedColumnValue = "";
+		//push table cell values to array 
+		for (var i = 0; i < items.length; i++) {
+			aColumn = [];
+			var item = items[i];
+			if(item.getAggregation("cells") === null)
+			{
+				if(item.getTitle())
+				{
+					bIsGrouping = true;
+					sGroupedColumnValue = item.getTitle().split(":")[1];
+				}
+			}
+			else
+			{
+				if(bIsGrouping)
+				{
+//					var json={ name:  "\r"+sGroupedColumnValue};
+					if(sGroupedColumnValue.indexOf("(") > -1){
+						aColumn.push({name:  "\r"+sGroupedColumnValue.split("(")[1].split(")")[0]});
+						aColumn.push({name:  sGroupedColumnValue.split("(")[0]});
+					}else{
+						var json={ name:  "\r"+sGroupedColumnValue};
+						aColumn.push(json);
+					}
+				}
+				var columnPosition = 0;
+				for(var j=0; j<cols.length;j++){
+					cellId = "";   cellObj = "";  cellVal = "";
+					cellId = item.getAggregation("cells")[j].getId(); 
+					cellObj = sap.ui.getCore().byId(cellId);
+
+
+					if(exportAll){
+						aColumn = com.arteriatech.ppc.utils.js.Common.getColArray(cellObj,cellVal,aColumn, json, columnPosition, bIsGrouping);
+						columnPosition = 1;
+					}
+					else{
+						if(cellObj.getVisible()){
+							aColumn = com.arteriatech.ppc.utils.js.Common.getColArray(cellObj,cellVal,aColumn, json, columnPosition, bIsGrouping);
+							columnPosition = 1;
+						}
+					}
+				}
+			}
+			aRows.push(aColumn);
+		}
+		//export json array to csv file
+		var oExport = new sap.ui.core.util.Export({
+			// Type that will be used to generate the content. Own ExportType's can be created to support other formats
+			exportType: new sap.ui.core.util.ExportTypeCSV({
+				separatorChar: ","
+			}),
+			// Pass in the model created above
+			models: oModel,
+			// binding information for the rows aggregation 
+			rows: {
+				path: "/" 
+			},
+			// column definitions with column name and binding info for the content
+			columns: [aRows]
+		});
+		oExport.saveFile(table.getId().split("--")[1]+" ("+com.arteriatech.ppc.utils.js.Common.getCurrentDate().toLocaleString()+")").always(function() {
+			this.destroy();
+		});
+	}
+
+	com.arteriatech.ppc.utils.js.Common.getHeadingJson = function(items, j, headerColVal, json, aColumn){
+		var i = 0;
+		var item = items[i];
+		while(item.getAggregation("cells") === null)
+		{
+			item = items[i++];
+		}
+		var cellId = "",   cellObj = "";  
+		cellId = item.getAggregation("cells")[j].getId(); 
+		cellObj = sap.ui.getCore().byId(cellId);
+		if(cellObj.getVisible()){
+			if(cellObj instanceof sap.m.ObjectNumber){
+				headerColVal = "Unit";
+				json={name: headerColVal};
+				aColumn.push(json);
+			}else if(cellObj instanceof sap.m.ObjectIdentifier){
+				if(cellObj.getText() != undefined && cellObj.getText() != null && cellObj.getText() != "")
+				{
+					headerColVal = "Code";
+					json={name: headerColVal};
+					aColumn.push(json);
+				}
+			}
+		}
+		return aColumn;
+	}
+
+	com.arteriatech.ppc.utils.js.Common.getColArray = function(cellObj,cellVal,aColumn, json, j, bIsGrouping)
+	{
+		if(cellObj instanceof sap.m.Text ||cellObj instanceof sap.m.Label ||cellObj instanceof sap.m.Link) 
+			cellVal = cellObj.getText();
+		else if(cellObj instanceof sap.m.ObjectNumber){
+			var k = cellObj.getUnit();
+//			cellVal = cellObj.getNumber()+" "+k;
+			cellVal = cellObj.getNumber();
+		}
+		else if(cellObj instanceof sap.m.ObjectIdentifier){
+			var objectIdentifierVal = "";
+			if(cellObj.getTitle() != undefined && cellObj.getTitle() != "" && cellObj.getTitle() != null )
+				objectIdentifierVal = cellObj.getTitle();
+			if(cellObj.getText() != undefined && cellObj.getText() != "" && cellObj.getText() != null )
+//				objectIdentifierVal = objectIdentifierVal+" "+cellObj.getText();
+				objectIdentifierVal = objectIdentifierVal;
+
+			cellVal = objectIdentifierVal;
+		}
+		else if(cellObj instanceof sap.ui.core.Icon){
+			if(cellObj.getTooltip() != undefined && cellObj.getTooltip() != "" && cellObj.getTooltip() != null )
+				cellVal = cellObj.getTooltip();
+		}
+		else if(cellObj instanceof sap.m.ObjectStatus){
+			if(cellObj.getText() != undefined && cellObj.getText() != "" && cellObj.getText() != null )
+				cellVal = cellObj.getText();
+		}
+		else if(cellObj instanceof sap.m.Button){
+			cellVal = "";
+		}
+
+		var newColumn = "empty";
+		if(cellObj instanceof sap.m.ObjectNumber){
+			newColumn = cellObj.getUnit();
+		}
+		else if(cellObj instanceof sap.m.ObjectIdentifier){
+			var objectIdentifierVal = "";
+			if(cellObj.getTitle() != undefined && cellObj.getTitle() != "" && cellObj.getTitle() != null )
+				newColumn = cellObj.getTitle();
+			if(cellObj.getText() != undefined && cellObj.getText() != "" && cellObj.getText() != null ){
+				newColumn = cellObj.getText();
+				if( newColumn.charAt( 0 ) === '-' ){
+					newColumn = newColumn.slice( 1 );
+				}
+				if( newColumn.charAt( 0 ) === '(' ){
+					newColumn = newColumn.slice(1, -1)
+				}
+			}else{
+				newColumn = "empty";
+			}
+		}
+		var newColumnJson = {};
+		if(j==0){
+			if(bIsGrouping)
+			{
+				json={ name:  cellVal};
+			}
+			else
+			{
+				json={ name:  "\r"+cellVal};
+			}
+
+			if(newColumn != "empty"){
+				newColumnJson={ name:  newColumn};
+			}
+
+		}
+		else
+		{
+			json={ name:  cellVal};
+			newColumnJson ={ name:  newColumn};
+		}
+		aColumn.push(json);
+		if(newColumn != "empty"){
+			aColumn.push(newColumnJson);
+		}
+
+		return aColumn;
+	};
+
+
+//	------------------------------------------------------------------------------------------------------------------------------
+//	--------------------------------------------------- Sorter & filter By AP -------------------------------------------------------
+//	---------------------------------------------------------Updated by GE---------------------------------------------------------------------
+//	---------------------------------------------------------Updated by SJ---------------------------------------------------------------------
+
+//	sorting and filtering the table columns
+	com.arteriatech.ppc.utils.js.Common.sortAndFilterTable = function(table, oEvent, requestCompleted, defaultFilters,bMerge,sMergeKey,sItemNo) {	  
+		var p = oEvent.getParameters();
+		var oBinding = table.getBinding("items");
+
+		// 1) apply sorter to binding
+		// (grouping comes before sorting)
+		var aSorters = [];
+		if (p.groupItem) {
+			var sPath = p.groupItem.getKey();
+			var bDescending = p.groupDescending;
+			var vGroup = this.mGroupFunctions[sPath];
+			aSorters.push(new sap.ui.model.Sorter(sPath, bDescending, vGroup));
+		}
+		if (p.sortItem) {
+			var sPath = p.sortItem.getKey();
+			var bDescending = p.sortDescending;
+			var oSorter = new sap.ui.model.Sorter(sPath, bDescending)
+			// for number comparision
+			oSorter.fnCompare = function(value1, value2) {
+				if(isNumber(value1) && isNumber(value2)){
+					value2 = parseFloat(value2);
+					value1 = parseFloat(value1);
+					if (value1 < value2) return -1;
+					if (value1 == value2) return 0;
+					if (value1 > value2) return 1;
+				}
+				if(isDate(value1) && isDate(value2)){
+					// parse to Date object
+                    var aDate = new Date(value1);
+                    var bDate = new Date(value2);
+                    
+                    if (bDate == null) {
+                        return -1;
+                    }
+                    if (aDate == null) {
+                        return 1;
+                    }
+                    if (aDate < bDate) {
+                        return -1;
+                    }
+                    if (aDate > bDate) {
+                        return 1;
+                    }
+                    return 0;
+				}
+				if (typeof value1 == "string" && typeof value2 == "string") {
+					return value1.localeCompare(value2);
+				}
+			};
+			aSorters.push(oSorter);
+			
+			if(bMerge)
+			{
+				if(sPath===sMergeKey)
+				{
+					var oSorter = new sap.ui.model.Sorter(sItemNo, false)
+					// for number comparision
+					oSorter.fnCompare = function(value1, value2) {
+						if(isNumber(value1) && isNumber(value2)){
+							value2 = parseFloat(value2);
+							value1 = parseFloat(value1);
+							if (value1 < value2) return -1;
+							if (value1 == value2) return 0;
+							if (value1 > value2) return 1;
+						}
+					if(isDate(value1) && isDate(value2)){
+						// parse to Date object
+						var aDate = new Date(value1);
+						var bDate = new Date(value2);
+						
+						if (bDate == null) {
+							return -1;
+						}
+						if (aDate == null) {
+							return 1;
+						}
+						if (aDate < bDate) {
+							return -1;
+						}
+						if (aDate > bDate) {
+							return 1;
+						}
+						return 0;
+					}
+					if (typeof value1 == "string" && typeof value2 == "string") {
+						return value1.localeCompare(value2);
+					}
+					};
+					aSorters.push(oSorter);
+					
+				}
+			}
+			
+			
+		}
+
+		// 2) filtering (standard/custom filters)
+		// apply filters to binding
+		var oFilters,
+		oCallback,
+		customInputControl,
+		oItem,
+		filterStrArr = "Filtered by: ",
+		aTableFilters = [],
+		customFilters = [],
+		toolBarVal = "",
+		key = "",
+		customContrlText = "",
+		filterVal = "";
+
+		for (var i = 0; i < p.filterItems.length; i++) {
+			if (p.filterItems[i] instanceof sap.m.ViewSettingsCustomItem) {
+				customInputControl = p.filterItems[i].getCustomControl(); 
+				key = customInputControl.getTooltip();
+				customContrlText = p.filterItems[i].getText();
+				if(customInputControl instanceof sap.m.Select){
+					filterVal = customInputControl.getSelectedKey();
+					customFilters.push(new sap.ui.model.Filter(key, sap.ui.model.FilterOperator.EQ, filterVal, "X"));
+					filterVal = customInputControl.getSelectedItem().getTtableext();
+				}
+				else if(customInputControl instanceof sap.m.DatePicker){
+					customInputControl.getDateValue().setHours(5);
+					customInputControl.getDateValue().setMinutes(30);
+					filterVal = customInputControl.getDateValue();
+					//var jsonDate =convertToJSONDate(filterVal);
+					var dt = new Date(filterVal);
+					customFilters.push(new sap.ui.model.Filter(key, sap.ui.model.FilterOperator.EQ, dt, "X"));
+					var month = new Array();
+					month[0] = "January";
+					month[1] = "February";
+					month[2] = "March";
+					month[3] = "April";
+					month[4] = "May";
+					month[5] = "June";
+					month[6] = "July";
+					month[7] = "August";
+					month[8] = "September";
+					month[9] = "October";
+					month[10] = "November";
+					month[11] = "December";
+					filterVal = month[dt.getMonth()]+" "+dt.getDate()+", "+dt.getFullYear();
+				}else{
+					filterVal = customInputControl.getValue();
+					customFilters.push(new sap.ui.model.Filter(key, sap.ui.model.FilterOperator.Contains, filterVal, "X"));
+				}
+
+				oFilters = customFilters;
+				if (oFilters) {
+					// the filter could be an array of filters or a single filter so we transform it to an array
+					if (!Array.isArray(oFilters)) {
+						oFilters = [oFilters];
+					}
+					aTableFilters = aTableFilters.concat(oFilters);
+					//setting filter string to display on toolbar
+					filterStrArr = filterStrArr + " "+customContrlText+"("+filterVal+")";
+
+				}
+			} else if (p.filterItems[i] instanceof sap.m.ViewSettingsItem) { // standard filter
+				oItem = p.filterItems[i];
+				var aSplit = oItem.getKey().split("___");
+				var sPath = aSplit[0];
+				var sOperator = aSplit[1];
+				var sValue1 = aSplit[2];
+				var sValue2 = aSplit[3];
+				var oFilter = new sap.ui.model.Filter(sPath, sOperator, sValue1, sValue2);
+				customContrlText = p.filterItems[i].getText();
+				filterStrArr = filterStrArr + " "+customContrlText+"("+sValue1+","+sValue2+")";
+				aTableFilters.push(oFilter);
+			}
+		}
+		if(filterStrArr != "Filtered by: ")
+			p.filterString = filterStrArr;
+		// apply sorters & filters to the table binding
+		oBinding.sort(aSorters);
+		if(defaultFilters)
+		{
+			aTableFilters.push(defaultFilters);
+		}
+		oBinding.filter(aTableFilters);
+
+		// update table info bar text (show only if we have a text & set text to label)
+		table.getInfoToolbar().setVisible(!!p.filterString);
+		table.getInfoToolbar().getContent()[0].setText(p.filterString);
+
+		if(requestCompleted)
+		{
+			requestCompleted(oBinding.iLength, aSorters);
+		}	
+	};
+
+//	attach reset filters to input field while onchange
+	com.arteriatech.ppc.utils.js.Common.addCustomControlToFilter = function(oEvent) {
+
+		var source = oEvent.getSource();
+		var inputKey =source.getTooltip();
+		var vsd = sap.ui.getCore().byId(source.getParent().getParent().getId().split("-")[0]);	
+		var filters = vsd.getFilterItems();
+		var customFilter;
+
+		for(var i = 0; i < filters.length; i++) {
+			if(filters[i] instanceof sap.m.ViewSettingsCustomItem && filters[i].getKey() === inputKey) {
+				customFilter = filters[i];
+				vsd.attachResetFilters(customReset);
+				vsd.attachCancel(customCancel);
+				break;
+			}
+		}
+
+		if(customFilter) {
+			if(source instanceof sap.m.Select){
+				customFilter.setSelected(true);
+				customFilter.setFilterCount(1);
+			}
+			else if(oEvent.getParameter("value") !== null && oEvent.getParameter("value").trim() !== "" ) {
+				customFilter.setSelected(true);
+				customFilter.setFilterCount(1);
+			} 
+			else {
+				customFilter.setSelected(false);
+				customFilter.setFilterCount(0);
+			}
+		}
+
+	};
+	
+	var customReset = function (oEvent) {
+		var source = oEvent.getSource(),
+		filters = source.getFilterItems(),
+		customControl,
+		customFilter,
+		i = 0; 
+		// this functionality only needed because custom control is cloned for this test page
+		// if you don't have cloned controls you can directly access them by id and set/reset the values
+		for(; i < filters.length; i++) {
+			if(filters[i] instanceof sap.m.ViewSettingsCustomItem) {
+				customFilter = filters[i];
+				customControl = customFilter.getCustomControl();
+				customControl.setValue("");
+				customFilter.setSelected(false);
+				customFilter.setFilterCount(0);
+			}
+		}
+	};
+	var customCancel = customReset;
+//	returns true is object is number
+	function isNumber(obj) { return !isNaN(parseFloat(obj)) }
+	//retuen true if a string is date
+	var isDate = function(date) {
+	    return (new Date(date) !== "Invalid Date" && !isNaN(new Date(date)) )  ? true : false;
+	}
+//	03/25/1015 to (/Date(1427846400000)/)
+	function convertToJSONDate(strDate){
+		var dt = new Date(strDate);
+		var newDate = new Date(Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds(), dt.getMilliseconds()));
+		return '/Date(' + newDate.getTime() + ')/';
+	}
+//	(/Date(1427846400000)/) to 25/03/1015
+	function fromJsonToDate(fValue) {
+		if(fValue)
+		{
+			var sJsonDate = fValue;/\/(.+)\//.exec(sJsonDate);  
+			var oDate = eval("new " + RegExp.$1); 
+			var day 	= ('0'+(oDate.getDate())).slice(-2);
+			var month = ('0'+(oDate.getMonth()+1)).slice(-2);
+			var year 	= oDate.getFullYear();
+			var date 	= day+"/"+month+"/"+year;
+			return date;
+		}
+		else {
+			return "";
+		}
+	}
+
+	String.prototype.startsWith = function (str){
+		return this.indexOf(str) == 0;
+	};
+	
+	
+//	------------------------------------------------------------------------------------------------------------------------------
+//	--------------------------------------------------- Mock Server by SJ-------------------------------------------------------
+//	------------------------------------------------------------------------------------------------------------------------------
+	
+	//to start mockserver
+	com.arteriatech.ppc.utils.js.Common.mockServerStart = function(MockServer,rootUri,modulepath) 
+	{
+
+		// create
+		var oMockServer = new MockServer({
+			rootUri: rootUri
+		});
+
+		// configure
+		MockServer.config({
+			autoRespond: true,
+			autoRespondAfter: 500
+		});
+
+
+		// simulate
+		var sPath = jQuery.sap.getModulePath(modulepath);
+		oMockServer.simulate(sPath + "/metadata.xml", sPath);
+
+		oMockServer.start();
+	};
+
+	com.arteriatech.ppc.utils.js.Common.formatSelectedDate= function(f, s,oi18n, sFormatType) {
+		jQuery.sap.require("sap.ca.ui.model.format.DateFormat");
+		
+		var d = "";
+		if(sFormatType){
+			d = sap.ui.core.format.DateFormat.getDateInstance({pattern:sFormatType});
+		}
+		else{
+			d = sap.ca.ui.model.format.DateFormat.getInstance({
+				style: 'medium'
+			});
+		}
+		if (f && s) {
+			f = d.format(f);
+			s = d.format(s)
+		} else if (!f) {
+			s = d.format(s)
+		} else if (!s) {
+			f = d.format(f)
+		}
+		var dateRange = f+" - "+s;
+		return dateRange;
+//		return (oi18n.getText("List.Filterbar.Date.fragment.dateRange", [f, s]))
+	};
+	com.arteriatech.ppc.utils.js.Common.getDateDropDownValue=function(oDataDate,that,fieldId,model,defaultValue) {
+		if(that.getView().getModel(model))
+			that.getView().getModel(model).setProperty("/", {});
+		var oDateModel = new sap.ui.model.json.JSONModel();
+
+		oDateModel.setData(oDataDate);
+		that.getView().setModel(oDateModel, model);
+
+		that.getView().byId(fieldId).setSelectedKey(defaultValue);
+	};
+	com.arteriatech.ppc.utils.js.Common.setMaunalSelectedDate=function(that,fromDate,toDate,oModel,sField,sKey,oi18n, sFormatType)
+	{
+		var dDateFrom = new Date(fromDate);
+		var dDateTo = new Date(toDate);
+		dDateFrom = dDateFrom.setDate(dDateFrom.getDate());
+		dDateTo = dDateTo.setDate(dDateTo.getDate());
+		that.DateManulaSeletedDesc =com.arteriatech.ppc.utils.js.Common.formatSelectedDate(new Date(dDateFrom), new Date(dDateTo),oi18n, sFormatType);
+		var newData = that.getView().getModel(oModel).getData();
+		newData.push({DateKey: sKey, DateDesc: that.DateManulaSeletedDesc});
+		that.getView().getModel(oModel).setData(newData);
+		that.getView().byId(sField).setSelectedKey(sKey);
+	};
+
+	com.arteriatech.ppc.utils.js.Common.openManualDateSelectionDialog = function(that, sSelectedKey, oDateSelect,previousSelectedKey,model,oi18n,fieldId,requestCompleted, sFormatType) {
+		that.dateRange ={fromDate:null,toDate:null};
+		var view=that.getView();
+		if (sSelectedKey === "MS" ) {
+			var dateRangeSelectionDialog;
+			that.OkButton = new sap.m.Button({
+				text: 'OK',
+				enabled: false,
+				press: function () {
+					if(that.DateRangeSelection.getDateValue() && that.DateRangeSelection.getSecondDateValue())
+					{
+						var oData = view.getModel(model).getData();
+						if(oData[oData.length - 1].DateKey === "SD")
+						{
+							oData.splice(oData.length-1, 1);
+						}
+						view.getModel(model).setData(oData);
+
+						that.DateManulaSeletedDesc =com.arteriatech.ppc.utils.js.Common.formatSelectedDate(that.DateRangeSelection.getDateValue(), that.DateRangeSelection.getSecondDateValue(),oi18n, sFormatType);
+						var oDataLength = view.getModel(model).getData().length - 1;
+//						view.getModel(model).setProperty("/"+oDataLength+"/DateDesc", that.DateManulaSeletedDesc)
+						var newData = view.getModel(model).getData();
+						newData.push({DateKey: "SD", DateDesc: that.DateManulaSeletedDesc});
+						view.getModel(model).setData(newData);
+						view.byId(fieldId).setSelectedKey("SD");
+						var fromDate = that.DateRangeSelection.getDateValue();
+						//fromDate.setDate(fromDate.getDate() + 1);
+						that.dateRange.fromDate = fromDate;
+						var toDate = that.DateRangeSelection.getSecondDateValue();
+						//toDate.setDate(toDate.getDate() + 1);
+						that.dateRange.toDate = toDate;
+						dateRangeSelectionDialog.close();
+					}
+					if(requestCompleted) requestCompleted(that.dateRange);
+					return that.dateRange
+				}
+
+			});
+
+			that.DateRangeSelection = new sap.m.DateRangeSelection({
+				change: function(){
+					if(that.DateRangeSelection.getDateValue() && that.DateRangeSelection.getSecondDateValue())
+					{
+						that.OkButton.setEnabled(true);
+					}
+					else
+					{
+						that.OkButton.setEnabled(false);
+					}
+				},
+				displayFormat: sFormatType
+			});
+
+			dateRangeSelectionDialog = new sap.m.Dialog({
+				title: "Select Date Manually",
+				type: 'Standard',
+				resizable: true,
+				draggable: true,
+				content: [
+				          that.DateRangeSelection
+				          ],
+				          beginButton: that.OkButton,
+				          endButton: new sap.m.Button({
+				        	  text: 'Cancel',
+				        	  press: function () 
+				        	  {
+				        		  var oData = view.getModel(model).getData();
+				        		  if(oData[oData.length - 1].DateKey === "SD")
+				        		  {
+				        			  view.byId(fieldId).setSelectedKey("SD");
+				        		  }
+				        		  else
+				        		  {
+				        			  view.byId(fieldId).setSelectedKey(previousSelectedKey);
+				        			  com.arteriatech.ppc.utils.js.Common.setASNDateRange(that,previousSelectedKey);
+				        		  }
+				        		  dateRangeSelectionDialog.close();
+				        	  }
+				          }),
+				          afterClose: function() {
+				        	  dateRangeSelectionDialog.destroy();
+				          }
+			});
+			if (!jQuery.support.touch) {
+				dateRangeSelectionDialog.addStyleClass("sapUiSizeCompact");
+			}
+			dateRangeSelectionDialog.open();  
+
+		}
+
+		else 
+		{
+			var oData = that.getView().getModel(model).getData();
+			if(oData[oData.length - 1].DateKey === "SD")
+			{
+				oData.splice(oData.length-1, 1);
+			}
+			that.getView().getModel(model).setData(oData);
+			that.dateValues=com.arteriatech.ppc.utils.js.Common.setASNDateRange(that,sSelectedKey);
+			that.dateRange.fromDate=that.dateValues.fromDate;
+			that.dateRange.toDate=that.dateValues.toDate;
+
+			if(requestCompleted) requestCompleted(that.dateRange);
+			return that.dateRange;
+		}
+	};
+	com.arteriatech.ppc.utils.js.Common.setASNDateRange= function(that,sSelectedKey)
+	{
+		that.DateValue = {
+				fromDate : null,
+				toDate : null
+		};
+		sSelectedKey = parseInt(sSelectedKey);
+		if(!isNaN(sSelectedKey)){
+			if(sSelectedKey < 0)
+			{
+				that.DateValue.toDate = com.arteriatech.ppc.utils.js.Common.getCurrentDate();
+				var fromDate = com.arteriatech.ppc.utils.js.Common.getCurrentDate();
+				fromDate.setDate(fromDate.getDate() + sSelectedKey);
+				that.DateValue.fromDate = fromDate;
+			}
+			else
+			{
+				that.DateValue.fromDate = com.arteriatech.ppc.utils.js.Common.getCurrentDate();
+				var toDate = com.arteriatech.ppc.utils.js.Common.getCurrentDate();
+				toDate.setDate(toDate.getDate() + sSelectedKey);
+				that.DateValue.toDate = toDate;
+			}
+		}
+		return that.DateValue;
+	};
+	
+
+	
+	
+//	------------------------------------------------------------------------------------------------------------------------------
+//	--------------------------------------------------- Generic Checks & Nav Target by AP-------------------------------------------------------
+//	------------------------------------------------------------------------------------------------------------------------------
+
+	/*
+	* this method returns is it server date or client date.
+	* @input: mParameter.Typeset = product type (PS/SS/PD name from product specific util (ppsutil/ssutil))
+	*         mParameter.Types = DateType (CRNDTCHK/SRVRDTCHK name from UI)
+	* @Return bServerDate - true -- server date should be working in the UI
+	*                       false -- client date should be working in the UI
+	*/
+	com.arteriatech.ppc.utils.js.Common.isServerDate = function(mParameter, appCallBack){
+		/**
+		this if condition checks that oPPCDateGlobalMdl model is available in the core
+		*/
+		if(!sap.ui.getCore().getModel(oPPCUICommonConstants.PPCDateGlobalMdlName)){
+			//create filters array
+			var aFilter = new Array(); 
+			//Typeset filter
+			var oTypesetFilter = new sap.ui.model.Filter("Typeset", sap.ui.model.FilterOperator.EQ, mParameter.Typeset);
+			aFilter.push(oTypesetFilter);	
+			//Types filter
+			var oTypesFilter = new sap.ui.model.Filter("Types", sap.ui.model.FilterOperator.EQ, mParameter.Types);
+			aFilter.push(oTypesFilter);	
+		    //intialize return value
+			var bServerDate = false;
+			//read confogtypeset values
+			mParameter.oDataModel.read("/ConfigTypsetTypeValues", {
+				filters: aFilter,
+				success: function(oData){
+					//check data length
+					if(oData.results.length>0){
+						var oDataObject = oData.results[0];
+						//get type value
+						var typeValue = oDataObject.TypeValue;
+						//if type value "X" then server date should display in th UI
+						if(typeValue == "X"){
+							bServerDate = true;
+						}
+						oPPCUIGlobalSettings[oPPCUICommonConstants.isServerDate] = bServerDate;
+						var oPPCDateGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+						oPPCDateGlobalSettingsModel.setData(oPPCUIGlobalSettings);
+						sap.ui.getCore().setModel(oPPCDateGlobalSettingsModel, oPPCUICommonConstants.PPCDateGlobalMdlName);
+						appCallBack(bServerDate);
+					}
+				},
+				error: function(error){
+					//handle error
+					//client date should display in th UI
+					oPPCUIGlobalSettings[oPPCUICommonConstants.isServerDate] = bServerDate;
+					var oPPCDateGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+					oPPCDateGlobalSettingsModel.setData(oPPCUIGlobalSettings);
+					sap.ui.getCore().setModel(oPPCDateGlobalSettingsModel, oPPCUICommonConstants.PPCDateGlobalMdlName);
+					appCallBack(bServerDate);
+				}
+			});
+		}
+		else{
+			/**
+			if oPPCUIGlobalSettings model is available in the core, pass the inputType which is saved globally.
+			*/
+			var oPPCDateGlobalSettingsModel = sap.ui.getCore().getModel(oPPCUICommonConstants.PPCDateGlobalMdlName);
+			appCallBack(oPPCDateGlobalSettingsModel.oData[oPPCUICommonConstants.isServerDate]);
+		}
+	}
+	
+	/*
+	* get Nav target name by typeset.
+	* @input: mParameter.Typeset = product type (PS/SS/PD name from product specific util (ppsutil/ssutil))
+	*         mParameter.Types = WAPOMAT (wepapp name from UI)
+	*         mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         appCallBack = function{ handle sTargetName }
+	* @Return sTargetName - ppspomat/zppspomat (this is the standard or extension app name)
+	*/
+	com.arteriatech.ppc.utils.js.Common.getNavTargetName = function(mParameter, appCallBack){
+		/**
+		this if condition checks that oPPCUIGlobalSettings model is available in the core
+		*/
+		if(!sap.ui.getCore().getModel(oPPCUICommonConstants.PPCNavTargetGlobalMdlName)){
+			//create filters array
+			var aFilter = new Array(); 
+			//Typeset filter
+			var oTypesetFilter = new sap.ui.model.Filter("Typeset", sap.ui.model.FilterOperator.EQ, mParameter.Typeset);
+			aFilter.push(oTypesetFilter);	
+			//Types filter
+			var oTypesFilter = new sap.ui.model.Filter("Types", sap.ui.model.FilterOperator.EQ, mParameter.Types);
+			aFilter.push(oTypesFilter);	
+			//intialize return value
+			var sTargetName = "";
+			//read confogtypeset values
+			mParameter.oDataModel.read("/ConfigTypsetTypeValues", {
+				filters: aFilter,
+				success: function(oData){
+					//check data length
+					if(oData.results.length>0){
+						var oDataObject = oData.results[0];
+						//get type value
+						sTargetName = oDataObject.TypeValue;
+						
+						oPPCUIGlobalSettings[oPPCUICommonConstants.NavTargetName] = sTargetName;
+						var oPPCNavTargetGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+						oPPCNavTargetGlobalSettingsModel.setData(oPPCUIGlobalSettings);
+						sap.ui.getCore().setModel(oPPCNavTargetGlobalSettingsModel, oPPCUICommonConstants.PPCNavTargetGlobalMdlName);
+						
+						//pass the type value to app call back function
+						appCallBack(sTargetName);
+					}
+				},
+				error: function(error){
+					//handle error
+					oPPCUIGlobalSettings[oPPCUICommonConstants.NavTargetName] = sTargetName;
+					var oPPCNavTargetGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+					oPPCNavTargetGlobalSettingsModel.setData(oPPCUIGlobalSettings);
+					sap.ui.getCore().setModel(oPPCNavTargetGlobalSettingsModel, oPPCUICommonConstants.PPCNavTargetGlobalMdlName);
+					//pass empty value to the UI
+					appCallBack(sTargetName);
+				}
+			});
+		}
+		else{
+			/**
+			if oPPCUIGlobalSettings model is available in the core, pass the inputType which is saved globally.
+			*/
+			var oPPCNavTargetGlobalSettingsModel = sap.ui.getCore().getModel(oPPCUICommonConstants.PPCNavTargetGlobalMdlName);
+			appCallBack(oPPCNavTargetGlobalSettingsModel.oData[oPPCUICommonConstants.NavTargetName]);
+		}
+	}
+	
+	/*
+	* Show F4 List by immediately or not.
+	* @input: mParameter.Typeset = product type (PS/SS/PD name from product specific util (ppsutil/ssutil))
+	*         mParameter.Types = F4VNDRGO (f4 name from UI)
+	*         mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         appCallBack = function{ handle bShow }
+	* @Return bShow - true -- data should display immediately in the table of the value help dialog  
+	*                 false -- data should not display immediately in the table of the value help dialog 
+	*/
+	com.arteriatech.ppc.utils.js.Common.isF4ListShowByOpen = function(mParameter, appCallBack){
+		//create filters array
+		var aFilter = new Array(); 
+		//Typeset filter
+		var oTypesetFilter = new sap.ui.model.Filter("Typeset", sap.ui.model.FilterOperator.EQ, mParameter.Typeset);
+		aFilter.push(oTypesetFilter);	
+		//Types filter
+		var oTypesFilter = new sap.ui.model.Filter("Types", sap.ui.model.FilterOperator.EQ, mParameter.Types);
+		aFilter.push(oTypesFilter);	
+	    //intialize return value
+		var bShow = false;
+		//read confogtypeset values
+		mParameter.oDataModel.read("/ConfigTypsetTypeValues", {
+			filters: aFilter,
+			success: function(oData){
+				//check data length
+				if(oData.results.length>0){
+					var oDataObject = oData.results[0];
+					//get type value
+					var typeValue = oDataObject.TypeValue;
+					//if type value "X" then f4 list should be displayed immediately
+					if(typeValue == "X"){
+						bShow = true;
+						//pass the type value to app call back function
+						appCallBack(bShow);
+					}
+					//if type value empty then f4 list should not be displayed immediately
+					else{
+						//pass type value to app call back function
+						appCallBack(bShow);
+					}
+				}
+			},
+			error: function(error){
+				//handle error
+				//pass false value to the UI then f4 list should not be displayed immediately
+				appCallBack(bShow);
+			}
+		});
+	}
+	
+	/*
+	* get application configuration values.
+	* @input: mParameter.Typeset = PSPO (application type name will be passed by application))
+	*         mParameter.Types = HDRNTTXTID (config type name will be passed by application)
+	*         mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         appCallBack = function{ handle sConfigValue }
+	* @Return sConfigValue - F02 -- config constant value
+	*/
+	com.arteriatech.ppc.utils.js.Common.getAppConfigValues = function(mParameter, appCallBack){
+		//create filters array
+		var aFilter = new Array(); 
+		//Typeset filter
+		var oTypesetFilter = new sap.ui.model.Filter("Typeset", sap.ui.model.FilterOperator.EQ, mParameter.Typeset);
+		aFilter.push(oTypesetFilter);	
+		//Types filter
+		var oTypesFilter = new sap.ui.model.Filter("Types", sap.ui.model.FilterOperator.EQ, mParameter.Types);
+		aFilter.push(oTypesFilter);	
+		//intialize return value
+		var sConfigValue = "";
+		//read confogtypeset values
+		mParameter.oDataModel.read("/ConfigTypsetTypeValues", {
+			filters: aFilter,
+			success: function(oData){
+				//check data length
+				if(oData.results.length>0){
+					var oDataObject = oData.results[0];
+					//get type value
+					sConfigValue = oDataObject.TypeValue;
+					//pass the type value to app call back function
+					appCallBack(sConfigValue);
+				}
+			},
+			error: function(error){
+				//handle error
+				//pass empty value to the UI
+				appCallBack(sConfigValue);
+			}
+		});
+	}
+	
+	/*
+	* get application configuration values.
+	*  Days for Date Range Check in Filter (0=any, 30=30 days, etc).
+	* @input: mParameter.Typeset = product type (PS/SS/PD name from product specific util (ppsutil/ssutil))
+	* 		  mParameter.Types = DTRNGCHK (this is the filter name)
+	*         mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         appCallBack = function{ handle sDateRange }
+	* @Return sDateRange - 0/30/60.. -- no. of days
+	*/
+	com.arteriatech.ppc.utils.js.Common.numberOfDaysForDateRange = function(mParameter, appCallBack){
+		/**
+		this if condition checks that oPPCUIGlobalSettings model is available in the core
+		*/
+		if(!sap.ui.getCore().getModel(oPPCUICommonConstants.PPCDateRangeGlobalMdlName)){
+			//create filters array
+			var aFilter = new Array(); 
+			//Typeset filter
+			var oTypesetFilter = new sap.ui.model.Filter("Typeset", sap.ui.model.FilterOperator.EQ, mParameter.Typeset);
+			aFilter.push(oTypesetFilter);	
+			//Types filter
+			var oTypesFilter = new sap.ui.model.Filter("Types", sap.ui.model.FilterOperator.EQ, mParameter.Types);
+			aFilter.push(oTypesFilter);	
+			//intialize return value
+			var sDateRange = 0;
+			//read confogtypeset values
+			mParameter.oDataModel.read("/ConfigTypsetTypeValues", {
+				filters: aFilter,
+				success: function(oData){
+					//check data length
+					if(oData.results.length>0){
+						var oDataObject = oData.results[0];
+						//get type value
+						sDateRange = oDataObject.TypeValue;
+						
+						oPPCUIGlobalSettings[oPPCUICommonConstants.DateRange] = sDateRange;
+						var oPPCDateRangeGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+						oPPCDateRangeGlobalSettingsModel.setData(oPPCUIGlobalSettings);
+						sap.ui.getCore().setModel(oPPCDateRangeGlobalSettingsModel, oPPCUICommonConstants.PPCDateRangeGlobalMdlName);
+						
+						//pass the type value to app call back function
+						appCallBack(sDateRange);
+					}
+				},
+				error: function(error){
+					//handle error
+					oPPCUIGlobalSettings[oPPCUICommonConstants.DateRange] = sDateRange;
+					var oPPCDateRangeGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+					oPPCDateRangeGlobalSettingsModel.setData(oPPCUIGlobalSettings);
+					sap.ui.getCore().setModel(oPPCDateRangeGlobalSettingsModel, oPPCUICommonConstants.PPCDateRangeGlobalMdlName);
+					//pass empty value to the UI
+					appCallBack(sDateRange);
+				}
+			});
+		}
+		else{
+			/**
+			if oPPCUIGlobalSettings model is available in the core, pass the inputType which is saved globally.
+			*/
+			var oPPCDateRangeGlobalSettingsModel = sap.ui.getCore().getModel(oPPCUICommonConstants.PPCDateRangeGlobalMdlName);
+			appCallBack(oPPCDateRangeGlobalSettingsModel.oData[oPPCUICommonConstants.DateRange]);
+		}
+	}
+	
+	/*
+	* get Nav target name by typeset.
+	* @input: mParameter.Typeset = product type (PS/SS/PD name from product specific util (ppsutil/ssutil))
+	*         mParameter.Types = DMSSTORE (stored name from UI)
+	*         mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         appCallBack = function{ handle sTargetName }
+	* @Return sStoreValue - B/A/D (this is the standard or extension app name)
+	*/
+	com.arteriatech.ppc.utils.js.Common.getStoredTypeValues = function(mParameter, appCallBack){
+		/**
+		this if condition checks that oPPCUIGlobalSettings model is available in the core
+		*/
+		if(!sap.ui.getCore().getModel(oPPCUICommonConstants.PPCStoredValGlobalMdlName)){
+			//create filters array
+			var aFilter = new Array(); 
+			//Typeset filter
+			var oTypesetFilter = new sap.ui.model.Filter("Typeset", sap.ui.model.FilterOperator.EQ, mParameter.Typeset);
+			aFilter.push(oTypesetFilter);	
+			//Types filter
+			var oTypesFilter = new sap.ui.model.Filter("Types", sap.ui.model.FilterOperator.EQ, mParameter.Types);
+			aFilter.push(oTypesFilter);	
+			//intialize return value
+			var sStoreValue = "";
+			//read confogtypeset values
+			mParameter.oDataModel.read("/ConfigTypsetTypeValues", {
+				filters: aFilter,
+				success: function(oData){
+					//check data length
+					if(oData.results.length>0){
+						var oDataObject = oData.results[0];
+						//get type value
+						sStoreValue = oDataObject.TypeValue;
+						
+						oPPCUIGlobalSettings[oPPCUICommonConstants.StoredValue] = sStoreValue;
+						var oPPCStroredValGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+						oPPCStroredValGlobalSettingsModel.setData(oPPCUIGlobalSettings);
+						sap.ui.getCore().setModel(oPPCStroredValGlobalSettingsModel, oPPCUICommonConstants.PPCStoredValGlobalMdlName);
+						
+						//pass the type value to app call back function
+						appCallBack(sStoreValue);
+					}
+				},
+				error: function(error){
+					//handle error
+					oPPCUIGlobalSettings[oPPCUICommonConstants.StoredValue] = sStoreValue;
+					var oPPCStroredValGlobalSettingsModel = new sap.ui.model.json.JSONModel();
+					oPPCStroredValGlobalSettingsModel.setData(oPPCUIGlobalSettings);
+					sap.ui.getCore().setModel(oPPCStroredValGlobalSettingsModel, oPPCUICommonConstants.PPCStoredValGlobalMdlName);
+					//pass empty value to the UI
+					appCallBack(sStoreValue);
+				}
+			});
+		}
+		else{
+			/**
+			if oPPCUIGlobalSettings model is available in the core, pass the inputType which is saved globally.
+			*/
+			var oPPCStroredValGlobalSettingsModel = sap.ui.getCore().getModel(oPPCUICommonConstants.PPCStoredValGlobalMdlName);
+			appCallBack(oPPCStroredValGlobalSettingsModel.oData[oPPCUICommonConstants.StoredValue]);
+		}
+	}
+	
+	//-------------------------------------------------Product & App Generic Types by AP---------------------------------------------
+	/*
+	* * load product & app features.
+	* @input: mParameter.ProductTypeset = product type (PS/SS/PD name from product specific util (ppsutil/ssutil))
+	*         mParameter.Typeset = PSPO (application type name will be passed by application))
+	*         mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         mParameter.oUtilsI18n = ppcutil i18n resource bundle
+	* @Output save product and app features globally
+	* @Error error message display by showMessageBox
+	* @return bSuccess = true/false
+	*/
+	
+	com.arteriatech.ppc.utils.js.Common.loadProductAndAppFeatures = function(mParameter){
+		var bSuccess = true;
+		mParameter.oDataModel.attachMetadataFailed(function(mArguments) {
+			com.arteriatech.ppc.utils.js.Common.showServiceErrorPopup({
+								statusCode: mArguments.getParameter("statusCode"),
+								statusText: mArguments.getParameter("statusText"),
+								responseText: mArguments.getParameter("responseText")
+							});
+		});
+		if(!sap.ui.getCore().getModel(oPPCUICommonConstants.ProductFeaturesModelName)) {
+			//get product features and save in global model
+			bSuccess = false;
+			var sUrl = mParameter.oDataModel.sServiceUrl;
+			sUrl = sUrl+"/ConfigTypsetTypeValues?$filter=Typeset eq '"+mParameter.ProductTypeset+"' or Typeset eq 'PC'";
+			var oResponse = jQuery.sap.sjax({
+				url: sUrl,
+				dataType: "json"
+			});
+			try {  
+				  if (oResponse.success) {  
+					  //handle response and retrive the data
+						 var oServerCfg = {};  
+						 oServerCfg = oResponse.data;  
+						 var aData = oServerCfg.d.results;
+						 //save in global model
+						 var oProductFeaturesModel = new sap.ui.model.json.JSONModel();
+						 aData.DisableEscaseKey = false;
+						 if(aData && aData.WALABEL && (aData.WALABEL === 'LEFT' || aData.WALABEL === 'left')) {
+							aData.WALABEL = true;
+						 }else {
+							aData.WALABEL = false;
+						 }
+						 oProductFeaturesModel.setData(aData);
+						 sap.ui.getCore().setModel(oProductFeaturesModel, oPPCUICommonConstants.ProductFeaturesModelName);
+						 if(mParameter.Component) {
+							mParameter.Component.setModel(sap.ui.getCore().getModel(oPPCUICommonConstants.ProductFeaturesModelName), oPPCUICommonConstants.ProductFeaturesModelName);
+						 }
+						 bSuccess = true;
+				  }
+				  else{  
+					  //display error message
+					  sap.m.MessageBox.error(
+							  mParameter.oUtilsI18n.getText("common.Dialog.Error.GenericError.Message"),
+							   {
+								styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+							   }
+							 );
+				  }
+			} 
+			catch(error){  
+				//handle error
+				sap.m.MessageBox.error(
+					  mParameter.oUtilsI18n.getText("common.Dialog.Error.GenericError.Message"),
+					   {
+						styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+					   }
+					 );
+			} 
+		}else {
+			if(mParameter.Component) {
+				mParameter.Component.setModel(sap.ui.getCore().getModel(oPPCUICommonConstants.ProductFeaturesModelName), oPPCUICommonConstants.ProductFeaturesModelName);
+			}
+		}
+		var appModelExist = false;
+		if(sap.ui.getCore().getModel(oPPCUICommonConstants.AppFeaturesModelName)) {
+			var oAppFeaturesModel = sap.ui.getCore().getModel(oPPCUICommonConstants.AppFeaturesModelName);
+			var aData = oAppFeaturesModel.oData;
+			for(var i=0; i<aData.length;i++){
+			//fetch the typevalue by checking the typeset & types input
+				if(aData[i].Typeset == mParameter.Typeset){
+					appModelExist = true;
+					break;
+				}
+			}
+		}
+		if(!appModelExist) {
+			//get app features and save in global model
+			bSuccess = false;
+			var sUrl = mParameter.oDataModel.sServiceUrl;
+			sUrl = sUrl+"/ConfigTypsetTypeValues?$filter=Typeset eq '"+mParameter.Typeset+"'";
+			var oResponse = jQuery.sap.sjax({
+				url: sUrl,
+				dataType: "json"
+			});
+			try {  
+				  if (oResponse.success) {  
+					  //handle response and retrive the data
+						 var oServerCfg = {};  
+						 oServerCfg = oResponse.data;  
+						 var aData = oServerCfg.d.results;
+						 //save in global model
+						 if(sap.ui.getCore().getModel(oPPCUICommonConstants.AppFeaturesModelName)) {
+							var oAppFeaturesModel = sap.ui.getCore().getModel(oPPCUICommonConstants.AppFeaturesModelName);
+							var aOldData = oAppFeaturesModel.oData;
+							for(var i=0; i<aData.length;i++){
+								aOldData.push(aData[i]);
+							}
+						 }else {
+							var oAppFeaturesModel = new sap.ui.model.json.JSONModel();
+							oAppFeaturesModel.setData(aData);
+							sap.ui.getCore().setModel(oAppFeaturesModel, oPPCUICommonConstants.AppFeaturesModelName);
+						 }
+						 bSuccess = true;
+				  }  
+				  else{  
+					  //display error message
+					  sap.m.MessageBox.error(
+							  mParameter.oUtilsI18n.getText("common.Dialog.Error.GenericError.Message"),
+							   {
+								styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+							   }
+							 );
+				  }
+			} 
+			catch(error){  
+				//handle error
+				sap.m.MessageBox.error(
+					  mParameter.oUtilsI18n.getText("common.Dialog.Error.GenericError.Message"),
+					   {
+						styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+					   }
+					 );
+			} 
+		}
+		return bSuccess;
+	}
+	/*
+	* load product features.
+	* @input: mParameter.Typeset = product type (PS/SS/PD name from product specific util (ppsutil/ssutil))
+	*         mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         mParameter.oUtilsI18n = ppcutil i18n resource bundle
+	* @Output save product features globally
+	* @Error error message display by showMessageBox
+	* @return bSuccess = true/false
+	*/
+	com.arteriatech.ppc.utils.js.Common.loadProductFeatures = function(mParameter){
+		var bSuccess = true;
+		mParameter.oDataModel.attachMetadataFailed(function(mArguments) {
+			com.arteriatech.ppc.utils.js.Common.showServiceErrorPopup({
+								statusCode: mArguments.getParameter("statusCode"),
+								statusText: mArguments.getParameter("statusText"),
+								responseText: mArguments.getParameter("responseText")
+							});
+		});
+		if(!sap.ui.getCore().getModel(oPPCUICommonConstants.ProductFeaturesModelName)) {
+			//get product features and save in global model
+			bSuccess = true;
+			var sUrl = mParameter.oDataModel.sServiceUrl; 
+			
+			sUrl = sUrl+"/ConfigTypsetTypeValues?$filter=Typeset eq '"+mParameter.Typeset+"' or Typeset eq 'PC'";
+			var oResponse = jQuery.sap.sjax({
+				url: sUrl,
+				dataType: "json"
+			});
+			try {  
+				  if (oResponse.success) {  
+					  //handle response and retrive the data
+						 var oServerCfg = {};  
+						 oServerCfg = oResponse.data;  
+						 var aData = oServerCfg.d.results;
+						 //save in global model
+						 var oProductFeaturesModel = new sap.ui.model.json.JSONModel();
+						 if(aData && aData.WALABEL && (aData.WALABEL === 'LEFT' || aData.WALABEL === 'left')) {
+							aData.WALABEL = true;
+						 }else {
+							aData.WALABEL = false;
+						 }
+						 oProductFeaturesModel.setData(aData);
+						 sap.ui.getCore().setModel(oProductFeaturesModel, oPPCUICommonConstants.ProductFeaturesModelName);
+						 if(mParameter.Component) {
+							mParameter.Component.setModel(sap.ui.getCore().getModel(oPPCUICommonConstants.ProductFeaturesModelName), oPPCUICommonConstants.ProductFeaturesModelName);
+						 }
+						 bSuccess = true;
+				  }
+				  else{  
+					  //display error message
+					  sap.m.MessageBox.error(
+							  mParameter.oUtilsI18n.getText("common.Dialog.Error.GenericError.Message"),
+							   {
+								styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+							   }
+							 );
+				  }
+			} 
+			catch(error){  
+				//handle error
+				sap.m.MessageBox.error(
+					  mParameter.oUtilsI18n.getText("common.Dialog.Error.GenericError.Message"),
+					   {
+						styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+					   }
+					 );
+			} 
+		}else {
+			if(mParameter.Component) {
+					mParameter.Component.setModel(sap.ui.getCore().getModel(oPPCUICommonConstants.ProductFeaturesModelName), oPPCUICommonConstants.ProductFeaturesModelName);
+			}
+		}
+		return bSuccess;
+	}
+	/*
+	* load app features.
+	* @input: mParameter.Typeset = PSPO (application type name will be passed by application))
+	*         mParameter.oDataModel = PCGW odata model object (odata object name from UI)
+	*         mParameter.oUtilsI18n = ppcutil i18n resource bundle
+	* @Output save app features globally
+	* @Error error message display by showMessageBox
+	* @return bSuccess = true/false
+	*/
+	com.arteriatech.ppc.utils.js.Common.loadAppFeatures = function(mParameter){
+		var bSuccess = false;
+		//get app features and save in global model
+		var sUrl = "";
+		if (mParameter.bMultiTypeset) {
+			sUrl = mParameter.oDataModel.sServiceUrl + "/ConfigTypsetTypeValues?$filter=";
+			for (var i = 0; i < mParameter.Typeset.length; i++) {
+				if (i === 0 && mParameter.Typeset[0]) {
+					sUrl = sUrl + "Typeset eq '" + mParameter.Typeset[0] + "'";
+				} else {
+					sUrl = sUrl + "or Typeset eq '" + mParameter.Typeset[i] + "'";
+				}
+			}
+		} else {
+			sUrl = mParameter.oDataModel.sServiceUrl;
+			sUrl = sUrl + "/ConfigTypsetTypeValues?$filter=Typeset eq '" + mParameter.Typeset + "'";
+		}
+		
+		var oResponse = jQuery.sap.sjax({
+            url: sUrl,
+            dataType: "json"
+        });
+		try {  
+	          if (oResponse.success) {  
+	        	  //handle response and retrive the data
+	                 var oServerCfg = {};  
+                     oServerCfg = oResponse.data;  
+                     var aData = oServerCfg.d.results;
+                     //save in global model
+                     var oAppFeaturesModel = new sap.ui.model.json.JSONModel();
+     				 oAppFeaturesModel.setData(aData);
+     				 sap.ui.getCore().setModel(oAppFeaturesModel, oPPCUICommonConstants.AppFeaturesModelName);
+     				bSuccess = true;
+	          }
+	          else{  
+	        	  //display error message
+	        	  sap.m.MessageBox.error(
+	        			  mParameter.oUtilsI18n.getText("common.Dialog.Error.GenericError.Message"),
+	        		       {
+	        		        styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+	        		       }
+	        		     );
+	          }
+		} 
+		catch(error){  
+			//handle error
+			sap.m.MessageBox.error(
+      			  mParameter.oUtilsI18n.getText("common.Dialog.Error.GenericError.Message"),
+      		       {
+      		        styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+      		       }
+      		     );
+		} 
+		return bSuccess;
+	}
+
+	/*
+	* get generic values for product or app.
+	* @input:  mParameter.Typeset = PSPO (application type name will be passed by application))
+	* 		   mParameter.Types = F4VNDRGO (f4 name from UI) || DMSSTORE (app name from UI) || DTRNGCHK (this is the filter name)
+	*                            || WAPOMAT (app name from UI) || DateType (CRNDTCHK/SRVRDTCHK name from UI)
+	* @Error = "";
+	* @return sTypeValue = X || B || 30 || PPSPOMAT || X .... 
+	*/
+	com.arteriatech.ppc.utils.js.Common.getFeatureValue = function(mParameter){
+		var sTypeValue = "";
+		//check is product type or app type
+		if(mParameter.isProduct){
+			//handle prioduct type value
+			//check product features is available gloablly or not
+			if(sap.ui.getCore().getModel(oPPCUICommonConstants.ProductFeaturesModelName)){
+				//get product global model
+				var oProductFeaturesModel = sap.ui.getCore().getModel(oPPCUICommonConstants.ProductFeaturesModelName);
+				var aData = oProductFeaturesModel.oData;
+				for(var i=0; i<aData.length;i++){
+					//fetch the typevalue by checking the types input
+					if(aData[i].Types == mParameter.Types){
+						sTypeValue = aData[i].TypeValue;
+						break;
+					}
+				}//end of for loop
+			}//end of global model if condition
+		}else{
+			//handle app type value
+			//check app features is available gloablly or not
+			if(sap.ui.getCore().getModel(oPPCUICommonConstants.AppFeaturesModelName)){
+				//get app global model
+				var oAppFeaturesModel = sap.ui.getCore().getModel(oPPCUICommonConstants.AppFeaturesModelName);
+				var aData = oAppFeaturesModel.oData;
+				for(var i=0; i<aData.length;i++){
+					//fetch the typevalue by checking the typeset & types input
+					if(aData[i].Typeset == mParameter.Typeset && aData[i].Types == mParameter.Types){
+						sTypeValue = aData[i].TypeValue;
+						break;
+					}
+				}//end of for loop
+			}//end of global model if condition
+		
+		}
+		//end of is product if check condition
+		return sTypeValue;
+	}
+	//-----------------------------------------------GetFLP Tile Action---------------------------------------------
+	com.arteriatech.ppc.utils.js.Common.getFLPTileAction = function(mParemeters) 
+		{
+			var sAction = "";
+			if(com.arteriatech.ppc.utils.js.Common.isUshell())
+			{
+			 var FLPTile = sap.ushell.Container.getService("URLParsing").getHash(location.href);
+			 if(FLPTile !== undefined && FLPTile.split("-").length >= 1)
+			 {
+				sAction = FLPTile.split("-")[1];
+			 }
+			}
+			return sAction;
+		};
+	//-----------------------------------------Suggestion for Input-------------------------------------------------
+	//------------------------------------------------By GE---------------------------------------------------------
+		
+		com.arteriatech.ppc.utils.js.Common.handleSuggest = function(mParemeters) 
+		{
+			var sTerm = mParemeters.oEvent.getParameter("suggestValue");
+			var aFilters = [];
+			if (sTerm) {
+				for(var i=0; i<mParemeters.aProperties.length; i++) {
+					aFilters.push(new sap.ui.model.Filter(mParemeters.aProperties[i], sap.ui.model.FilterOperator.Contains, sTerm));
+				}	
+			}
+			var allFilters = new sap.ui.model.Filter(aFilters, false);
+			mParemeters.oEvent.getSource().getBinding(mParemeters.sBinding).filter(allFilters);
+		};
+		
+		com.arteriatech.ppc.utils.js.Common.suggestionItemSelected = function(mParemeters, callBack) 
+		{
+			mParemeters.oEvent.getSource().setValueState("None");
+			mParemeters.oEvent.getSource().setValueStateText("");
+			var sPath = mParemeters.oEvent.getParameter("selectedItem").getBindingContext(mParemeters.sModelName).getPath();
+			if(mParemeters.sGUID)		
+			{		
+				var keyGUID =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sGUID);		
+				var key =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sKey);		
+				var desc =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sDescription);		
+				mParemeters.oEvent.getSource().removeAllTokens();		
+				mParemeters.oEvent.getSource().addToken(new sap.m.Token({		
+					key: keyGUID,		
+					text: desc + " (" + key + ")"		
+				}));		
+				mParemeters.oEvent.getSource().setValue("");		
+			}		
+			else		
+			{
+				var key =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sKey);
+				var desc =  mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath + "/"+mParemeters.sDescription);
+				mParemeters.oEvent.getSource().removeAllTokens();
+				mParemeters.oEvent.getSource().addToken(new sap.m.Token({
+					key: key,
+					text: desc + " (" + key + ")"
+				}));
+				mParemeters.oEvent.getSource().setValue("");
+			}
+			var jData = mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty(sPath);
+			if(callBack){
+				callBack(key, desc, jData);
+			}
+		};
+		
+		com.arteriatech.ppc.utils.js.Common.suggestionOnChange = function(mParemeters, callBack) 
+		{
+			mParemeters.oEvent.getSource().setValueState("None");
+			mParemeters.oEvent.getSource().setValueStateText("");
+			var key = "", desc = "", jData = {};
+			var enteredVal = mParemeters.oEvent.getSource().getValue();
+			var oData = mParemeters.thisController.getView().getModel(mParemeters.sModelName).getProperty("/");
+			var bFound = false;
+			if (enteredVal !== "") {
+				for (var i = 0; i < oData.length; i++) {
+					if (oData[i][mParemeters.sKey] === enteredVal) {
+						jData = oData[i];
+						key = oData[i][mParemeters.sKey]
+						desc = oData[i][mParemeters.sDescription];
+						mParemeters.oEvent.getSource().removeAllTokens();
+						if(mParemeters.sGUID) {
+							var tokens = new sap.m.Token({
+								key: oData[i][mParemeters.sGUID],
+								text: oData[i][mParemeters.sDescription] + " (" + oData[i][mParemeters.sKey] + ")"
+							});
+						}else {
+							var tokens = new sap.m.Token({
+								key: oData[i][mParemeters.sKey],
+								text: oData[i][mParemeters.sDescription] + " (" + oData[i][mParemeters.sKey] + ")"
+							});
+						}
+						mParemeters.oEvent.getSource().addToken(tokens);
+						mParemeters.oEvent.getSource().setValue("");
+						bFound = true;
+						break;
+					}else if (oData[i][mParemeters.sDescription] === enteredVal) {
+						jData = oData[i];
+						key = oData[i][mParemeters.sKey]
+						desc = oData[i][mParemeters.sDescription];
+						mParemeters.oEvent.getSource().removeAllTokens();
+						if(mParemeters.sGUID) {
+							var tokens = new sap.m.Token({
+								key: oData[i][mParemeters.sGUID],
+								text: oData[i][mParemeters.sDescription] + " (" + oData[i][mParemeters.sKey] + ")"
+							});
+						}else {
+							var tokens = new sap.m.Token({
+								key: oData[i][mParemeters.sKey],
+								text: oData[i][mParemeters.sDescription] + " (" + oData[i][mParemeters.sKey] + ")"
+							});
+						}
+						mParemeters.oEvent.getSource().addToken(tokens);
+						mParemeters.oEvent.getSource().setValue("");
+						bFound = true;
+						break;
+					}
+				}
+				if(!bFound) {
+					mParemeters.oEvent.getSource().setValueState("Error");
+					mParemeters.oEvent.getSource().setValueStateText("Please enter valid "+mParemeters.sKey);
+				}
+			}
+			if(callBack){
+				callBack(enteredVal, bFound, key, desc, jData);
+			}
+		};	
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~		
+com.arteriatech.ppc.utils.js.Common.getMaxLengthFromMetadata  = function(mParameters) {
+	mParameters.sPropertyValue = "MaxLength";
+	return parseInt(com.arteriatech.ppc.utils.js.Common.getEntityTypePropertyValue(mParameters));
+};
+
+com.arteriatech.ppc.utils.js.Common.getLableFromMetadata  = function(mParameters) {
+	mParameters.sPropertyValue = "sap:label";
+	return com.arteriatech.ppc.utils.js.Common.getEntityTypePropertyValue(mParameters);
+};
+
+com.arteriatech.ppc.utils.js.Common.getEntityTypePropertyValue = function(mParameters){
+	var oProperties = com.arteriatech.ppc.utils.js.Common.getMetadataProperty(mParameters);
+	return oProperties[mParameters.sPropertyValue];
+};
+
+com.arteriatech.ppc.utils.js.Common.getMetadataProperty = function(mParameters){
+	if(mParameters.oDataModel !== undefined && mParameters.oDataModel !== null && mParameters.oDataModel !== "") {
+		if(mParameters.oDataModel.oMetadata !== undefined && mParameters.oDataModel.oMetadata !== null && mParameters.oDataModel.oMetadata !== "") {
+			var oMetadata = com.arteriatech.ppc.utils.js.Common.xmlToJson(com.arteriatech.ppc.utils.js.Common.stringToXML(mParameters.oDataModel.oMetadata.sMetadataBody));
+			var oEntityType = com.arteriatech.ppc.utils.js.Common.getEntityType(oMetadata, mParameters.sEntityType, mParameters.oUtilsI18n)
+			if(oEntityType !== undefined && oEntityType !== null && oEntityType !== "") {
+				var oProperties = com.arteriatech.ppc.utils.js.Common.getPropertyFromEntityType(oEntityType, mParameters.sPropertyName);
+				if(oProperties !== undefined && oProperties !== null && oProperties !== "") {
+					return oProperties;
+				}else {
+					sap.m.MessageBox.error(
+					  mParameters.oUtilsI18n.getText("common.Dialog.Error.InvalidPropertyName", mParameters.sPropertyName),
+					   {
+						styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+					   }
+					 );
+				}
+			}else {
+				sap.m.MessageBox.error(
+      			  mParameters.oUtilsI18n.getText("common.Dialog.Error.InvalidEntityType", mParameters.sEntityType),
+      		       {
+      		        styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+      		       }
+      		     );
+			}
+		}else {
+			sap.m.MessageBox.error(
+      			  mParameters.oUtilsI18n.getText("common.Dialog.Error.InvalidModel"),
+      		       {
+      		        styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+      		       }
+      		     );
+		}
+	}else {
+		sap.m.MessageBox.error(
+      			  mParameters.oUtilsI18n.getText("common.Dialog.Error.InvalidModel"),
+      		       {
+      		        styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+      		       }
+      		     );
+	}
+};	
+com.arteriatech.ppc.utils.js.Common.getPropertyFromEntityType = function(oEntityType, sPropertyName) {
+	var oProperties;
+	for(var i=0; i<oEntityType.Property.length; i++ ) {
+		if(oEntityType.Property[i]["@attributes"].Name === sPropertyName) {
+			oProperties = oEntityType.Property[i]["@attributes"];
+			break;
+		}
+	}
+	return oProperties;
+};
+com.arteriatech.ppc.utils.js.Common.getEntityType = function(oMetadata, sEntityType, oUtilsI18n) {
+	try {
+		if(sEntityType != undefined && sEntityType !== null && sEntityType !== "") {
+			var EntityTypes = oMetadata["edmx:Edmx"]["edmx:DataServices"].Schema.EntityType
+			var EntityType;
+			if(EntityTypes["@attributes"] !== undefined) {
+				if(EntityTypes["@attributes"].Name === sEntityType) {
+					EntityType = EntityTypes;
+				}
+			}
+			for(var i=0; i< EntityTypes.length; i++) {
+				if(EntityTypes[i]["@attributes"].Name === sEntityType) {
+					EntityType = EntityTypes[i];
+					break;
+				}
+			}
+		}else {
+			sap.m.MessageBox.error(
+      			  oUtilsI18n.getText("common.Dialog.Error.InvalidEntityType", sEntityType),
+      		       {
+      		        styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+      		       }
+      		     );
+		}
+	}catch(error) {
+			//handle error
+			sap.m.MessageBox.error(
+      			  oUtilsI18n.getText("common.Dialog.Error.InvalidEntityType", sEntityType),
+      		       {
+      		        styleClass: sap.ui.Device.support.touch? "" : "sapUiSizeCompact"
+      		       }
+      		     );
+	}finally {
+		return EntityType;
+	}
+};
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ XML to JSON ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~by GE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+com.arteriatech.ppc.utils.js.Common.xmlToJson = function(xml) {
+	var obj = {};
+	if (xml.nodeType == 1) {
+		if (xml.attributes.length > 0) {
+		obj["@attributes"] = {};
+			for (var j = 0; j < xml.attributes.length; j++) {
+				var attribute = xml.attributes.item(j);
+				obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+			}
+		}
+	} else if (xml.nodeType == 3) {
+		obj = xml.nodeValue;
+	}
+
+	if (xml.hasChildNodes()) {
+		for(var i = 0; i < xml.childNodes.length; i++) {
+			var item = xml.childNodes.item(i);
+			var nodeName = item.nodeName;
+			if (typeof(obj[nodeName]) == "undefined") {
+				obj[nodeName] = com.arteriatech.ppc.utils.js.Common.xmlToJson(item);
+			} else {
+				if (typeof(obj[nodeName].push) == "undefined") {
+					var old = obj[nodeName];
+					obj[nodeName] = [];
+					obj[nodeName].push(old);
+				}
+				obj[nodeName].push(com.arteriatech.ppc.utils.js.Common.xmlToJson(item));
+			}
+		}
+	}
+	return obj;
+};
+
+//Get Error messages from message manager		
+com.arteriatech.ppc.utils.js.Common.getErrorMsgsFromMsgMgr = function() {		
+	var message = "";		
+	var aMessageObjects =  sap.ui.getCore().getMessageManager().getMessageModel().getData();		
+	for(var i=0; i<aMessageObjects.length; i++){		
+		var messageModel = aMessageObjects[i];		
+		if(messageModel.type == "Error"){		
+			/*if(message === "") {		
+				message = messageModel.message;		
+			}else { */		
+				message = message +"\n"+messageModel.message;		
+			/*}*/		
+		}		
+	}		
+	return message;		
+};		
+//Get Information messages from message manager		
+com.arteriatech.ppc.utils.js.Common.getInfoMsgsFromMsgMgr = function() {		
+	var message = "";		
+	var aMessageObjects =  sap.ui.getCore().getMessageManager().getMessageModel().getData();		
+	for(var i=0; i<aMessageObjects.length; i++){		
+		var messageModel = aMessageObjects[i];		
+		if(messageModel.type == "Information"){		
+			/*if(message === "") {		
+				message = messageModel.message;		
+			}else { */		
+				message = message +"\n"+messageModel.message;		
+			/*}*/		
+		}		
+	}		
+	return message;		
+};		
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ String to XML ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~by GE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+com.arteriatech.ppc.utils.js.Common.stringToXML = function(stringVal) {
+	return jQuery.parseXML(stringVal);
+};
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Handle browser back button~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+$(window).on("navigate", function (event, data) {
+    bShowServiceErrorPopup = false;
+});
+
+com.arteriatech.ppc.utils.js.Common.formatNumber = function(oEvent) {
+	oEvent.getSource().setValue(oEvent.getSource().getValue().replace(/[^\d.-]/g, ''));
+};
+
+//---------------------------------------------------------------- Tooltip For Sorter and Filter ---------------------------------------------------------------
+
+/*
+* getTooltipForSorterAndFilter()
+*	
+* @ Param Object fDocumentBodyButtons
+*
+* @ return Boolean true/false
+*
+* @ Author Ranganath M
+* @ On 28-06-2016
+*/
+com.arteriatech.ppc.utils.js.Common.getTooltipForSorterAndFilter = function(fDocumentBodyButtons) {
+	// Looping for drop-down-list buttons 
+	for (var i = 0; i < fDocumentBodyButtons.length; i++) {
+		// Checking Equal statement with string "drop-down-list"
+		if (fDocumentBodyButtons[i].title === "drop-down-list") {
+			// Setting new title to button
+			fDocumentBodyButtons[i].title = "sort-and-filter";
+		}
+	}
+	return true;
+};
+
+
+
+
+// ----------------------------------------------------------------- Document On Ready jQuery function --------------------------------------------------------
+/*
+ * @ jQuery On Ready funciton   
+ * 
+ * @ return void
+ */
+$(document).ready(function() {
+
+	// Getting all document body buttons through jQuery selector 
+	var oDocumentBodyButtons = $("Button");
+	// Checking conditional statement for selected buttons
+	if (oDocumentBodyButtons.length > 0) {
+		// Calling function with Object parameter
+		com.arteriatech.ppc.utils.js.Common.getTooltipForSorterAndFilter(oDocumentBodyButtons);
+	}
+});
+
+
+	
+}());
+
+
+// -----------------------------------------------------------------ItemNo formatter to remove leading zeroes--------------------------------------------------------
+
+com.arteriatech.ppc.utils.js.Common.formatItemNo=function(ItemNo,TypesetName)
+{
+	if (typeof ItemNo === "string") 
+	{
+		return parseInt(ItemNo, 10);
+	}
+	else
+	{
+		return ItemNo;
+	}
+
+};
+
+//---------------------------------------------------------------------------------get table title method by PT----------------------------------------------------------------------
+com.arteriatech.ppc.utils.js.Common.getTableTitle=function(Items,keyFieldNumberProperty,sItemNumberTitle,sNumberTitle) {
+   var aItemData = [];
+   var title;
+   if(Items.length>0)
+   {
+    for (var i = 0; i < Items.length; i++) 
+    {
+      aItemData.push(Items[i][keyFieldNumberProperty]);
+    }
+    aItemData=jQuery.unique(aItemData);
+    title = Items.length + " " + sItemNumberTitle + " from" + " " + aItemData.length + " " + sNumberTitle;
+   }
+   else
+   {
+    title = 0 + " " + sItemNumberTitle + " from" + " " + 0 + " " + sNumberTitle;
+   }
+   return title;
+  };
+  
+  com.arteriatech.ppc.utils.js.Common.setVHSelectedItemAreaVisibility = function(mParameters) {
+	if (mParameters.oValueHelpDialog.getAggregation("content").length > 0) {
+		if (mParameters.oValueHelpDialog.getAggregation("content")[0].getAggregation("items").length > 2) {
+			if (mParameters.oValueHelpDialog.getAggregation("content")[0].getAggregation("items")[2].getAggregation("content").length > 0) {
+				mParameters.oValueHelpDialog.getAggregation("content")[0].getAggregation("items")[2].getAggregation("content")[0].setVisible(false);
+			}
+		}
+   }
+  };
+  
+  
+  //------------------------------------------------------FLP Plugin Methods -----------------------------------------------------//
+  //-------------------------------------------------------------by GE-----------------------------------------------------------//
+
+	com.arteriatech.ppc.utils.js.Common.browserCompatibilityStatus = function(browserInfo) {
+			var browserName = browserInfo.split(" ")[0];
+			var browserVersion = browserInfo.split(" ")[1];
+			browserVersion = parseInt(browserVersion);
+			browserName = browserName.trim();
+			if (browserName === "Edge") {
+				if (browserVersion !== 13) {
+					return false;
+				} else {
+					return true;
+				}
+			} else if (browserName === "MSIE" || browserName === "IE") {
+				if (browserVersion < 11) {
+					return false;
+				} else {
+					return true;
+				}
+			} else if (browserName === "Chrome") {
+				if (browserVersion < 53) {
+					return false;
+				} else {
+					return true;
+				} 
+			} else if (browserName === "Firefox") {
+				if (browserVersion < 43) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			else if (browserName === "Safari") {
+				return true;
+			}
+		};
+		com.arteriatech.ppc.utils.js.Common.getBrowserInfo = function() {
+			navigator.sayswho = (function() {
+				var ua = navigator.userAgent,
+					tem,
+					M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+				if (/trident/i.test(M[1])) {
+					tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+					return 'IE ' + (tem[1] || '');
+				}
+				if (M[1] === 'Chrome') {
+					tem = ua.match(/\b(OPR|Edge)\/(\d+)/);
+					if (tem != null) {
+						return tem.slice(1).join(' ').replace('OPR', 'Opera');
+					}
+				}
+				M = M[2] ? [M[1], M[2]] : [navigator.appName, navigator.appVersion, '-?'];
+				if ((tem = ua.match(/version\/(\d+)/i)) != null) {
+					M.splice(1, 1, tem[1]);
+				}
+				return M.join(' ');
+			})();
+			return navigator.sayswho;
+		};
+		
+  //-------------------------------------------------Setting Tooltip and Description----------------------------------------------//
+  //-------------------------------------------------------------by GE-----------------------------------------------------------//		
+		com.arteriatech.ppc.utils.js.Common.setDDDesciption = function(oEvent, view) {
+			var text = "";
+			var id = "";
+			var isValid = true;
+			if(oEvent.getSource() instanceof sap.m.ComboBox) {
+			oEvent.getSource().setValueState("None");
+			oEvent.getSource().setValueStateText("");
+				if(oEvent.getSource().getSelectedItem() && 
+						oEvent.getSource().getValue() === oEvent.getSource().getSelectedItem().getText()){
+					isValid = true;
+				}else {
+					if(oEvent.getSource().getValue().trim() !== "") {
+						oEvent.getSource().setSelectedKey("");
+						oEvent.getSource().setValueState("Error");
+					}
+					isValid = false;
+					oEvent.getSource().setValueStateText("Please select valid value from dropdown");
+				}	
+			}
+			if(oEvent.getSource().getSelectedItem()) {
+				text = oEvent.getSource().getSelectedItem().getText();
+			}
+			if(text && text.trim() !== "") {
+				var aText = text.split(" - ");
+				if(aText.length > 0) {
+					text = aText[1];
+					id = aText[0];
+				}else if(aText.length === 0){
+					id = aText[0];
+				}
+				if(id){
+					id = id.trim();
+				}
+			}
+			if(oEvent.getSource().getBindingInfo("tooltip")) {
+				var model = oEvent.getSource().getBindingInfo("tooltip").parts[0].model;
+				var path = oEvent.getSource().getBindingInfo("tooltip").parts[0].path;
+				if(oEvent.getSource().getBindingInfo("tooltip").parts[1]) {
+					var path2 = oEvent.getSource().getBindingInfo("tooltip").parts[1].path;
+				}
+								
+				if(oEvent.getSource().getBindingInfo("items")) {
+					//var source = oEvent.getSource().getId();
+					if(oEvent.getSource().getBindingContext(model)) {
+						var position = oEvent.getSource().getBindingContext(model).getPath();
+					}
+					if(position) {
+						path = position+"/"+path;
+						if(path2) {
+							path2 = position+"/"+path2;
+						}
+					}
+				}
+				if(view) {
+					view.getModel(model).setProperty(path, text);
+					if(path2) {
+						view.getModel(model).setProperty(path2, id);
+					}
+				}else {
+					this.getView().getModel(model).setProperty(path, text);
+					if(path2) {
+						this.getView().getModel(model).setProperty(path2, id);
+					}
+				}
+			}else {
+				oEvent.getSource().setTooltip(text);
+			}
+		};
+		
+		com.arteriatech.ppc.utils.js.Common.getFormattedDate = function(mParameters) {
+            var dateFormat;
+            var formattedDate;    
+			
+			if(mParameters.dDate) {
+				if(mParameters.dDate.getHours() === 0) {
+					var oFormat = sap.ui.core.format.DateFormat.getDateInstance();     	
+					mParameters.dDate = oFormat.parse(oFormat.format(mParameters.dDate), true);	
+				}
+			}
+			
+            if(mParameters.sFormatType){
+                dateFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern:mParameters.sFormatType});
+                formattedDate = dateFormat.format(mParameters.dDate, true);
+            }else{
+                dateFormat = sap.ui.core.format.DateFormat.getDateInstance({pattern:""});
+                formattedDate = dateFormat.format(mParameters.dDate, true);
+            }
+          return formattedDate;                            
+        };
+		
+		//-------------------------------------------------Home page navigation----------------------------------------------//
+  //-------------------------------------------------------------by PT-----------------------------------------------------------//	
+		com.arteriatech.ppc.utils.js.Common.gotoHomePage = function(mParameters) {
+            var sOrigin = window.location.origin;
+			var sPathname = window.location.pathname;
+			var sLocationSearch = window.location.search;
+			var sHomeURL = sOrigin + sPathname + sLocationSearch;
+			window.open(sHomeURL, "_self");                 
+        };
