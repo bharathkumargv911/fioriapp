@@ -1,0 +1,29 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteria.ss.stockadjustmnt.create.controller.ListPage" xmlns:html="http://www.w3.org/1999/xhtml" id="ListScreen">
+	<App id="ListApp">
+		<pages>
+			<Page title="{LocalViewSetting>/PageHeader}" id="ListPage" showNavButton="{LocalViewSetting>/reviewMode}" navButtonType="Back"
+				navButtonPress="navigateBack">
+				<content>
+					<mvc:XMLView id="ListView" viewName="com.arteria.ss.stockadjustmnt.create.view.List"/>
+				</content>
+				<footer>
+					<Toolbar>
+						<Button id="oMessagePopoverButton" text="{= ${LocalViewSetting>/messageLength} === 0 ? '' : ${LocalViewSetting>/messageLength} }"
+							icon="{= ${LocalViewSetting>/messageLength} === 0 ? '' : 'sap-icon://alert' }" press="showPopUp"
+							type="{= ${LocalViewSetting>/messageLength} === 0 ? 'Default' : 'Emphasized' }"/>
+						<!--<Button text="{i18n>List.Footer.addNewstock}" press="addNewStk" icon="sap-icon://create-form"
+							type="Accept" tooltip="{i18n>List.Footer.addNewstock}" enabled="{LocalViewSetting>/addnewVisible}" />-->
+						<ToolbarSpacer/>
+						<Button text="Calculate" press="onCalculate" type="Emphasized" visible="{LocalViewSetting>/CalculateButton}" enabled="{LocalViewSetting>/CalculateButtonEnable}"/>
+						<Button text="Back" press="navigateBack" icon="sap-icon://nav-back" type="Accept" visible="{LocalViewSetting>/reviewMode}"/>
+						<Button text="{i18n>List.Footer.review}" press="onReview" visible="{LocalViewSetting>/editMode}" icon="sap-icon://activities" type="Accept"
+							tooltip="{i18n>List.Footer.review}" enabled="{LocalViewSetting>/ReviewButtonEnable}"/>
+						<Button id="saveBtn" text="{i18n>List.Footer.save}" press="onSave" visible="{LocalViewSetting>/reviewMode}" icon="sap-icon://save" type="Accept"
+							tooltip="{i18n>List.Footer.save}"/>
+					</Toolbar>
+				</footer>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

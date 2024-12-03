@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Create Stock Adjustment</title>
+
+<script type="text/javascript">
+	window["sap-ushell-config"] = {
+		defaultRenderer : "fiorisandbox",
+		services : {
+			NavTargetResolution : {
+				// navigation target resolution service is configured to resolve the empty location hash to the application
+				config : {
+					resolveLocal : [ {
+						"linkId" : "",
+						resolveTo : {
+							additionalInformation : "SAPUI5.Component=com.arteria.ss.stockadjustmnt.create",
+							applicationType : "URL",
+							url : "./" + window.location.search // pass URL query parameters to application
+						}
+					} ]
+				}
+			}
+		} // services
+	};
+</script>
+
+<script id="sap-ui-bootstrap"
+		src="resources/sap-ui-cachebuster/sap-ui-core.js"
+			data-sap-ui-libs="sap.m,sap.ui.comp,sap.ui.core"
+			data-sap-ui-theme="sap_belize"
+			data-sap-ui-resourceroots='{"com.arteria.ss.stockadjustmnt.create": "./"}'
+			data-sap-ui-compatVersion="edge"
+			data-sap-ui-language="en"
+			data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
+			
+			data-sap-ui-preload="async"
+			data-sap-ui-frameOptions="trusted"
+			data-sap-ui-appCacheBuster="../,/sap/bc/ui5_ui5/ARTEC/PPCUTIL/,/sap/bc/ui5_ui5/ARTEC/SSUTIL/">>
+		</script>
+		
+
+		<script>
+			sap.ui.getCore().attachInit(function() {
+				new sap.m.Shell({
+					app: new sap.ui.core.ComponentContainer({
+						height : "100%",
+					
+					async: true,
+						name : "com.arteria.ss.stockadjustmnt.create"
+					})
+				}).placeAt("content");
+			});
+		</script>
+
+
+</head>
+<body class="sapUiBody" role="application">
+	<div id="content"></div>
+</body>
+</html>

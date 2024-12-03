@@ -1,0 +1,1183 @@
+<core:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns:fb="sap.ui.comp.filterbar" xmlns="sap.m"
+	class="sapUiResponsiveMargin" width="auto" controllerName="com.arteria.ss.stockadjustmnt.create.controller.List" xmlns:u="sap.ui.unified"
+	xmlns:html="http://www.w3.org/1999/xhtml" displayBlock="true" xmlns:table="sap.ui.table" id="ListView" xmlns:f="sap.ui.layout.form">
+	<fb:FilterBar showFilterConfiguration="false" search="onSearch" showGoButton="false" id="FilterBar" reset="onReset" showRestoreOnFB="false"
+		showRestoreButton="false" filterContainerWidth="15rem" filterBarExpanded="true" visible="{LocalViewSetting>/editMode}">
+		<fb:filterItems>
+			<fb:FilterItem id="Customer" mandatory="true" label="Distributor" labelTooltip="Distributor" name="Distributor"
+				visible="{LocalViewSetting>/CustomerDD}">
+				<fb:control>
+					<Select autoAdjustWidth="true" change="getSelectedCustomerName" id="customer" items="{Customers>/}" showSecondaryValues="true">
+						<core:ListItem id="customer_item" key="{Customers>CustomerNo}" text="{Customers>CustomerNo}{Customers>Seperator}{Customers>Name}"
+							tooltip="{Customers>Name}"></core:ListItem>
+					</Select>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="CustomerNo" label="Distributor" labelTooltip="Distributor" name="DistributorNo" mandatory="true"
+				visible="{LocalViewSetting>/CustomerVH}">
+				<fb:control>
+					<!--<MultiInput id="inputCustomerNo" maxLength="{path:'SFGW_SLS>/#SOItem/CustomerNo/@maxLength', type:'sap.ui.model.type.Float'}"-->
+					<!--	valueHelpRequest="CustomerF4" tokenChange="ontokenChange"/>-->
+					<MultiInput id="inputCustomerNo" maxLength="{path:'SFGW_SLS>/#SOItem/CustomerNo/@maxLength', type:'sap.ui.model.type.Float'}"
+						valueHelpRequest="CustomerF4" showTableSuggestionValueHelp="true" showSuggestion="true" filterSuggests="false"
+						suggest="handleCustomerSuggest" suggestionItemSelected="suggestionItemSelectedCustomerF4" tokenUpdate="ontokenChange"
+						suggestionItems="{CustomerF4SuggestorModel>/}" maxSuggestionWidth="25%" change="onChangeCustomerF4">
+						<suggestionItems>
+							<core:ListItem text="{CustomerF4SuggestorModel>Name}" additionalText=" {CustomerF4SuggestorModel>CustomerNo}"/>
+						</suggestionItems>
+					</MultiInput>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="StockType" label="{SSGW_MM>/CPStockItems/StockTypeID/#@sap:label}"
+				labelTooltip="{SSGW_MM>/CPStockItems/StockTypeID/#@sap:label}" name="StockType" mandatory="true">
+				<fb:control>
+					<Select autoAdjustWidth="true" id="StockTypes" items="{StockTypes>/}" showSecondaryValues="true" change="selectCPTypes">
+						<core:ListItem id="StockType_item" key="{StockTypes>Key}" text="{StockTypes>Key}{StockTypes>Seperator}{StockTypes>Text}"
+							tooltip="{StockTypes>Text}"></core:ListItem>
+					</Select>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="StockSubType" label="{SSGW_MM>/CPStockItems/StockSubTypeID/#@sap:label}"
+				labelTooltip="{SSGW_MM>/CPStockItems/StockSubTypeID/#@sap:label}" name="StockSubType" visible="false">
+				<fb:control>
+					<Select autoAdjustWidth="true" id="StockSubTypes" items="{StockSubTypes>/}" showSecondaryValues="true" change="changeSubStockType">
+						<core:ListItem id="StockSubType_item" key="{StockSubTypes>Key}" text="{StockSubTypes>Key}{StockSubTypes>Seperator}{StockSubTypes>Text}"
+							tooltip="{StockSubTypes>Text}"></core:ListItem>
+					</Select>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="DMSDivision" label="{SSGW_MM>/CPStockItems/DMSDivision/#@sap:label}" mandatory="false"
+				labelTooltip="{SSGW_MM>/CPStockItems/DMSDivision/#@sap:label}" name="DmsDivisionDescs" visible="{LocalViewSetting>/stockMaterialT2}">
+				<fb:control>
+					<!--<Select autoAdjustWidth="true" change="getSelectedDMSDiv" id="inputDMSDivision" items="{DMSDivisionDD>/}" showSecondaryValues="true">-->
+					<!--	<core:ListItem id="DMSDivision_item" key="{DMSDivisionDD>Key}" text="{DMSDivisionDD>Key}{DMSDivisionDD>Seperator}{DMSDivisionDD>Text}"-->
+					<!--		tooltip="{DMSDivisionDD>Text}"></core:ListItem>-->
+					<!--</Select>-->
+					<MultiComboBox id="inputDMSDivision" items="{DMSDivisionDD>/}" showSecondaryValues="true" selectionFinish="getSelectedDMSDiv">
+						<core:Item id="DMSDivision_item" key="{DMSDivisionDD>Key}" text="{DMSDivisionDD>Key}{DMSDivisionDD>Seperator}{DMSDivisionDD>Text}"
+							tooltip="{DMSDivisionDD>Text}"></core:Item>
+					</MultiComboBox>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="dDMSDivision" label="{SSGW_MM>/CPStockItems/DMSDivision/#@sap:label}" mandatory="false" visible="false"
+				labelTooltip="{SSGW_MM>/CPStockItems/DMSDivision/#@sap:label}" name="DmsDivisionDesc">
+				<fb:control>
+					<!--<Select autoAdjustWidth="true" change="getSelectedDMSDiv" id="inputDMSDivision" items="{DMSDivisionDD>/}" showSecondaryValues="true">-->
+					<!--	<core:ListItem id="DMSDivision_item" key="{DMSDivisionDD>Key}" text="{DMSDivisionDD>Key}{DMSDivisionDD>Seperator}{DMSDivisionDD>Text}"-->
+					<!--		tooltip="{DMSDivisionDD>Text}"></core:ListItem>-->
+					<!--</Select>-->
+					<MultiComboBox id="inputsDMSDivision" items="{DMSDivisionDD>/}" showSecondaryValues="true" selectionFinish="getSelectedDMSDiv">
+						<core:Item id="DMSDivisions_item" key="{DMSDivisionDD>Key}" text="{DMSDivisionDD>Key}{DMSDivisionDD>Seperator}{DMSDivisionDD>Text}"
+							tooltip="{DMSDivisionDD>Text}"></core:Item>
+					</MultiComboBox>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="SKUGroup" label="{i18n>List.Table.CRSSKUGroup}" labelTooltip="{i18n>List.Table.CRSSKUGroup}" name="SKUGroupDesc"
+				visible="{LocalViewSetting>/stockMaterialT2}">
+				<fb:control>
+					<MultiInput id="inputSKUGroup" maxLength="{path:'SSGW_MM>/CPStockItems/SKUGroup/#@maxLength', type:'sap.ui.model.type.Float'}"
+						valueHelpRequest="SKUGroupF4" showTableSuggestionValueHelp="true" showSuggestion="true" filterSuggests="false" suggest="handleSKUGRPSuggest"
+						suggestionItemSelected="suggestionSKUGRPItemSelected" tokenUpdate="SKUChange" suggestionItems="{SKUGRPSuggestorModel>/}"
+						maxSuggestionWidth="25%" change="onChangeSKUGRP">
+						<suggestionItems>
+							<core:ListItem text="{SKUGRPSuggestorModel>OrderMaterialGroupID}" additionalText=" {SKUGRPSuggestorModel>OrderMaterialGroupDesc}"/>
+						</suggestionItems>
+					</MultiInput>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="fiDate" label="Date" labelTooltip="Date" name="Date">
+				<fb:control>
+					<DatePicker dateValue="{path:'MaterialDocs>/MaterialDocDate'}" tooltip="Date" displayFormat="{LocalViewSetting>/DateFormat}" id="inputDate"
+						change="onChangeDate" enabled="false"></DatePicker>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem visible="false" id="PrdFeature" label="Product Feature" labelTooltip="Product Feature" name="PrdFeature" mandatory="false">
+				<fb:control>
+					<Select autoAdjustWidth="true" id="PrdFeatureTypes" items="{PrdFr>/}" showSecondaryValues="true" change="onPrdFrChange">
+						<core:ListItem id="PrdFeatureTypes_item" key="{PrdFr>Key}" text="{PrdFr>Text}" tooltip="{PrdFr>Text}"></core:ListItem>
+					</Select>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem mandatory="true" visible="{LocalViewSetting>/prdFrMatEnabled}" id="matF4"
+				label="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" labelTooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}1" name="matF4">
+				<fb:control>
+					<MultiInput id="inputMaterial1" maxLength="{path:'SSGW_MM>/CPStockItems/MaterialDesc/#@maxLength', type:'sap.ui.model.type.Float'}"
+						valueHelpRequest="MatF4Filter" visible="true" showSuggestion="true" filterSuggests="true"
+						suggestionItems="{path: 'MatSuggestorModel>/', templateShareable:true}" suggest="handleMaterialSuggest" tokenUpdate="tokenRemovedFilter"
+						suggestionItemSelected="suggestionMatItemSelected1" change="onChangeMaterial1" maxSuggestionWidth="34%"
+						enabled="{LocalViewSetting>/MaterialVisible}">
+						<suggestionItems>
+							<core:ListItem text="{MatSuggestorModel>MaterialNo}" additionalText="{MatSuggestorModel>MaterialDesc}"/>
+						</suggestionItems>
+					</MultiInput>
+				</fb:control>
+			</fb:FilterItem>
+		</fb:filterItems>
+	</fb:FilterBar>
+	<RadioButtonGroup id="SelectGroupIDAW" select="onSelect1" columns="3" width="100%" visible="{LocalViewSetting>/editMode}">
+		<buttons>
+			<RadioButton id="RB1-1" text="Adjust Existing"/>
+			<RadioButton id="RB1-2" text="Add New" selected="{LocalViewSetting>/OtherMaterial}"/>
+			<RadioButton id="RB1-3" text="Upload excel"/>
+		</buttons>
+	</RadioButtonGroup>
+	<Panel class="sapUiResponsiveContentPadding" backgroundDesign="Solid"
+		visible="{= ${LocalViewSetting>/editMode} &amp;&amp; ${LocalViewSetting>/stockMaterialT3} ? true:false}">
+		<!--{= ${LocalViewSetting>/editMode} &amp;&amp; ${LocalViewSetting>/stockMaterialT3} ? true:false}-->
+		<content>
+			<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="true" emptySpanL="2" emptySpanM="2" labelSpanL="3" labelSpanM="3"
+				layout="ResponsiveGridLayout" maxContainerCols="3" title="">
+				<f:content>
+					<Label text="File Location" required="true"/>
+					<l:VerticalLayout>
+						<u:FileUploader id="fileUploader" buttonText="Browse" name="myFileUpload" sameFilenameAllowed="true"
+							tooltip="Upload your file to the local server" change="handleUploadComplete" typeMissmatch="handleTypeMissmatchTypeWise" fileType="csv"
+							width="100%"/>
+						<l:HorizontalLayout>
+							<Link text="Download Format" press="onDownloadFormat" visible="{LocalViewSetting>/CreateVisibility}" class="sapUiTinyMarginTop"></Link>
+						</l:HorizontalLayout>
+					</l:VerticalLayout>
+					<l:VerticalLayout>
+						<Button enabled="{LocalViewSetting>/CreateVisibility}" text="Upload File" press="handleUploadPress" width="50%"></Button>
+					</l:VerticalLayout>
+				</f:content>
+			</f:SimpleForm>
+		</content>
+	</Panel>
+	<Panel xmlns="sap.m" class="sapUiResponsiveContentPadding" backgroundDesign="Solid"
+		visible="{= ${LocalViewSetting>/editMode} &amp;&amp; ${LocalViewSetting>/AttachmentsVisible} ? true:false}">
+		<!--{= ${LocalViewSetting>/editMode} &amp;&amp; ${LocalViewSetting>/AttachmentsVisible} ? true:false}-->
+		<content>
+			<table:Table id="UIListTable" rows="{ListItems>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+				enableSelectAll="false" noData="No results found" enableColumnFreeze="true" minAutoRowCount="{LocalViewSetting>/ListItemsCount}"
+				visibleRowCount="{LocalViewSetting>/ListItemsCount}"
+				visible="{= ((${device>/system/phone} || ${device>/system/tablet}===false)&amp;&amp; ${LocalViewSetting>/stockMaterialT1}===true)? true : false}"
+				visibleRowCountMode="Fixed">
+				<table:toolbar>
+					<Toolbar id="UIListTableToolBar">
+						<MultiInput id="toolbarMaterialNoID" showValueHelp="false" width="13rem" showSuggestion="true" filterSuggests="true" type="Text"
+							valueHelpRequest="ToolbarMaterialF4" tokenUpdate="handleMaterialTokenRemoveToolbar"
+							suggestionRows="{path: 'MatSuggestorModel>/', templateShareable:true}" suggest="handleMaterialSuggest"
+							suggestionItemSelected="ToolbarMatSuggestionSelected" maxSuggestionWidth="60rem" showTableSuggestionValueHelp="false"
+							tokens="{path:'LocalViewSetting>/MaterialTokens',templateShareable:true}" liveChange="onToolMatLiveChange"
+							tooltip="Please Enter Material........" placeholder="Please Enter Material">
+							<tokens>
+								<Token key="{LocalViewSetting>MaterialNo}" tooltip="{LocalViewSetting>MaterialDesc}({LocalViewSetting>MaterialNo})"
+									text="{parts:[{path:'LocalViewSetting>MaterialDesc'},{path:'LocalViewSetting>MaterialNo'}],formatter:'.formatToken'}"/>
+							</tokens>
+							<suggestionColumns>
+								<Column width="10rem">
+									<Label text="Material No"></Label>
+								</Column>
+								<Column width="25rem">
+									<Label text="Material Desc"></Label>
+								</Column>
+								<Column width="5rem">
+									<Label text="MRP"></Label>
+								</Column>
+								<Column width="10rem">
+									<Label text="Stock Conversion"></Label>
+								</Column>
+							</suggestionColumns>
+							<suggestionRows>
+								<ColumnListItem>
+									<cells>
+										<Label text="{MatSuggestorModel>MaterialNo}"></Label>
+									</cells>
+									<cells>
+										<Label text="{MatSuggestorModel>MaterialDesc}"></Label>
+									</cells>
+									<cells>
+										<Label text="{MatSuggestorModel>MRP}"></Label>
+									</cells>
+									<cells>
+										<Label text="{MatSuggestorModel>StockConversion}"></Label>
+									</cells>
+								</ColumnListItem>
+							</suggestionRows>
+							<!--<suggestionItems>-->
+							<!--	<core:ListItem text="{MatSuggestorModel>MaterialNo}" additionalText="{MatSuggestorModel>MaterialDesc}"/>-->
+							<!--</suggestionItems>-->
+						</MultiInput>
+						<Text textAlign="Right" text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}:" visible="{LocalViewSetting>/Distributor}"/>
+						<!--<Select id="sUIFromBatchDD" width="10rem" items="{path: 'ToolBarBatchDD>/',templateShareable:true}" change="onToolBarBatchChange"-->
+						<!--	showSecondaryValues="true" visible="{LocalViewSetting>/Distributor}">-->
+						<!--	<core:ListItem additionalText="{ToolBarBatchDD>TransRefNo}" key="{ToolBarBatchDD>Batch}" text="{ToolBarBatchDD>Batch}"-->
+						<!--		tooltip="{ToolBarBatchDD>Batch}"></core:ListItem>-->
+						<!--</Select>-->
+						<MultiInput width="10rem" maxSuggestionWidth="25rem" id="multiInputBatch2"
+							maxLength="{path:'SSGW_SLS>/#SSRO/SPNo/@maxLength', type:'sap.ui.model.type.Float'}" tokenUpdate="OnBatchF4RemoveTool"
+							valueHelpRequest="BatchF42" showTableSuggestionValueHelp="false" showSuggestion="true" filterSuggests="true" suggest="handleBatchSuggest1"
+							suggestionRows="{ path: 'BatchSuggestorModel>/', sorter: { path: 'Unrestricted', descending:true , templateShareable:true}}"
+							suggestionItemSelected="suggestionItemSelectedBatch1" tokens="{path:'LocalViewSetting>/BatchTokens', templateShareable:true}">
+							<tokens>
+								<Token key="{LocalViewSetting>Batch}"
+									text="{parts:[{path:'LocalViewSetting>Batch'}, {path:'LocalViewSetting>Batch'}], formatter:'.formateMatToken'}"
+									tooltip="{LocalViewSetting>Tooltip}"></Token>
+							</tokens>
+							<suggestionColumns>
+								<Column width="15rem">
+									<Label text="Batch"></Label>
+								</Column>
+								<Column width="8rem">
+									<Label text="Book Stock"></Label>
+								</Column>
+							</suggestionColumns>
+							<suggestionRows>
+								<ColumnListItem>
+									<cells>
+										<Label text="{BatchSuggestorModel>Batch}"></Label>
+									</cells>
+									<cells>
+										<Label text="{BatchSuggestorModel>Unrestricted}"></Label>
+									</cells>
+								</ColumnListItem>
+							</suggestionRows>
+						</MultiInput>
+						<!--<Text textAlign="Right" text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}:" visible="{LocalViewSetting>/MicroDistributor}"/>-->
+						<!--<Select id="sUIFromBatchDD2" items="{path: 'BatchDD>/', templateShareable : true}" change="onToolBarBatchChange"-->
+						<!--	selectedKey="{ListItems>Batch}" width="10rem" showSecondaryValues="true" visible="{LocalViewSetting>/MicroDistributor}">-->
+						<!--	<core:ListItem additionalText="{BatchDD>TransRefID}" key="{BatchDD>Batch}" text="{BatchDD>Batch}" tooltip="{BatchDD>Batch}"></core:ListItem>-->
+						<!--</Select>-->
+						<Text id="sFBookStk" textAlign="Right" text="Book Stock:"/>
+						<Text text="{LocalViewSetting>/BookStk}"/>
+						<Text id="sFStkDiff" textAlign="Right" text="Stock Difference:"/>
+						<Text text="{LocalViewSetting>/StkDifference}"/>
+						<Text id="sFAdjQtyLabel" textAlign="Right" text="{i18n>List.Table.ADJQty}:"/>
+						<Input id="sFAdjQty" width="5rem" liveChange="validateToolBarNumeric1" value="{LocalViewSetting>/AdjQty}" textAlign="Right"
+							visible="{LocalViewSetting>/editMode}" change="onChangeToolQty"
+							maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.Float'}"/>
+						<Text textAlign="Right" text="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}:"/>
+						<Select width="5rem" id="sFReasonIDEdit" items="{path: 'ReasonDD>/', templateShareable : true}" change="onChangeToolBarReasonDesc"
+							visible="{LocalViewSetting>/editMode}">
+							<core:ListItem key="{ReasonDD>Key}" tooltip="{ReasonDD>Text}" text="{ReasonDD>Key}{ReasonDD>Seperator}{ReasonDD>Text}"/>
+						</Select>
+						<Button type="Accept" text="Add" press="AddInsertToolbar"></Button>
+					</Toolbar>
+				</table:toolbar>
+				<table:Column hAlign="Center" autoResizable="true" width="3rem" tooltip="Delete">
+					<Text text=""/>
+					<table:template>
+						<l:HorizontalLayout>
+							<!--<core:Icon press="onDeleteItem" src="sap-icon://sys-cancel" hoverColor="#f00" color="#999"/>-->
+							<!--<Text wrapping="true" text="{ListItems>ItemNo}"/>-->
+							<Button tooltip="{SSGW_SLS>/#SSSOItemDetail/ItemNo/@sap:label}" icon="sap-icon://sys-cancel" press="onDeleteItem"></Button>
+						</l:HorizontalLayout>
+					</table:template>
+				</table:Column>
+				<!--<table:Column sortProperty="ItemNo" filterProperty="ItemNo" width="3rem" autoResizable="true" visible="true" tooltip="ItemNo">-->
+				<!--	<Text text="SI No"/>-->
+				<!--	<table:template>-->
+				<!--		<ObjectNumber number="{ListItems>ItemNo}"/>-->
+				<!--	</table:template>-->
+				<!--</table:Column>-->
+				<table:Column autoResizable="true" width="16rem" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}">
+					<Text text="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}"/>
+					<table:template>
+						<MultiInput id="inputMaterial" editable="{ListItems>materialEdit}"
+							tooltip=" {= ${ListItems>MaterialNo} === '' ? '' : ${ListItems>MaterialDesc} +' ('+${ListItems>MaterialNo}+')'}"
+							maxLength="{path:'SSGW_MM>/CPStockItems/MaterialDesc/#@maxLength', type:'sap.ui.model.type.Float'}" valueHelpRequest="MatF4" visible="true"
+							showSuggestion="true" filterSuggests="true" suggestionRows="{path: 'MatSuggestorModel>/', templateShareable:true}"
+							suggest="handleMaterialSuggest" tokenUpdate="tokenRemoved" suggestionItemSelected="suggestionMatItemSelected" change="onChangeMaterial"
+							maxSuggestionWidth="60rem" tokens="{path: 'ListItems>MaterialTokens',templateShareable:true}">
+							<tokens>
+								<Token key="{ListItems>MaterialNo}" text="{ListItems>MaterialDesc}"/>
+							</tokens>
+							<!--<suggestionItems>-->
+							<!--	<core:ListItem text="{MatSuggestorModel>MaterialNo}" additionalText="{MatSuggestorModel>MaterialDesc}"/>-->
+							<!--</suggestionItems>-->
+							<suggestionColumns>
+								<Column width="10rem">
+									<Label text="Material No"></Label>
+								</Column>
+								<Column width="25rem">
+									<Label text="Material Desc"></Label>
+								</Column>
+								<Column width="5rem">
+									<Label text="MRP"></Label>
+								</Column>
+								<Column width="10rem">
+									<Label text="Stock Conversion"></Label>
+								</Column>
+							</suggestionColumns>
+							<suggestionRows>
+								<ColumnListItem>
+									<cells>
+										<Label text="{MatSuggestorModel>MaterialNo}"></Label>
+									</cells>
+									<cells>
+										<Label text="{MatSuggestorModel>MaterialDesc}"></Label>
+									</cells>
+									<cells>
+										<Label text="{MatSuggestorModel>MRP}"></Label>
+									</cells>
+									<cells>
+										<Label text="{MatSuggestorModel>StockConversion}"></Label>
+									</cells>
+								</ColumnListItem>
+							</suggestionRows>
+						</MultiInput>
+					</table:template>
+				</table:Column>
+				<!--<table:Column autoResizable="true" width="10rem" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"-->
+				<!--	visible="{LocalViewSetting>/Distributor}">-->
+				<!--	<Text text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"/>-->
+				<!--	<table:template>-->
+				<!--		<Select id="UIFromBatchDD" items="{path: 'BatchDD>/', templateShareable : true}" change="onBatchChange" selectedKey="{ListItems>Batch}"-->
+				<!--			width="10rem" showSecondaryValues="true">-->
+				<!--			<core:ListItem additionalText="{BatchDD>TransRefNo}" key="{BatchDD>Batch}" text="{BatchDD>Batch}" tooltip="{BatchDD>Batch}"></core:ListItem>-->
+				<!--		</Select>-->
+				<!--		<Select id="UIFromBatchDD" width="30rem" items="{path: 'ListItems>TempBatches/',templateShareable:true}" change="onBatchChange"-->
+				<!--			selectedKey="{ListItems>Batch}" showSecondaryValues="true">-->
+				<!--			<core:ListItem additionalText="{ListItems>TransRefNo}" key="{ListItems>Batch}" text="{ListItems>Batch}" tooltip="{ListItems>Batch}"></core:ListItem>-->
+				<!--		</Select>-->
+				<!--	</table:template>-->
+				<!--</table:Column>-->
+				<!--<table:Column autoResizable="true" width="10rem" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"-->
+				<!--	visible="{LocalViewSetting>/MicroDistributor}">-->
+				<!--	<Text text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"/>-->
+				<!--	<table:template>-->
+				<!--		<Select id="UIFromBatchDD2" items="{path: 'BatchDD>/', templateShareable : true}" change="onBatchChange" selectedKey="{ListItems>Batch}"-->
+				<!--			width="20rem" showSecondaryValues="true">-->
+				<!--			<core:ListItem additionalText="{BatchDD>TransRefID}" key="{BatchDD>Batch}" text="{BatchDD>Batch}" tooltip="{BatchDD>Batch}"></core:ListItem>-->
+				<!--		</Select>-->
+				<!--	</table:template>-->
+				<!--</table:Column>-->
+				<table:Column width="11rem" autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}">
+					<Text id="id_batch1" text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"/>
+					<table:template>
+						<MultiInput maxSuggestionWidth="30%" id="multiInputBatch1"
+							maxLength="{path:'SSGW_SLS>/#SSRO/SPNo/@maxLength', type:'sap.ui.model.type.Float'}" tokenUpdate="OnBatchF4Remove1"
+							valueHelpRequest="BatchF41" showTableSuggestionValueHelp="false" showSuggestion="true" filterSuggests="true" suggest="handleBatchSuggest"
+							suggestionItemSelected="suggestionItemSelectedBatch2" suggestionRows="{ListItems>BatchSuggestorModel}"
+							tokens="{path:'ListItems>BatchTokens', templateShareable:true}">
+							<tokens>
+								<Token key="{ListItems>Batch}" text="{parts:[{path:'ListItems>Batch'}, {path:'ListItems>Batch'}], formatter:'.formateMatToken'}"
+									tooltip="{ListItems>Tooltip}"></Token>
+							</tokens>
+							<suggestionColumns>
+								<Column width="15rem">
+									<Label text="Batch"></Label>
+								</Column>
+								<Column width="8rem">
+									<Label text="Book Stock"></Label>
+								</Column>
+							</suggestionColumns>
+							<suggestionRows>
+								<ColumnListItem>
+									<cells>
+										<Label text="{ListItems>Batch}"></Label>
+									</cells>
+									<cells>
+										<Label text="{ListItems>Unrestricted}"></Label>
+									</cells>
+								</ColumnListItem>
+							</suggestionRows>
+						</MultiInput>
+						<!--<Input change="onChangeBatch" value="{SSROItemDetails>Batch}" maxLength="10" tooltip="{SSGW_SLS>/SSROItemDetails/Batch/#@sap:label}"/>-->
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="7rem" tooltip="{i18n>List.Table.Qty}" hAlign="Right">
+					<Text id="FQuantityEdit" text="{i18n>List.Table.Qty}"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{path:'ListItems>Quantity', type: 'sap.ui.model.type.Float'}" id="FQuantity"
+							tooltip="{i18n>List.Table.Qty} :{path:'ListItems>Quantity', type: 'sap.ui.model.type.Float'} {ListItems>UOM}" unit="{ListItems>UOM}"
+							xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="9rem" tooltip="{i18n>List.Table.ADJQty}" hAlign="Right">
+					<Text id="FAdjQtyEdit" text="{i18n>List.Table.ADJQty}"/>
+					<table:template>
+						<VBox id="HBoxAdjstdQty">
+							<ObjectNumber emphasized="false" number="{ListItems>AdjQty}" id="FAdjQuantity"
+								tooltip="{i18n>List.Table.ADJQty} :{path:'ListItems>AdjQty', type: 'sap.ui.model.type.Float'} {ListItems>UOM}" unit="{ListItems>UOM}"
+								xmlns="sap.m" visible="{LocalViewSetting>/reviewMode}"/>
+							<Input id="FAdjQty" liveChange="validateNumeric1" change="onChangeAdjQty" fieldWidth="65%" value="{path: 'ListItems>AdjQty'}"
+								valueState="{ListItems>QuantityValueState}" valueStateText="{ListItems>QuantityValueStateText}" textAlign="Right"
+								description="{ListItems>UOM}" visible="{LocalViewSetting>/editMode}"
+								maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.Float'}"/>
+						</VBox>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="7rem" tooltip="{i18n>List.Table.DiffQty}" hAlign="Right">
+					<Text text="{i18n>List.Table.DiffQty}"/>
+					<table:template>
+						<ObjectNumber id="FDiffQuantity" number="{ListItems>DiffQty}"
+							tooltip="{i18n>List.Table.DiffQty} :{path:'ListItems>DiffQty', type: 'sap.ui.model.type.Float'} {ListItems>UOM}" unit="{ListItems>UOM}"
+							xmlns="sap.m" textAlign="Right" emphasized="false"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="8rem" tooltip="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}">
+					<Text id="FReasonID" text="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}"/>
+					<table:template>
+						<Select id="FReasonIDEdit" items="{path: 'ReasonDD>/', templateShareable : true}" change="onChangeReasonDesc"
+							selectedKey="{ListItems>ReasonID}" visible="{LocalViewSetting>/editMode}">
+							<core:ListItem key="{ReasonDD>Key}" tooltip="{ReasonDD>Text}" text="{ReasonDD>Key}{ReasonDD>Seperator}{ReasonDD>Text}"/>
+						</Select>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="9rem" tooltip="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label}" hAlign="Right">
+					<Text textAlign="End" text="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label}"/>
+					<table:template>
+						<Text textAlign="End" text="{path:'ListItems>MRP',type: 'sap.ui.model.type.Float'} {ListItems>Currency}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label} : {path:'ListItems>MRP',type: 'sap.ui.model.type.Float'} {ListItems>Currency}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="6rem" tooltip="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<Text text="{path: 'ListItems>ManufacturingDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="6rem" tooltip="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<Text text="{path: 'ListItems>ExpiryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="13rem" tooltip="{i18n>List.Table.CRSSKUGroup}">
+					<Text text="{i18n>List.Table.CRSSKUGroup}"/>
+					<table:template>
+						<Text id="FSKUGroup" wrapping="true" tooltip="{i18n>List.Table.CRSSKUGroup}"
+							text="{ListItems>OrderMaterialGroupDesc} {= (${ListItems>OrderMaterialGroupID} &amp;&amp; ${ListItems>OrderMaterialGroupID} !== '')? '('+${ListItems>OrderMaterialGroupID}+')' : ''}"/>
+						<!--</HBox>-->
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}" width="10rem">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}"/>
+					<table:template>
+						<Text id="IDMS" wrapping="true" class="sapUiTinyMarginTopBottom" tooltip="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}"
+							text="{ListItems>DmsDivisionDesc} {= (${ListItems>DMSDivision} &amp;&amp; ${ListItems>DMSDivision} !== '')? '('+${ListItems>DMSDivision}+')' : ''}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="8rem" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}">
+					<Text id="FRemarksEdit" text="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}"/>
+					<table:template>
+						<HBox id="Remarks">
+							<Input id="FRemarks" maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.String'}" type="Text"
+								value="{ListItems>Remarks}" visible="{LocalViewSetting>/editMode}" change="setRemarks" valueState="{ListItems>RemarksState}"
+								valueStateText="{ListItems>RemarksStateText}"/>
+							<Text wrapping="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" text="{ListItems>Remarks}"
+								visible="{LocalViewSetting>/reviewMode}"/>
+						</HBox>
+					</table:template>
+				</table:Column>
+			</table:Table>
+			<table:Table id="UIListTableOther" rows="{ListItems>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+				enableSelectAll="false" noData="No results found" enableColumnFreeze="true" minAutoRowCount="{LocalViewSetting>/ListItemsCount}"
+				visibleRowCount="{LocalViewSetting>/ListItemsCount}"
+				visible="{= ((${device>/system/phone} || ${device>/system/tablet}===false)&amp;&amp; ${LocalViewSetting>/OtherMaterial}===true)? true : false}"
+				visibleRowCountMode="Fixed">
+				<table:toolbar>
+					<Toolbar id="UIListTableToolBarOther">
+						<Title id="UIListTableTitleOther" text="{i18n>List.Table.Title}" level="H2"/>
+						<ToolbarSpacer/>
+					</Toolbar>
+				</table:toolbar>
+				<table:Column width="3rem">
+					<Text text=""/>
+					<table:template>
+						<Button icon="sap-icon://delete" press="onDeleteOtherItem" tooltip="Delete"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" width="15rem">
+					<Text text="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}"/>
+					<table:template>
+						<MultiInput id="inputOtherMaterial" maxLength="{path:'SSGW_MM>/CPStockItems/MaterialDesc/#@maxLength', type:'sap.ui.model.type.Float'}"
+							valueHelpRequest="MaterialNoF4" visible="true" showSuggestion="true" filterSuggests="true" showTableSuggestionValueHelp="false"
+							suggestionRows="{path: 'OtherMatSuggestorModel>/', templateShareable:true}" suggest="handleOtherMaterialSuggest"
+							tokenUpdate="tokenRemovedOth" suggestionItemSelected="suggestionOtherMatItemSelected" change="onChangeOtherMaterial"
+							maxSuggestionWidth="43%">
+							<suggestionColumns>
+								<Column width="10rem">
+									<Label text="Material No"></Label>
+								</Column>
+								<Column width="25rem">
+									<Label text="Material Desc"></Label>
+								</Column>
+							</suggestionColumns>
+							<suggestionRows>
+								<ColumnListItem>
+									<cells>
+										<Label text="{OtherMatSuggestorModel>MaterialNo}"></Label>
+									</cells>
+									<cells>
+										<Label text="{OtherMatSuggestorModel>MaterialDesc}"></Label>
+									</cells>
+								</ColumnListItem>
+							</suggestionRows>
+							<!--<suggestionItems>-->
+							<!--	<core:ListItem text="{OtherMatSuggestorModel>MaterialNo}" additionalText="{OtherMatSuggestorModel>MaterialDesc}"/>-->
+							<!--</suggestionItems>-->
+						</MultiInput>
+					</table:template>
+				</table:Column>
+				<table:Column width="11rem" autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}">
+					<Text id="id_batch" text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"/>
+					<table:template>
+						<MultiInput maxSuggestionWidth="30%" id="multiInputBatch"
+							maxLength="{path:'SSGW_SLS>/#SSRO/SPNo/@maxLength', type:'sap.ui.model.type.Float'}" tokenUpdate="OnBatchF4Remove"
+							valueHelpRequest="BatchF4" showTableSuggestionValueHelp="false" showSuggestion="true" filterSuggests="true" suggest="handleBatchSuggest"
+							suggestionItemSelected="suggestionItemSelectedBatch" suggestionItems="{path: 'ListItems>BatchSuggestorModel', templateShareable : false}"
+							tokens="{path:'ListItems>BatchTokens', templateShareable:true}">
+							<tokens>
+								<Token key="{ListItems>Batch}" text="{parts:[{path:'ListItems>Batch'}, {path:'ListItems>Batch'}], formatter:'.formateMatToken'}"
+									tooltip="{ListItems>Tooltip}"></Token>
+							</tokens>
+							<suggestionItems>
+								<core:ListItem text="{ListItems>Batch}" additionalText="{ListItems>Batch}"/>
+							</suggestionItems>
+						</MultiInput>
+						<!--<Input change="onChangeBatch" value="{SSROItemDetails>Batch}" maxLength="10" tooltip="{SSGW_SLS>/SSROItemDetails/Batch/#@sap:label}"/>-->
+					</table:template>
+				</table:Column>
+				<!--<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" width="6rem">-->
+				<!--	<Text text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"/>-->
+				<!--	<table:template>-->
+				<!--		<MultiInput id="inputBatch" valueHelpRequest="BatchF4"/>-->
+				<!--<MultiInput></MultiInput>-->
+				<!--<Input wrapping="true" maxLength="10" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" valueState="{ListItems>BatchValueState}"-->
+				<!--	valueStateText="{ListItems>BatchValueStateText}" class="sapUiTinyMarginTopBottom" value="{ListItems>Batch}" liveChange="onChangeBatch"/>-->
+				<!--	</table:template>-->
+				<!--</table:Column>-->
+				<table:Column autoResizable="true" tooltip="Purchase Inv No" width="8rem" visible="false">
+					<Text text="Purchase Inv No" id="RefDocNo"/>
+					<table:template>
+						<MaskInput id="iRefDocNo" mask="9999999999" value="{ListItems>RefDocNo}" valueState="{ListItems>RefDocNoValueState}"
+							change="onChangeRefDocNo" valueStateText="{ListItems>RefDocNoValueStateText}" placeholderSymbol=" "
+							tooltip="{SSGW_MM>/MaterialDocItemDetails/RefDocNo/#@sap:label}">
+							<rules>
+								<MaskInputRule maskFormatSymbol="9" regex="[0-9]"/>
+							</rules>
+						</MaskInput>
+						<!--<Input wrapping="true" maxLength="10" id="iRefDocNo" tooltip="{SSGW_MM>/MaterialDocItemDetails/RefDocNo/#@sap:label}"-->
+						<!--	valueState="{ListItems>RefDocNoValueState}" valueStateText="{ListItems>RefDocNoValueStateText}" class="sapUiTinyMarginTopBottom"-->
+						<!--	value="{ListItems>RefDocNo}"/>-->
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/RefDocItemNo/#@sap:label}" width="7rem" visible="false">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/RefDocItemNo/#@sap:label}" id="LRefDocItemNo"/>
+					<table:template>
+						<MaskInput mask="999999" value="{ListItems>RefDocItemNo}" valueState="{ListItems>RefDocItemNoValueState}"
+							valueStateText="{ListItems>RefDocItemNoValueStateText}" placeholderSymbol=" "
+							tooltip="{SSGW_MM>/MaterialDocItemDetails/RefDocItemNo/#@sap:label}" change="onChangeRefDocItemNo">
+							<rules>
+								<MaskInputRule maskFormatSymbol="9" regex="[0-9]"/>
+							</rules>
+						</MaskInput>
+						<!--<Input wrapping="true" maxLength="6" tooltip="{SSGW_MM>/CPStockItemSnos/RefDocItemNo/#@sap:label}"-->
+						<!--	valueState="{ListItems>RefDocItemNoValueState}" valueStateText="{ListItems>RefDocItemNoValueStateText}" class="sapUiTinyMarginTopBottom"-->
+						<!--	value="{ListItems>RefDocItemNo}"/>-->
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Good Quantity" width="6rem" hAlign="Right">
+					<Text text="Good Quantity" id="id_Qty"/>
+					<table:template>
+						<Input value="{path: 'ListItems>GQuantity'}" valueState="{ListItems>QuantityValueState}" valueStateText="{ListItems>QuantityValueStateText}"
+							textAlign="Right" visible="{LocalViewSetting>/editMode}"
+							maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/MaterialDocQty/#@maxLength', type:'sap.ui.model.type.Float'}" change="onChangeGoodQty"
+							liveChange="onChangeGQty"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Damage Quantity" width="6rem" hAlign="Right" visible="false">
+					<Text text="Damage Quantity"/>
+					<table:template>
+						<Input value="{path: 'ListItems>DQuantity'}" valueState="{ListItems>QuantityValueState}" valueStateText="{ListItems>QuantityValueStateText}"
+							textAlign="Right" visible="{LocalViewSetting>/editMode}" liveChange="com.arteriatech.ppc.utils.js.Common.formatNumber"
+							maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/MaterialDocQty/#@maxLength', type:'sap.ui.model.type.Float'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Shortage Quantity" width="6rem" hAlign="Right" visible="false">
+					<Text text="Shortage Quantity"/>
+					<table:template>
+						<Input value="{path: 'ListItems>SQuantity'}" valueState="{ListItems>QuantityValueState}" valueStateText="{ListItems>QuantityValueStateText}"
+							textAlign="Right" visible="{LocalViewSetting>/editMode}" liveChange="com.arteriatech.ppc.utils.js.Common.formatNumber"
+							maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/MaterialDocQty/#@maxLength', type:'sap.ui.model.type.Float'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="UOM" width="6rem">
+					<Text text="UOM"/>
+					<table:template>
+						<!--<Select autoAdjustWidth="true" items="{UOMs>/}" id="inputUOM" showSecondaryValues="true" valueState="{ListItems>UOMValueState}"-->
+						<!--	valueStateText="{ListItems>UOMValueStateText}" width="9rem">-->
+						<!--	<core:ListItem key="{UOMs>Key}" text="{UOMs>Key}" tooltip="{UOMs>Text}"></core:ListItem>-->
+						<!--</Select>-->
+						<Select id="inputUOM" autoAdjustWidth="true" items="{path: 'ListItems>UOMs', templateShareable : true}" change="onUMOChange"
+							selectedKey="{ListItems>UOM}">
+							<core:ListItem additionalText="{ListItems>Uom}" key="{ListItems>Uom}" text="{ListItems>Uom}" tooltip="{ListItems>Uom}"></core:ListItem>
+						</Select>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{i18n>Detail.table.Label.PurchasePrice}" width="6rem" hAlign="Right">
+					<Text text="{i18n>Detail.table.Label.PurchasePrice}"/>
+					<table:template>
+						<!--<Input value="{path: 'ListItems>PurchasePrice'}" liveChange="onChangePurchasePrice" textAlign="Right" visible="{LocalViewSetting>/editMode}"-->
+						<!--	valueState="{ListItems>UnitPriceValueState}" valueStateText="{ListItems>UnitPriceValueStateText}"-->
+						<!--	maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/PurchasePrice/#@maxLength', type:'sap.ui.model.type.Float'}"/>-->
+						<ObjectNumber
+							number="{path:'ListItems>PurchasePrice',type: 'sap.ui.model.type.Float',formatter:'formatEmptyAmnt',formatOptions: {minFractionDigits: 2}}"
+							textAlign="End" unit="{ListItems>Currency}"
+							tooltip="{i18n>Detail.table.Label.PurchasePrice} : {path:'ListItems>PurchasePrice',type: 'sap.ui.model.type.Float',formatter:'formatEmptyAmnt'} {ListItems>Currency}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/MRP/#@sap:label} (PC)" width="6rem" hAlign="Right">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/MRP/#@sap:label} (PC)"/>
+					<table:template>
+						<!--<Input value="{path: 'ListItems>MRP'}" valueState="{ListItems>MRPValueState}" valueStateText="{ListItems>MRPValueStateText}"-->
+						<!--	textAlign="Right" visible="{LocalViewSetting>/editMode}"-->
+						<!--	maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/MRP/#@maxLength', type:'sap.ui.model.type.Float'}" liveChange="onChangeMRP"/>-->
+						<ObjectNumber
+							number="{path:'ListItems>MRP',type: 'sap.ui.model.type.Float',formatter:'formatEmptyAmnt',formatOptions: {minFractionDigits: 2}}"
+							textAlign="End" unit="{ListItems>Currency}"
+							tooltip="{SSGW_MM>/MaterialDocItemDetails/MRP/#@sap:label} : {path:'ListItems>MRP',type: 'sap.ui.model.type.Float',formatter:'formatEmptyAmnt'} {ListItems>Currency}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" width="8rem" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<!--<DatePicker dateValue="{path:'ListItems>ManufacturingDate'}" valueState="{ListItems>MDateValueState}"-->
+						<!--	valueStateText="{ListItems>MDateValueStateText}" tooltip="Date" displayFormat="{LocalViewSetting>/DateFormat}" enabled="true"-->
+						<!--	change="onChangeMFDdate" id="date2"></DatePicker>-->
+						<Text text="{path: 'ListItems>ManufacturingDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"></Text>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" width="8rem" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<!--<DatePicker dateValue="{path:'ListItems>ExpiryDate'}" tooltip="Date" displayFormat="{LocalViewSetting>/DateFormat}"-->
+						<!--	valueState="{ListItems>EDateValueState}" valueStateText="{ListItems>EDateValueStateText}" change="onChangeExpiryDate" id="date1"></DatePicker>-->
+						<Text text="{path: 'ListItems>ExpiryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"></Text>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{i18n>List.Table.CRSSKUGroup}" width="13rem">
+					<Text text="{i18n>List.Table.CRSSKUGroup}"/>
+					<table:template>
+						<Text wrapping="true" tooltip="{i18n>List.Table.CRSSKUGroup}"
+							text="{ListItems>OrderMaterialGroupDesc} {= (${ListItems>OrderMaterialGroupID} &amp;&amp; ${ListItems>OrderMaterialGroupID} !== '')? '('+${ListItems>OrderMaterialGroupID}+')' : ''}"/>
+						<!--</HBox>-->
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" width="8rem">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}"/>
+					<table:template>
+						<Input maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.String'}" type="Text"
+							value="{ListItems>Remarks}" visible="{LocalViewSetting>/editMode}" change="setRemarks" valueState="{ListItems>RemarksState}"
+							valueStateText="{ListItems>RemarksStateText}"/>
+					</table:template>
+				</table:Column>
+			</table:Table>
+			<table:Table id="UIListTable1" rows="{ListItems>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+				enableSelectAll="false" noData="No results found" enableColumnFreeze="true" minAutoRowCount="{LocalViewSetting>/ListItemsCount}"
+				visibleRowCount="{LocalViewSetting>/ListItemsCount}"
+				visible="{= ((${device>/system/phone} || ${device>/system/tablet}===false)&amp;&amp; ${LocalViewSetting>/stockMaterialT2}===true)? true : false}"
+				visibleRowCountMode="Fixed">
+				<table:toolbar>
+					<Toolbar id="UIListTableToolBar1">
+						<Title id="UIListTableTitle1" text="{i18n>List.Table.Title}" level="H2"/>
+					</Toolbar>
+				</table:toolbar>
+				<!--<table:Column sortProperty="ItemNo" filterProperty="ItemNo" width="5rem" autoResizable="true" visible="true" tooltip="ItemNo">-->
+				<!--	<CheckBox select="selectAllItems"></CheckBox>-->
+				<!--	<table:template>-->
+				<!--		<CheckBox selected="{ListItems>SelectedItem}" select="SelectItem"></CheckBox>-->
+				<!--	</table:template>-->
+				<!--</table:Column>-->
+				<table:Column sortProperty="ItemNo" filterProperty="ItemNo" width="5rem" autoResizable="true" visible="true" tooltip="ItemNo">
+					<Text text="SI No"/>
+					<table:template>
+						<ObjectNumber number="{ListItems>ItemNo}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="ItemNo" filterProperty="ItemNo" width="8rem" autoResizable="true" visible="true" tooltip="ItemNo">
+					<Text text="Batch"/>
+					<table:template>
+						<Text text="{ListItems>Batch}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="7rem" tooltip="{i18n>List.Table.Qty}" hAlign="Right">
+					<Text id="FQuantityEdit1" text="{i18n>List.Table.Qty}"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{path:'ListItems>Quantity', type: 'sap.ui.model.type.Float'}" id="FQuantity1"
+							tooltip="{i18n>List.Table.Qty} :{path:'ListItems>Quantity', type: 'sap.ui.model.type.Float'} {ListItems>UOM}" unit="{ListItems>UOM}"
+							xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="9rem" tooltip="{i18n>List.Table.ADJQty}" hAlign="Right">
+					<Text id="FAdjQtyEdit1" text="{i18n>List.Table.ADJQty}"/>
+					<table:template>
+						<VBox id="HBoxAdjstdQty1">
+							<ObjectNumber emphasized="false" number="{ListItems>AdjQty}" id="FAdjQuantity1"
+								tooltip="{i18n>List.Table.ADJQty} :{path:'ListItems>AdjQty', type: 'sap.ui.model.type.Float'} {ListItems>UOM}" unit="{ListItems>UOM}"
+								xmlns="sap.m" visible="{LocalViewSetting>/reviewMode}"/>
+							<Input id="FAdjQty1" type="Number" change="onChangeAdjQty" fieldWidth="65%" value="{path: 'ListItems>AdjQty'}"
+								valueState="{ListItems>QuantityValueState}" valueStateText="{ListItems>QuantityValueStateText}" textAlign="Right"
+								description="{ListItems>UOM}" visible="{LocalViewSetting>/editMode}"
+								maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.Float'}"/>
+						</VBox>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="7rem" tooltip="{i18n>List.Table.DiffQty}" hAlign="Right">
+					<Text text="{i18n>List.Table.DiffQty}"/>
+					<table:template>
+						<ObjectNumber id="FDiffQuantity1" number="{ListItems>DiffQty}"
+							tooltip="{i18n>List.Table.DiffQty} :{path:'ListItems>DiffQty', type: 'sap.ui.model.type.Float'} {ListItems>UOM}" unit="{ListItems>UOM}"
+							xmlns="sap.m" textAlign="Right" emphasized="false"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="8rem" tooltip="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}">
+					<Text id="FReasonID1" text="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}"/>
+					<table:template>
+						<Select id="FReasonIDEdit1" items="{path: 'ReasonDD>/', templateShareable : true}" change="onChangeReasonDesc"
+							selectedKey="{ListItems>ReasonID}" visible="{LocalViewSetting>/editMode}">
+							<core:ListItem key="{ReasonDD>Key}" tooltip="{ReasonDD>Text}" text="{ReasonDD>Key}{ReasonDD>Seperator}{ReasonDD>Text}"/>
+						</Select>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="8rem" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}">
+					<Text id="FRemarksEdit1" text="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}"/>
+					<table:template>
+						<HBox id="Remarks1">
+							<Input id="FRemarks1" maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.String'}" type="Text"
+								value="{ListItems>Remarks}" visible="{LocalViewSetting>/editMode}" change="setRemarks" valueState="{ListItems>RemarksState}"
+								valueStateText="{ListItems>RemarksStateText}"/>
+							<Text wrapping="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" text="{ListItems>Remarks}"
+								visible="{LocalViewSetting>/reviewMode}"/>
+						</HBox>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="9rem" tooltip="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label}" hAlign="Right">
+					<Text textAlign="End" text="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label}"/>
+					<table:template>
+						<Text textAlign="End" text="{path:'ListItems>MRP',type: 'sap.ui.model.type.Float'} {ListItems>Currency}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label} : {path:'ListItems>MRP',type: 'sap.ui.model.type.Float'} {ListItems>Currency}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="6rem" tooltip="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<Text text="{path: 'ListItems>ManufacturingDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="6rem" tooltip="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<Text text="{path: 'ListItems>ExpiryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="10rem" tooltip="{i18n>List.Table.CRSSKUGroup}">
+					<Text text="{i18n>List.Table.CRSSKUGroup}"/>
+					<table:template>
+						<Text id="FSKUGroup1" wrapping="true" tooltip="{i18n>List.Table.CRSSKUGroup}"
+							text="{ListItems>OrderMaterialGroupDesc} {= (${ListItems>OrderMaterialGroupID} &amp;&amp; ${ListItems>OrderMaterialGroupID} !== '')? '('+${ListItems>OrderMaterialGroupID}+')' : ''}"/>
+						<!--</HBox>-->
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}" width="10rem">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}"/>
+					<table:template>
+						<Text id="IDMS1" wrapping="true" class="sapUiTinyMarginTopBottom" tooltip="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}"
+							text="{ListItems>DmsDivisionDesc} {= (${ListItems>DMSDivision} &amp;&amp; ${ListItems>DMSDivision} !== '')? '('+${ListItems>DMSDivision}+')' : ''}"/>
+					</table:template>
+				</table:Column>
+				<table:Column visible="false" hAlign="Center" autoResizable="true" width="3rem" tooltip="Delete">
+					<Text text=""/>
+					<table:template>
+						<core:Icon src="sap-icon://sys-cancel" hoverColor="#f00" color="#999" press="onDeleteItem"/>
+					</table:template>
+				</table:Column>
+				<!--<table:Column autoResizable="true" width="10rem" tooltip="{i18n>List.Table.CRSSKUGroup}">-->
+				<!--	<Text text="{i18n>List.Table.CRSSKUGroup}"/>-->
+				<!--	<table:template>-->
+				<!--		<Text id="FSKUGroup1" wrapping="true" tooltip="{i18n>List.Table.CRSSKUGroup}"-->
+				<!--			text="{ListItems>OrderMaterialGroupDesc} {= (${ListItems>OrderMaterialGroupID} &amp;&amp; ${ListItems>OrderMaterialGroupID} !== '')? '('+${ListItems>OrderMaterialGroupID}+')' : ''}"/>-->
+				<!--</HBox>-->
+				<!--	</table:template>-->
+				<!--</table:Column>-->
+				<!--<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}" width="10rem">-->
+				<!--	<Text text="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}"/>-->
+				<!--	<table:template>-->
+				<!--		<Text id="IDMS1" wrapping="true" class="sapUiTinyMarginTopBottom" tooltip="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}"-->
+				<!--			text="{ListItems>DmsDivisionDesc} {= (${ListItems>DMSDivision} &amp;&amp; ${ListItems>DMSDivision} !== '')? '('+${ListItems>DMSDivision}+')' : ''}"/>-->
+				<!--	</table:template>-->
+				<!--</table:Column>-->
+				<table:Column hAlign="Center" autoResizable="true" width="3rem" tooltip="Delete">
+					<Text text=""/>
+					<table:template>
+						<core:Icon src="sap-icon://sys-cancel" hoverColor="#f00" color="#999" press="onDeleteItem1"/>
+					</table:template>
+				</table:Column>
+			</table:Table>
+		</content>
+		<Input id="CPList_FOSaddvalId" visible="false"></Input>
+	</Panel>
+	<Panel xmlns="sap.m" class="sapUiResponsiveContentPadding" backgroundDesign="Solid"
+		visible="{= ${LocalViewSetting>/reviewMode} &amp;&amp; ${LocalViewSetting>/StockMaterialReview} ? true:false}">
+		<content>
+			<table:Table id="UIListTableReview" rows="{MatDocItems>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+				enableSelectAll="false" noData="No results found" enableColumnFreeze="true"
+				minAutoRowCount="{ path: 'LocalViewSetting>/MaterialItemCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+				visibleRowCount="{ path: 'LocalViewSetting>/MaterialItemCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+				visible="{= ((${device>/system/phone} || ${device>/system/tablet}===false)&amp;&amp; ${LocalViewSetting>/StockMaterial}===true)? true : false}"
+				visibleRowCountMode="Fixed">
+				<table:toolbar>
+					<Toolbar id="UIListTableToolBarReview">
+						<Title id="UIListTableTitleReview" text="{i18n>List.Table.Title}" level="H2"/>
+						<ToolbarSpacer/>
+					</Toolbar>
+				</table:toolbar>
+				<table:Column autoResizable="true" tooltip="ItemNo" width="4rem" hAlign="Right">
+					<Text text="SI NO"/>
+					<table:template>
+						<ObjectNumber number="{MatDocItems>ItemNo}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" width="15rem">
+					<Text text="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}"/>
+					<table:template>
+						<HBox>
+							<Text id="FMaterialNoReview" wrapping="true" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" class="sapUiTinyMarginTopBottom"
+								text="{MatDocItems>MaterialDesc} {= (${MatDocItems>MaterialNo} &amp;&amp; ${MatDocItems>MaterialNo} !== '')? '('+${MatDocItems>MaterialNo}+')' : ''}"/>
+						</HBox>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" width="6rem">
+					<Text text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"/>
+					<table:template>
+						<Text id="FBatchReview" wrapping="true" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" class="sapUiTinyMarginTopBottom"
+							text="{MatDocItems>Batch}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{i18n>List.Table.Qty}" width="6rem" hAlign="Right">
+					<Text id="FQuantityEditReview" text="{i18n>List.Table.Qty}" textAlign="Right"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{path:'MatDocItems>Quantity', type: 'sap.ui.model.type.Float'}" id="FQuantityReview"
+							tooltip="{i18n>List.Table.Qty} :{path:'MatDocItems>Quantity', type: 'sap.ui.model.type.Float'} {MatDocItems>UOM}" unit="{MatDocItems>UOM}"
+							xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{i18n>List.Table.ADJQty}" width="8rem" hAlign="Right">
+					<Text id="FAdjQtyReviewEditReview" text="{i18n>List.Table.ADJQty}" textAlign="Right"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{MatDocItems>AdjQty}" id="FAdjQuantityReview" textAlign="Right"
+							tooltip="{i18n>List.Table.ADJQty} :{path:'MatDocItems>AdjQty', type: 'sap.ui.model.type.Float'} {MatDocItems>UOM}" unit="{MatDocItems>UOM}"
+							xmlns="sap.m"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{i18n>List.Table.DiffQty}" width="6rem" hAlign="Right">
+					<Text text="{i18n>List.Table.DiffQty}" textAlign="Right"/>
+					<table:template>
+						<ObjectNumber id="FDiffQuantityReview" number="{= ${MatDocItems>DiffQty} !== '' ? ${MatDocItems>DiffQty} : '' }"
+							tooltip="{i18n>List.Table.DiffQty} :{path:'MatDocItems>DiffQty', type: 'sap.ui.model.type.Float'} {MatDocItems>UOM}"
+							unit="{MatDocItems>UOM}" xmlns="sap.m" textAlign="Right" emphasized="false"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}" width="6rem">
+					<Text id="FReasonIDReview" text="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}"/>
+					<table:template>
+						<Text wrapping="true" id="FReasonReview" tooltip="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}"
+							text="{MatDocItems>ReasonDesc} {= (${MatDocItems>ReasonID} &amp;&amp; ${MatDocItems>ReasonID} !== '')? '('+${MatDocItems>ReasonID}+')' : ''}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label}" width="7rem" hAlign="Right">
+					<Text textAlign="End" text="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label}"/>
+					<table:template>
+						<Text textAlign="End" text="{path:'MatDocItems>MRP',type: 'sap.ui.model.type.Float'} {MatDocItems>Currency}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label} : {path:'MatDocItems>MRP',type: 'sap.ui.model.type.Float'} {MatDocItems>Currency}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" width="6rem" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<Text text="{path: 'MatDocItems>ManufacturingDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" width="6rem" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<Text text="{path: 'MatDocItems>ExpiryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{i18n>List.Table.CRSSKUGroup}" width="14rem">
+					<Text text="{i18n>List.Table.CRSSKUGroup}"/>
+					<table:template>
+						<Text wrapping="true" tooltip="{i18n>List.Table.CRSSKUGroup}"
+							text="{MatDocItems>OrderMaterialGroupDesc} {= (${MatDocItems>OrderMaterialGroupID} &amp;&amp; ${MatDocItems>OrderMaterialGroupID} !== '')? '('+${MatDocItems>OrderMaterialGroupID}+')' : ''}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}" width="9rem">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/DMSDivisionID/#@sap:label}"/>
+					<table:template>
+						<Text wrapping="true" class="sapUiTinyMarginTopBottom"
+							text="{MatDocItems>DmsDivisionDesc} {= (${MatDocItems>DMSDivision} &amp;&amp; ${MatDocItems>DMSDivision} !== '')? '('+${MatDocItems>DMSDivision}+')' : ''}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" width="6rem">
+					<Text id="FRemarksEditReview" text="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}"/>
+					<table:template>
+						<HBox>
+							<Text wrapping="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" text="{MatDocItems>Remarks}"/>
+						</HBox>
+					</table:template>
+				</table:Column>
+			</table:Table>
+			<table:Table rows="{MatDocItems>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None" enableSelectAll="false"
+				noData="No results found" enableColumnFreeze="true"
+				minAutoRowCount="{ path: 'LocalViewSetting>/MaterialItemCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+				visibleRowCount="{ path: 'LocalViewSetting>/MaterialItemCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+				visible="{= ((${device>/system/phone} || ${device>/system/tablet}===false)&amp;&amp; ${LocalViewSetting>/OtherMaterial}===true)? true : false}"
+				visibleRowCountMode="Fixed">
+				<table:toolbar>
+					<Toolbar>
+						<Title text="{i18n>List.Table.Title}" level="H2"/>
+						<ToolbarSpacer/>
+					</Toolbar>
+				</table:toolbar>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" width="15rem">
+					<Text text="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}"/>
+					<table:template>
+						<HBox>
+							<Text wrapping="true" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" class="sapUiTinyMarginTopBottom"
+								text="{=${MatDocItems>MaterialNo}===''?'':${MatDocItems>MaterialDesc}+' ('+${MatDocItems>MaterialNo}+')'}"/>
+						</HBox>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" width="6rem">
+					<Text text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"/>
+					<table:template>
+						<Text wrapping="true" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" class="sapUiTinyMarginTopBottom" text="{MatDocItems>Batch}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Purchase Inv No" width="7rem" visible="false">
+					<Text text="Purchase Inv No"/>
+					<table:template>
+						<Text wrapping="true" tooltip="Purchase Inv No" class="sapUiTinyMarginTopBottom" text="{MatDocItems>RefDocNo}"/>
+						<!--<Input wrapping="true" maxLength="10" tooltip="{SSGW_MM>/MaterialDocItemDetails/RefDocNo/#@sap:label}" valueState="{ListItems>RefDocNoValueState}"-->
+						<!--	valueStateText="{ListItems>RefDocNoValueStateText}" class="sapUiTinyMarginTopBottom" value="{ListItems>RefDocNo}"/>-->
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/RefDocItemNo/#@sap:label}" width="5rem" visible="false">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/RefDocItemNo/#@sap:label}"/>
+					<table:template>
+						<Text wrapping="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/RefDocItemNo/#@sap:label}" class="sapUiTinyMarginTopBottom"
+							text="{MatDocItems>RefDocItemNo}"/>
+						<!--<Input wrapping="true" maxLength="10" tooltip="{SSGW_MM>/CPStockItemSnos/RefDocItemNo/#@sap:label}" valueState="{ListItems>RefDocItemNoValueState}"-->
+						<!--	valueStateText="{ListItems>RefDocItemNoValueStateText}" class="sapUiTinyMarginTopBottom" value="{ListItems>RefDocItemNo}"/>-->
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Good Quantity" width="5rem" hAlign="Right">
+					<Text text="Good Quantity" textAlign="Right"/>
+					<table:template>
+						<Text text="{MatDocItems>GQuantity}" textAlign="Right" tooltip="Good Quantity"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="5rem">
+					<Text text="UOM"/>
+					<table:template>
+						<Text text="{MatDocItems>UOM}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{i18n>Detail.table.Label.PurchasePrice}" width="8rem" hAlign="Right">
+					<Text text="{i18n>Detail.table.Label.PurchasePrice}"/>
+					<table:template>
+						<ObjectNumber number="{path:'MatDocItems>PurchasePrice',type:'sap.ui.model.type.Float'}" tooltip="{i18n>Detail.table.Label.PurchasePrice}"
+							xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/MRP/#@sap:label} (PC)" width="7rem" hAlign="Right">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/MRP/#@sap:label} (PC)"/>
+					<table:template>
+						<ObjectNumber number="{path:'MatDocItems>MRP',type:'sap.ui.model.type.Float'}" tooltip="{SSGW_MM>/MaterialDocItemDetails/Price/#@sap:label}"
+							xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" width="7rem" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<Text text="{path: 'MatDocItems>ManufacturingDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" width="7rem" hAlign="Right">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<Text text="{path: 'MatDocItems>ExpiryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/ExpiryDate/#@sap:label}" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Damage Quantity" width="5rem" hAlign="Right" visible="false">
+					<Text text="Damage Quantity" textAlign="Right"/>
+					<table:template>
+						<Text text="{MatDocItems>DQuantity}" textAlign="Right" tooltip="Damage Quantity"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Shortage Quantity" width="6rem" hAlign="Right" visible="false">
+					<Text text="Shortage Quantity" textAlign="Right"/>
+					<table:template>
+						<Text text="{MatDocItems>SQuantity}" textAlign="Right" tooltip="Shortage Quantity"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{i18n>List.Table.CRSSKUGroup}" width="10rem">
+					<Text text="{i18n>List.Table.CRSSKUGroup}"/>
+					<table:template>
+						<Text wrapping="true" tooltip="{i18n>List.Table.CRSSKUGroup}"
+							text="{=${MatDocItems>OrderMaterialGroupID}===''?'':${MatDocItems>OrderMaterialGroupDesc}+' ('+${MatDocItems>OrderMaterialGroupID}+')'}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" width="8rem">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}"/>
+					<table:template>
+						<HBox>
+							<Text wrapping="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" text="{MatDocItems>Remarks}"/>
+						</HBox>
+					</table:template>
+				</table:Column>
+			</table:Table>
+		</content>
+		<Input id="CPList_FOSaddvalIdReview" visible="false"></Input>
+	</Panel>
+	<Panel xmlns="sap.m" class="sapUiResponsiveContentPadding" backgroundDesign="Solid" visible="{LocalViewSetting>/stockMaterialT3}">
+		<content>
+			<table:Table rows="{ListItems>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None" enableSelectAll="false"
+				noData="No results found" enableColumnFreeze="true" minAutoRowCount="{LocalViewSetting>/Uploadatacount}"
+				visibleRowCount="{LocalViewSetting>/Uploadatacount}"
+				visible="{= ((${device>/system/phone} || ${device>/system/tablet}===false)&amp;&amp; ${LocalViewSetting>/stockMaterialT3}===true)? true : false}"
+				visibleRowCountMode="Fixed">
+				<table:toolbar>
+					<Toolbar>
+						<Title text="{i18n>List.Table.Title}" level="H2"/>
+						<ToolbarSpacer/>
+					</Toolbar>
+				</table:toolbar>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" width="17rem">
+					<Text text="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}"/>
+					<table:template>
+						<HBox>
+							<Text wrapping="true" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" class="sapUiTinyMarginTopBottom"
+								text="{=${ListItems>MaterialNo}===''?'':${ListItems>MaterialDesc}+' ('+${ListItems>MaterialNo}+')'}"/>
+						</HBox>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" width="10rem">
+					<Text text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}"/>
+					<table:template>
+						<Text wrapping="true" tooltip="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" class="sapUiTinyMarginTopBottom" text="{ListItems>Batch}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Book Stock" width="8rem" hAlign="Right">
+					<Text text="Book Stock" textAlign="Right"/>
+					<table:template>
+						<!--<Text text="{ListItems>Quantity}" tooltip="Book Stock" textAlign="Right"/>-->
+						<ObjectNumber emphasized="false" number="{path:'ListItems>Quantity', type: 'sap.ui.model.type.Float'}" id="Quantity1"
+							tooltip="Book Stock :{path:'ListItems>Quantity', type: 'sap.ui.model.type.Float'} {ListItems>UOM}" unit="{ListItems>UOM}" xmlns="sap.m"
+							textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Stock Diff" width="8rem" hAlign="Right">
+					<Text text="Physical Stock" textAlign="Right"/>
+					<table:template>
+						<!--<Text text="{ListItems>PhysicalStock}" tooltip="Physical Stock" textAlign="Right"/>-->
+						<ObjectNumber emphasized="false" number="{path:'ListItems>AdjQty', type: 'sap.ui.model.type.Float'}"
+							tooltip="Physical Stock:{path:'ListItems>AdjQty', type: 'sap.ui.model.type.Float'} {ListItems>UOM}" unit="{ListItems>UOM}" xmlns="sap.m"
+							textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Stock Diff" width="8rem" hAlign="Right">
+					<Text text="Stock Diff" textAlign="Right"/>
+					<table:template>
+						<!--<Text text="{ListItems>PhysicalStock}" tooltip="Physical Stock" textAlign="Right"/>-->
+						<ObjectNumber emphasized="false" number="{path:'ListItems>DiffQty', type: 'sap.ui.model.type.Float'}"
+							tooltip="Stock Diff:{path:'ListItems>DiffQty', type: 'sap.ui.model.type.Float'} {ListItems>UOM}" unit="{ListItems>UOM}" xmlns="sap.m"
+							textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Expiry Date" width="10rem" hAlign="Right">
+					<Text text="Expiry Date" textAlign="Right"/>
+					<table:template>
+						<!--<Text text="{ListItems>ExpiryDate}" textAlign="Right" tooltip="Expiry Date"/>-->
+						<Text text="{path: 'ListItems>ExpiryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}" tooltip="Expiry Date"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" width="9rem" tooltip="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label}" hAlign="Right">
+					<Text textAlign="End" text="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label}"/>
+					<table:template>
+						<Text textAlign="End" text="{path:'ListItems>MRP',type: 'sap.ui.model.type.Float'} {ListItems>Currency}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/MRP/#@sap:label} : {path:'ListItems>MRP',type: 'sap.ui.model.type.Float'} {ListItems>Currency}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="Reason" width="12rem" hAlign="Right">
+					<Text text="Reason" textAlign="Right"/>
+					<table:template>
+						<!--<Text text="{ListItems>Reason}" tooltip="Reason" textAlign="Right"/>-->
+						<Text wrapping="true" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" class="sapUiTinyMarginTopBottom"
+							text="{=${ListItems>ReasonID}===''?'':${ListItems>ReasonDesc}+' ('+${ListItems>ReasonID}+')'}"/>
+					</table:template>
+				</table:Column>
+			</table:Table>
+		</content>
+	</Panel>
+	<UploadCollection visible="{LocalViewSetting>/AttachmentsVisible}" id="UploadCollectionView" maximumFilenameLength="55" maximumFileSize="50"
+		multiple="false" showSeparators="All" change="onChange" fileDeleted="onFileDeleted" filenameLengthExceed="onFilenameLengthExceed"
+		fileRenamed="onFileRenamed" fileSizeExceed="onFileSizeExceed" typeMissmatch="onTypeMissmatch" uploadComplete="onUploadComplete"
+		beforeUploadStarts="onBeforeUploadStarts" uploadTerminated="onUploadTerminated" items="{SchemeCPDocuments>/}"
+		noDataText="{ppcutili18n>common.NoAttachments}" uploadUrl="/sap/opu/odata/ARTEC/SCGW/SchemeCPDocuments" uploadEnabled="true">
+		<toolbar>
+			<OverflowToolbar id="myId">
+				<Title id="attachmentTitle" text="Attachments">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow"/>
+					</layoutData>
+				</Title>
+				<ToolbarSpacer/>
+				<Button visible="{LocalViewSetting>/editMode}" tooltip="{i18n>SchemeCPDocuments.Page.UploadCollection.Dialog.Title}" type="Emphasized"
+					text="{i18n>SchemeCPDocuments.Page.UploadCollection.Dialog.Title}" press="selectDocumentType" enabled="true">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow"/>
+					</layoutData>
+				</Button>
+			</OverflowToolbar>
+		</toolbar>
+		<items press="getDetails">
+			<UploadCollectionItem id="UploadCollectionItem" documentId="{SchemeCPDocuments>DocumentID}" fileName="{SchemeCPDocuments>FileName}"
+				url="{SchemeCPDocuments>DocumentUrl}" enableEdit="false" enableDelete="false" visibleDelete="false" visibleEdit="false">
+				<attributes>
+					<ObjectAttribute title="{i18n>SchemeCPDocuments.Page.UploadCollectionItem.ObjectAttribute.UploadedOn}"
+						text="{path:'SchemeCPDocuments>CreatedOn',type: 'sap.ui.model.type.Date'}" active="false"/>
+					<ObjectAttribute title="{i18n>SchemeCPDocuments.Page.UploadCollectionItem.ObjectAttribute.UploadedBy}"
+						text="{= ${SchemeCPDocuments>CreatedByName} ? ${SchemeCPDocuments>CreatedByName} : ${SchemeCPDocuments>CreatedBy}}" active="false"></ObjectAttribute>
+					<!--<ObjectAttribute title="{i18n>SchemeCPDocuments.Page.UploadCollectionItem.ObjectAttribute.FileSize}"-->
+					<!--	text="{path : 'SchemeCPDocuments>DocumentSize', formatter : 'com.arteriatech.ppc.utils.js.Common.fileSizeFormatter'}"></ObjectAttribute>-->
+				</attributes>
+				<!--<statuses>
+					<ObjectStatus title="{i18n>SchemeCPDocumentsA.label.DocumentType}" text="{SchemeCPDocuments>DocumentTypeDesc}"/>
+				</statuses>-->
+			</UploadCollectionItem>
+		</items>
+	</UploadCollection>
+	<!--<Panel class="sapUiResponsiveContentPadding" backgroundDesign="Solid" visible="{LocalViewSetting>/stockMaterialT3}">-->
+	<!--	<content>-->
+	<!--		<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="true" emptySpanL="2" emptySpanM="2" labelSpanL="3" labelSpanM="3"-->
+	<!--			layout="ResponsiveGridLayout" maxContainerCols="3" title="">-->
+	<!--			<f:content>-->
+	<!--				<Label text="File Location" required="true"/>-->
+	<!--				<l:VerticalLayout>-->
+	<!--					<u:FileUploader id="fileUploader" buttonText="Browse" name="myFileUpload" sameFilenameAllowed="true"-->
+	<!--						tooltip="Upload your file to the local server" change="handleUploadComplete" typeMissmatch="handleTypeMissmatchTypeWise" fileType="csv"-->
+	<!--						width="100%"/>-->
+	<!--					<l:HorizontalLayout>-->
+	<!--						<Link text="Download Format" press="onDownloadFormat" visible="{LocalViewSetting>/CreateVisibility}" class="sapUiTinyMarginTop"></Link>-->
+	<!--					</l:HorizontalLayout>-->
+	<!--				</l:VerticalLayout>-->
+	<!--				<l:VerticalLayout>-->
+	<!--					<Button enabled="{LocalViewSetting>/CreateVisibility}" text="Upload File" press="handleUploadPress" width="50%"></Button>-->
+	<!--				</l:VerticalLayout>-->
+	<!--			</f:content>-->
+	<!--		</f:SimpleForm>-->
+	<!--	</content>-->
+	<!--</Panel>-->
+</core:View>

@@ -1,0 +1,170 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table"
+	controllerName="com.arteria.ss.stockadjustmnt.create.controller.DetailPageItems" xmlns:html="http://www.w3.org/1999/xhtml"
+	id="DetailPageItemsView" displayBlock="true">
+	<Panel class="sapUiResponsiveContentPadding">
+		<table:Table id="UiMatDocItemTable" rows="{MaterialDocItemDetails>/}" showColumnVisibilityMenu="true" enableGrouping="false"
+			selectionMode="None" enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="true"
+			minAutoRowCount="{ path: 'LocalViewSetting>/TableRowCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+			visibleRowCount="{ path: 'LocalViewSetting>/TableRowCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+			visible="{= (${device>/system/phone} || ${device>/system/tablet})? false : true}" visibleRowCountMode="Fixed">
+			<table:toolbar>
+				<Toolbar>
+					<Title id="UiSOTableTitle" level="H2"
+						text="{i18n>DetailItem.Table.Title} {= (!${LocalViewSetting>/TableRowCount} > 0) ? '' : '('+${LocalViewSetting>/TableRowCount}+')'}"
+						visible="true"/>
+					<ToolbarSpacer/>
+					<!--<Button tooltip="Download XL" press="exportToExcel" icon="sap-icon://download"
+						visible="{= (${device>/system/phone} || ${device>/system/tablet})? false : true}"/>-->
+				</Toolbar>
+			</table:toolbar>
+			<table:columns>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/ItemNo/#@sap:label}" mergeDuplicates="true"
+					mergeFunctionName="getTitle">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/ItemNo/#@sap:label}"/>
+					<table:template>
+						<Text text="{MaterialDocItemDetails>ItemNo}" tooltip="{MaterialDocItemDetails>ItemNo}"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/MaterialNo/#@sap:label}">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/MaterialNo/#@sap:label}"/>
+					<table:template>
+						<Text text="{MaterialDocItemDetails>MaterialDesc} ({MaterialDocItemDetails>MaterialNo})"
+							tooltip="{SSGW_MM>/MaterialDocItemDetails/MaterialNo/#@sap:label}"/>
+					</table:template>
+				</table:Column>
+				<table:Column hAlign="Right" autoResizable="true" tooltip="{SSGW_MM>/CPStockItemSnos/Quantity/#@sap:label}">
+					<Text id="FQuantityEdit" text="{SSGW_MM>/CPStockItemSnos/Quantity/#@sap:label}"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{path:'MaterialDocItemDetails>Quantity', type: 'sap.ui.model.type.Float'}" id="FQuantity"
+							tooltip="{SSGW_MM>/CPStockItemSnos/Quantity/#@sap:label} :{path:'MaterialDocItemDetails>Quantity', type: 'sap.ui.model.type.Float'} {MaterialDocItemDetails>UOM}"
+							unit="{MaterialDocItemDetails>UOM}" xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column hAlign="Right" autoResizable="true" tooltip="Adjusted Quantity">
+					<Text id="FAdjQtyEdit" text="Adjusted Qty"/>
+					<table:template>
+						<HBox id="HBoxAdjstdQty">
+							<ObjectNumber emphasized="false" number="{MaterialDocItemDetails>AdjQty}" id="FAdjQuantity"
+								tooltip="Adjusted Qty :{path:'MaterialDocItemDetails>AdjQty', type: 'sap.ui.model.type.Float'} {MaterialDocItemDetails>UOM}"
+								unit="{MaterialDocItemDetails>UOM}" xmlns="sap.m" textAlign="Right" visible="{LocalViewSetting>/reviewMode}"/>
+							<Input id="FAdjQty" change="onChangeAdjQty" value="{path: 'MaterialDocItemDetails>AdjQty'}"
+								valueState="{MaterialDocItemDetails>QuantityValueState}" valueStateText="{MaterialDocItemDetails>QuantityValueStateText}" textAlign="Right"
+								description="{MaterialDocItemDetails>UOM}" visible="{LocalViewSetting>/editMode}"
+								maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.Float'}"/>
+							<!--<Text text="{MaterialDocItemDetails>AdjQty} {MaterialDocItemDetails>UOM}" textAlign="Right"
+								/>-->
+						</HBox>
+					</table:template>
+				</table:Column>
+				<table:Column hAlign="Right" autoResizable="true" tooltip="Difference Quantity" width="7%">
+					<Text text="Diff. Qty"/>
+					<table:template>
+						<ObjectNumber id="FDiffQuantity" number="{= ${MaterialDocItemDetails>DiffQty} !== '' ? ${MaterialDocItemDetails>DiffQty} : '' }"
+							tooltip="Difference Quantity :{path:'MaterialDocItemDetails>DiffQty', type: 'sap.ui.model.type.Float'} {MaterialDocItemDetails>UOM}"
+							unit="{MaterialDocItemDetails>UOM}" xmlns="sap.m" textAlign="Right" emphasized="false"/>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}">
+					<Text id="FReasonID" text="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}"/>
+					<table:template>
+						<HBox>
+							<Select id="FReasonIDEdit" items="{path: 'ReasonDD>/', templateShareable : true}" selectedKey="{MaterialDocItemDetails>ReasonID}"
+								change="onChangeReasonDesc" visible="{LocalViewSetting>/editMode}">
+								<core:ListItem key="{ReasonDD>Key}" tooltip="{ReasonDD>Text}" text="{ReasonDD>Key}{ReasonDD>Seperator}{ReasonDD>Text}"/>
+							</Select>
+							<Text wrapping="true" id="FReason" tooltip="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}" visible="{LocalViewSetting>/reviewMode}"
+								text="{MaterialDocItemDetails>ReasonDesc} {= (${MaterialDocItemDetails>ReasonID} &amp;&amp; ${MaterialDocItemDetails>ReasonID} !== '')? '('+${MaterialDocItemDetails>ReasonID}+')' : ''}"/>
+						</HBox>
+					</table:template>
+				</table:Column>
+				<table:Column autoResizable="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}">
+					<Text id="FRemarksEdit" text="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}"/>
+					<table:template>
+						<HBox>
+							<Input id="FRemarks" maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.String'}" type="Text"
+								value="{MaterialDocItemDetails>Remarks}" visible="{LocalViewSetting>/editMode}" change="setRemarks"
+								valueState="{MaterialDocItemDetails>RemarksState}" valueStateText="{MaterialDocItemDetails>RemarksStateText}"/>
+							<Text wrapping="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" text="{MaterialDocItemDetails>Remarks}"
+								visible="{LocalViewSetting>/reviewMode}"/>
+						</HBox>
+					</table:template>
+				</table:Column>
+			</table:columns>
+		</table:Table>
+		<Table id="MatDocItemTable" items="{MaterialDocItemDetails>/}" inset="false" class="sapUiNoMargin" busy="false"
+			visible="{= (${device>/system/phone} || ${device>/system/tablet})? true : false}">
+			<headerToolbar>
+				<Toolbar id="MatItemTableToolBar">
+					<Title id="MatItemTableTitle"
+						text="{i18n>DetailItem.Table.Title} {= (!${LocalViewSetting>/TableRowCount} > 0) ? '' : '('+${LocalViewSetting>/TableRowCount}+')'}"
+						level="H2"/>
+				</Toolbar>
+			</headerToolbar>
+			<infoToolbar>
+				<Toolbar id="ListTableInfoToolBar" active="true" visible="false" press="handleViewSettingsDialogButtonPressed">
+					<Label id="ListTableInfoToolBarLabel" text="?"/>
+				</Toolbar>
+			</infoToolbar>
+			<columns>
+				<Column mergeDuplicates="true" mergeFunctionName="getTitle" minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+					<Text text="{SSGW_MM>/CPStockItemSnos/ItemNo/#@sap:label}" tooltip="{SSGW_MM>/CPStockItemSnos/ItemNo/#@sap:label}"/>
+				</Column>
+				<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+					<Text text="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}"/>
+				</Column>
+				<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+					<Text text="{SSGW_MM>/CPStockItemSnos/Quantity/#@sap:label}" tooltip="{SSGW_MM>/CPStockItemSnos/Quantity/#@sap:label}"/>
+				</Column>
+				<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+					<Text text="Adjusted Qty" tooltip="Adjusted Qty"/>
+				</Column>
+				<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+					<Text text="Diff. Qty" tooltip="Diff. Qty"/>
+				</Column>
+				<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}" tooltip="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}"/>
+				</Column>
+				<Column minScreenWidth="Tablet" demandPopin="true" popinDisplay="Inline">
+					<Text text="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}"/>
+				</Column>
+			</columns>
+			<items>
+				<ColumnListItem id="columnListItem">
+					<cells>
+						<Text text="{MaterialDocItemDetails>ItemNo}" tooltip="{MaterialDocItemDetails>ItemNo}"/>
+						<Text wrapping="true" tooltip="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}"
+							text="{MaterialDocItemDetails>MaterialDesc} {= (${MaterialDocItemDetails>MaterialNo} &amp;&amp; ${MaterialDocItemDetails>MaterialNo} !== '')? '('+${MaterialDocItemDetails>MaterialNo}+')' : ''}"/>
+						<ObjectNumber id="MTFQuantity" emphasized="false" number="{path:'MaterialDocItemDetails>Quantity', type: 'sap.ui.model.type.Float'}"
+							tooltip="{SSGW_MM>/CPStockItemSnos/Quantity/#@sap:label} :{path:'MaterialDocItemDetails>Quantity', type: 'sap.ui.model.type.Float'} {MaterialDocItemDetails>UOM}"
+							unit="{MaterialDocItemDetails>UOM}" xmlns="sap.m" textAlign="Right"/>
+						<HBox>
+							<Input id="MTAdjQty" change="onChangeAdjQty" value="{path: 'MaterialDocItemDetails>AdjQty'}" textAlign="Right"
+								description="{MaterialDocItemDetails>UOM}" visible="{LocalViewSetting>/editMode}"
+								maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.Float'}"/>
+							<Text text="{MaterialDocItemDetails>AdjQty} {MaterialDocItemDetails>UOM}" visible="{LocalViewSetting>/reviewMode}" textAlign="Right"
+								tooltip="Adjusted Quantity :{path:'MaterialDocItemDetails>AdjQty', type: 'sap.ui.model.type.Float'} {MaterialDocItemDetails>UOM}"/>
+						</HBox>
+						<ObjectNumber id="MTFDiffQuantity" number="{= ${MaterialDocItemDetails>DiffQty} !== '' ? ${MaterialDocItemDetails>DiffQty} : '' }"
+							tooltip="Difference Quantity :{path:'MaterialDocItemDetails>DiffQty', type: 'sap.ui.model.type.Float'} {MaterialDocItemDetails>UOM}"
+							unit="{MaterialDocItemDetails>UOM}" xmlns="sap.m" textAlign="Right" emphasized="false"/>
+						<HBox>
+							<Select id="MTFReasonIDEdit" items="{path: 'ReasonDD>/', templateShareable : true}" selectedKey="{MaterialDocItemDetails>ReasonID}"
+								change="onChangeReasonDesc" visible="{LocalViewSetting>/editMode}">
+								<core:ListItem key="{ReasonDD>Key}" tooltip="{ReasonDD>Text}" text="{ReasonDD>Key}{ReasonDD>Seperator}{ReasonDD>Text}"/>
+							</Select>
+							<Text wrapping="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/ReasonID/#@sap:label}" visible="{LocalViewSetting>/reviewMode}"
+								text="{MaterialDocItemDetails>ReasonDesc} {= (${MaterialDocItemDetails>ReasonID} &amp;&amp; ${MaterialDocItemDetails>ReasonID} !== '')? '('+${MaterialDocItemDetails>ReasonID}+')' : ''}"/>
+						</HBox>
+						<HBox>
+							<Input id="MTFRemarks" maxLength="{path:'SSGW_MM>/MaterialDocItemDetails/Remarks/#@maxLength', type:'sap.ui.model.type.String'}" type="Text"
+								value="{MaterialDocItemDetails>Remarks}" visible="{LocalViewSetting>/editMode}" change="setRemarks"
+								valueState="{MaterialDocItemDetails>RemarksState}" valueStateText="{MaterialDocItemDetails>RemarksStateText}"/>
+							<Text wrapping="true" tooltip="{SSGW_MM>/MaterialDocItemDetails/Remarks/#@sap:label}" text="{MaterialDocItemDetails>Remarks}"
+								visible="{LocalViewSetting>/reviewMode}"/>
+						</HBox>
+					</cells>
+				</ColumnListItem>
+			</items>
+		</Table>
+	</Panel>
+</mvc:View>

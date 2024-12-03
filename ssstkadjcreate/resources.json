@@ -1,0 +1,121 @@
+{
+    "resources": [
+        {
+            "name": "Component.js"
+        },
+        {
+            "name": "controller/BaseController.js"
+        },
+        {
+            "name": "controller/DetailPage.controller.js"
+        },
+        {
+            "name": "controller/DetailPageHeader.controller.js"
+        },
+        {
+            "name": "controller/DetailPageItems.controller.js"
+        },
+        {
+            "name": "controller/DetailPageObjectHeader.controller.js"
+        },
+        {
+            "name": "controller/ItemDetailPage.controller.js"
+        },
+        {
+            "name": "controller/List.controller.js"
+        },
+        {
+            "name": "controller/ListPage.controller.js"
+        },
+        {
+            "name": "controller/Main.controller.js"
+        },
+        {
+            "name": "controller/MaterialDetails.controller.js"
+        },
+        {
+            "name": "controller/NoMatching.controller.js"
+        },
+        {
+            "name": "controller/NotFound.controller.js"
+        },
+        {
+            "name": "controller/ViewPage.controller.js"
+        },
+        {
+            "name": "css/style.css"
+        },
+        {
+            "name": "i18n/i18n.properties",
+            "raw": "i18n/i18n.properties"
+        },
+        {
+            "name": "i18n/i18n_de.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_de"
+        },
+        {
+            "name": "i18n/i18n_en.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_en"
+        },
+        {
+            "name": "i18n/i18n_en_IN.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_en_IN"
+        },
+        {
+            "name": "i18n/i18n_en_US.properties",
+            "raw": "i18n/i18n.properties",
+            "locale": "_en_US"
+        },
+        {
+            "name": "index.html"
+        },
+        {
+            "name": "manifest.json"
+        },
+        {
+            "name": "util/Dialog.fragment.xml"
+        },
+        {
+            "name": "util/Formatter.js"
+        },
+        {
+            "name": "view/DetailPage.view.xml"
+        },
+        {
+            "name": "view/DetailPageHeader.view.xml"
+        },
+        {
+            "name": "view/DetailPageItems.view.xml"
+        },
+        {
+            "name": "view/DetailPageObjectHeader.view.xml"
+        },
+        {
+            "name": "view/ItemDetailPage.view.xml"
+        },
+        {
+            "name": "view/List.view.xml"
+        },
+        {
+            "name": "view/ListPage.view.xml"
+        },
+        {
+            "name": "view/Main.view.xml"
+        },
+        {
+            "name": "view/MaterialDetails.view.xml"
+        },
+        {
+            "name": "view/NoMatching.view.xml"
+        },
+        {
+            "name": "view/NotFound.view.xml"
+        },
+        {
+            "name": "view/ViewPage.view.xml"
+        }
+    ]
+}

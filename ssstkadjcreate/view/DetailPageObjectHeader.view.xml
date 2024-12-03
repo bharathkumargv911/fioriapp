@@ -1,0 +1,29 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteria.ss.stockadjustmnt.create.controller.DetailPageObjectHeader" xmlns:html="http://www.w3.org/1999/xhtml"
+	id="DetailPageObjectHeaderView" displayBlock="true">
+	<ObjectHeader binding="{Invoices>/}" responsive="true" fullScreenOptimized="false" backgroundDesign="Transparent" id="invdetails_header"
+		title="Stock Adjustment Document" introActive="false" numberState="Success" showMarkers="true" number="" numberUnit="" icon="sap-icon://home">
+		<attributes>
+			<ObjectAttribute title="{SSGW_MM>/MaterialDocs/MaterialDocDate/#@sap:label}"
+				text="{ path: 'MaterialDocs>/MaterialDocDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate' }"></ObjectAttribute>
+		</attributes>
+	</ObjectHeader>
+	<!--ObjectHeader id="DetailPageObjectHeader" binding="{POs>/}" responsive="true" icon="sap-icon://sales-order-item" fullScreenOptimized="false"
+		backgroundDesign="Transparent" id="podetails_header" intro="{POs>/VendorName} ({POs>/VendorNo})"
+		title="{parts:[{path:'POs>/POTypeDesc'},{path:'POs>/PONumber'},{path:'POs>/Version'}], formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatObjectHeaderText'}"
+		introActive="true" introPress="handleVendorQuickViewPress" numberState="Success" showMarkers="true"
+		number="{path:'POs>/POValue', type: 'sap.ui.model.type.Float'}" numberUnit="{POs>/POCurrency}">
+		<statuses>
+			<ObjectStatus text="{POs>/StatusDesc}" tooltip="{POs>/StatusDesc}"
+				icon="{path:'POs>/StatusID', formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatItemStatusIcon'}"
+				state="{path:'POs>/StatusID', formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatItemStatusColor'}"/>
+			<ObjectStatus id="ReleaseStatusID" text="{POs>/ReleaseStatusDesc}" tooltip="{POs>/ReleaseStatusDesc}"
+				icon="{path:'POs>/ReleaseStatusID', formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatItemReleaseStatusIcon'}"
+				state="{path:'POs>/ReleaseStatusID', formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatItemReleaseStatusColor'}"/>
+		</statuses>
+		<attributes>
+			<ObjectAttribute title="{PSGW_PUR>/POs/PODate/#@sap:label}" text="{ path: 'POs>/PODate', type: 'sap.ui.model.type.Date' }"></ObjectAttribute>
+			<ObjectAttribute id="DReleaseStatusID" title="" text=""></ObjectAttribute>
+		</attributes>
+	</ObjectHeader-->
+</mvc:View>

@@ -1,0 +1,44 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<ViewSettingsDialog confirm="sortAndFilterTable">
+		<sortItems>
+			<ViewSettingsItem text="{SSGW_MM>/CPStockItems/SKUGroup/#@sap:label}" key="SKUGroup"/>
+			<ViewSettingsItem text="{SSGW_MM>/CPStockItemSnos/ItemNo/#@sap:label}" key="ItemNo"/>
+			<ViewSettingsItem text="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" key="MaterialNo"/>
+			<ViewSettingsItem text="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" key="ManufacturingDate"/>
+			<ViewSettingsItem text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" key="Batch"/>
+			<ViewSettingsItem text="{SSGW_MM>/CPStockItemSnos/Quantity/#@sap:label}" key="Quantity"/>
+		</sortItems>
+		<filterItems>
+			<ViewSettingsCustomItem text="{SSGW_MM>/CPStockItems/SKUGroup/#@sap:label}" key="SKUGroup">
+				<customControl>
+					<Input tooltip="SKUGroup" liveChange="com.arteriatech.ppc.utils.js.Common.addCustomControlToFilter"/>
+				</customControl>
+			</ViewSettingsCustomItem>
+			<ViewSettingsCustomItem text="{SSGW_MM>/CPStockItemSnos/ItemNo/#@sap:label}" key="ItemNo">
+				<customControl>
+					<Input tooltip="ItemNo" liveChange="com.arteriatech.ppc.utils.js.Common.addCustomControlToFilter"/>
+				</customControl>
+			</ViewSettingsCustomItem>
+			<ViewSettingsCustomItem text="{SSGW_MM>/CPStockItemSnos/MaterialNo/#@sap:label}" key="MaterialNo">
+				<customControl>
+					<Input tooltip="MaterialNo" liveChange="com.arteriatech.ppc.utils.js.Common.addCustomControlToFilter"/>
+				</customControl>
+			</ViewSettingsCustomItem>
+			<ViewSettingsCustomItem text="{SSGW_MM>/CPStockItemSnos/ManufacturingDate/#@sap:label}" key="ManufacturingDate">
+				<customControl>
+					<Input tooltip="ManufacturingDate" liveChange="com.arteriatech.ppc.utils.js.Common.addCustomControlToFilter"/>
+				</customControl>
+			</ViewSettingsCustomItem>
+			<ViewSettingsCustomItem text="{SSGW_MM>/CPStockItemSnos/Batch/#@sap:label}" key="Batch">
+				<customControl>
+					<Input tooltip="Batch" liveChange="com.arteriatech.ppc.utils.js.Common.addCustomControlToFilter"/>
+				</customControl>
+			</ViewSettingsCustomItem>
+			<ViewSettingsCustomItem text="{SSGW_MM>/CPStockItemSnos/Quantity/#@sap:label}" key="Quantity">
+				<customControl>
+					<Input tooltip="Quantity" liveChange="com.arteriatech.ppc.utils.js.Common.addCustomControlToFilter"/>
+				</customControl>
+			</ViewSettingsCustomItem>
+		</filterItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

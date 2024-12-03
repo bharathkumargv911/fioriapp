@@ -1,0 +1,28 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteria.ss.stockadjustmnt.create.controller.DetailPage" xmlns:html="http://www.w3.org/1999/xhtml" id="DetailScreen">
+	<App id="DetailApp">
+		<pages>
+			<Page id="DetailPage" title="{i18n>Page.Detail.title}" showNavButton="true" navButtonType="Back" navButtonPress="navigateBack">
+				<content>
+					<mvc:XMLView id="DetailPageObjectHeaderView" viewName="com.arteria.ss.stockadjustmnt.create.view.DetailPageObjectHeader"/>
+					<mvc:XMLView id="DetailPageItemsView" viewName="com.arteria.ss.stockadjustmnt.create.view.DetailPageItems"/>
+				</content>
+				<footer>
+					<Toolbar>
+						<Button id="oMessagePopoverButton" text="{= ${LocalViewSetting>/messageLength} === 0 ? '' : ${LocalViewSetting>/messageLength} }"
+							icon="{= ${LocalViewSetting>/messageLength} === 0 ? '' : 'sap-icon://alert' }" press="showPopUp"
+							type="{= ${LocalViewSetting>/messageLength} === 0 ? 'Default' : 'Emphasized' }"
+							enabled="{= ${LocalViewSetting>/messageLength} === 0 ? false : true }"/>
+						<ToolbarSpacer/>
+						<!--<Button text="{i18n>List.Footer.clear}" press="onClear" visible="{LocalViewSetting>/editMode}" icon="sap-icon://reset" type="Reject"
+							tooltip="{i18n>List.Footer.clear}"/>-->
+						<Button text="{i18n>List.Footer.review}" press="onReview" visible="{LocalViewSetting>/editMode}" icon="sap-icon://activities" type="Accept"
+							tooltip="{i18n>List.Footer.review}"/>
+						<Button text="{i18n>List.Footer.save}" press="onSave" visible="{LocalViewSetting>/reviewMode}" icon="sap-icon://save" type="Accept"
+							tooltip="{i18n>List.Footer.save}"/>
+					</Toolbar>
+				</footer>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

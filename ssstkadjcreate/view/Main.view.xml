@@ -1,0 +1,4 @@
+<core:View controllerName="com.arteria.ss.stockadjustmnt.create.controller.Main" displayBlock="true" height="100%" xmlns:core="sap.ui.core"
+	xmlns="sap.m" id="MainScreen">
+	<App id="ssstkadjcreate"></App>
+</core:View>

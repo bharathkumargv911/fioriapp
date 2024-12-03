@@ -1,0 +1,5 @@
+<core:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteria.ss.stockadjustmnt.create.controller.NoMatching" xmlns:html="http://www.w3.org/1999/xhtml" id="NoMatchingScreen">
+	<MessagePage id="notFoundMessagePage" title="{i18n>NoMatching.Page.Header}" text="{i18n>NoMatching.Page.text}"
+		icon="{i18n>NoMatching.Page.icon}" description="{i18n>NoMatching.Page.description}" showNavButton="true" navButtonPress="onNavBack"/>
+</core:View>

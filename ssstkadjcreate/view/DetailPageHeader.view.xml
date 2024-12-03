@@ -1,0 +1,64 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:html="http://www.w3.org/1999/xhtml"
+	controllerName="com.arteria.ss.stockadjustmnt.create.controller.DetailPageHeader" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	id="DetailPageHeaderView" displayBlock="true">
+	<l:Grid defaultSpan="L12 M12 S12" width="auto" vSpacing="0" visible="{LocalViewSetting>/editMode}">
+		<l:content>
+			<f:Form editable="true">
+				<f:layout>
+					<f:ResponsiveGridLayout labelSpanL="4" labelSpanM="4" emptySpanL="4" emptySpanM="4" columnsL="4" columnsM="4"></f:ResponsiveGridLayout>
+				</f:layout>
+				<f:formContainers></f:formContainers>
+				<f:formContainers>
+					<f:FormContainer >
+						<f:formElements>
+							<f:FormElement label="{SSGW_MM>/MaterialDocs/MaterialDocDate/#@sap:label}" required="true">
+								<f:fields>
+									<DatePicker dateValue="{path:'MaterialDocs>/MaterialDocDate' }" displayFormat="{LocalViewSetting>/DateFormat}" change="onDateValidate"></DatePicker>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement>
+								<f:label>
+									<Label required="true" id="feMvmtTypeID" text="{SSGW_MM>/MaterialDocs/MvmtTypeID/#@sap:label}"></Label>
+								</f:label>
+								<f:fields>
+									<Select autoAdjustWidth="true" id="MvmtTypeID" items="{MoveMentTypeDD>/}">
+										<core:ListItem id="MoveMentTypeID_item" key="{MoveMentTypeDD>Key}"
+											text="{MoveMentTypeDD>Key}{MoveMentTypeDD>Seperator}{MoveMentTypeDD>Text}" tooltip="{MoveMentTypeDD>Text}"></core:ListItem>
+									</Select>
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+				</f:formContainers>
+				<f:formContainers></f:formContainers>
+			</f:Form>
+		</l:content>
+	</l:Grid>
+	<l:Grid defaultSpan="L12 M12 S12" width="auto" vSpacing="0" visible="{LocalViewSetting>/reviewMode}">
+		<l:content>
+			<f:Form editable="false">
+				<f:layout>
+					<f:ResponsiveGridLayout labelSpanL="4" labelSpanM="4" emptySpanL="4" emptySpanM="4" columnsL="4" columnsM="4"></f:ResponsiveGridLayout>
+				</f:layout>
+				<f:formContainers></f:formContainers>
+				<f:formContainers>
+					<f:FormContainer >
+						<f:formElements>
+							<f:FormElement label="{SSGW_MM>/MaterialDocs/MaterialDocDate/#@sap:label}">
+								<f:fields>
+									<Text text="{ path: 'MaterialDocs>/MaterialDocDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"></Text>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="{SSGW_MM>/MaterialDocs/MvmtTypeID/#@sap:label}">
+								<f:fields>
+									<Text text="{MaterialDocs>/MvmntTypeDesc} ({MaterialDocs>/MvmtTypeID})"></Text>
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+				</f:formContainers>
+				<f:formContainers></f:formContainers>
+			</f:Form>
+		</l:content>
+	</l:Grid>
+</mvc:View>
