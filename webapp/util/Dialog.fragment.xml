@@ -1,0 +1,14 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core">
+	<ViewSettingsDialog confirm="sortAndFilterTable">
+		<sortItems>
+			<ViewSettingsItem text="{PSGW_PUR>/POItems/PONumber/#@sap:label}" key="PONumber"/>
+		</sortItems>
+		<filterItems>
+			<ViewSettingsCustomItem text="{PSGW_PUR>/POItems/PONumber/#@sap:label}" key="PONumber">
+				<customControl>
+					<Input tooltip="PONumber" liveChange="com.arteriatech.ppc.utils.js.Common.addCustomControlToFilter"/>
+				</customControl>
+			</ViewSettingsCustomItem>
+		</filterItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

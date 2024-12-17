@@ -1,0 +1,265 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteriatech.zsf.quot.controller.ApproveList" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:fb="sap.ui.comp.filterbar"
+	xmlns:l="sap.ui.layout" xmlns:table="sap.ui.table">
+	<table:Table id="UIApproveTable" rows="{Tasks>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+		enableSelectAll="false" enableColumnFreeze="true"
+		visibleRowCount="{= ${LocalViewSetting>/ListItemsCount} > 10 ? 10:${LocalViewSetting>/ListItemsCount}}" visible="true"
+		visibleRowCountMode="Fixed" class="sapUiSmallMargin">
+		<table:toolbar>
+			<Toolbar>
+				<Title
+					tooltip="{i18n>ApproveList.Table.Items.header} {= (!${LocalViewSetting>/ListItemsCount} > 0) ? '' : '('+${LocalViewSetting>/ListItemsCount}+')'}"
+					text="{i18n>ApproveList.Table.Items.header} {= (!${LocalViewSetting>/ListItemsCount} > 0) ? '' : '('+${LocalViewSetting>/ListItemsCount}+')'}"
+					level="H2"/>
+				<ToolbarSpacer/>
+				<Button icon="sap-icon://download" press="exportToExcel" tooltip="DownLoad XL" visible="true"/>
+				<Button id="RefreshBtn" icon="sap-icon://refresh" tooltip="Refresh" press="onPressRefresh"/>
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column width="2%" visible="true">
+				<!--<CheckBox select="collectionAllItemSelect" selected="{LocalViewSetting>/selectedCheckbox}"/>-->
+				<table:template>
+					<CheckBox selected="{Tasks>selectedCheckbox}" select="onselectedCheckbox"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityKeyIDTemp" width="8rem" filterProperty="EntityKeyID"
+				tooltip="{i18n>List.FilterBar.Sales.Order.Request.No}">
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.No}"/>
+				<table:template>
+					<Link press="getQuotDetails" text="{Tasks>EntityKeyID}" tooltip="{Tasks>EntityKeyIDTemp}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityDate1" filterProperty="EntityDate1" width="8rem"
+				tooltip="{i18n>QuotationItemDetails.SalesOrderRequestDate}"
+				filterType="\{type: 'sap.ui.model.type.Date', formatOptions: \{ UTC: true, pattern: 'dd/MM/yyyy'\}\}">
+				<Text text="{i18n>QuotationItemDetails.SalesOrderRequestDate}"/>
+				<table:template>
+					<Text text="{ path: 'Tasks>EntityDate1', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+						tooltip="{ path: 'Tasks>EntityDate1', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityAttribute2" filterProperty="EntityAttribute2" width="17rem"
+				tooltip="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}">
+				<Text text="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}"/>
+				<table:template>
+					<Text text="{=${Tasks>EntityAttribute1}===''? ${Tasks>EntityAttribute2}: ${Tasks>EntityAttribute2} +' ('+${Tasks>EntityAttribute1}+')'} "
+						tooltip="{=${Tasks>EntityAttribute1}===''? ${Tasks>EntityAttribute2}: ${Tasks>EntityAttribute2} +' ('+${Tasks>EntityAttribute1}+')'}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityAttribute6" filterProperty="EntityAttribute6" width="13rem"
+				tooltip="{i18n>List.FilterBar.Sales.Order.Request.Type}">
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Type}"/>
+				<table:template>
+					<Text text="{=${Tasks>EntityAttribute5}===''? ${Tasks>EntityAttribute6}: ${Tasks>EntityAttribute6} +' ('+${Tasks>EntityAttribute5}+')'} "
+						tooltip="{=${Tasks>EntityAttribute5}===''? ${Tasks>EntityAttribute6}: ${Tasks>EntityAttribute6} +' ('+${Tasks>EntityAttribute5}+')'}"/>
+				</table:template>
+			</table:Column>
+			<!--<table:Column sortProperty="EntityAttribute3" filterProperty="EntityAttribute3" width="18rem"-->
+			<!--	tooltip="{SFGW_INQ>/Quotations/SalesArea/#@sap:label}">-->
+			<!--	<Text text="{SFGW_INQ>/Quotations/SalesArea/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text text="{=${Tasks>EntityAttribute3}===''? ${Tasks>EntityAttribute4}: ${Tasks>EntityAttribute4} +' ('+${Tasks>EntityAttribute3}+')'} "-->
+			<!--			tooltip="{=${Tasks>EntityAttribute3}===''? ${Tasks>EntityAttribute4}: ${Tasks>EntityAttribute4} +' ('+${Tasks>EntityAttribute3}+')'}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<table:Column sortProperty="EntityAttribute10" filterProperty="EntityAttribute10" width="15rem"
+				tooltip="{i18n>List.FilterBar.Sales.Order.Request.Material.No}">
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Material.No}"/>
+				<table:template>
+					<Text text="{=${Tasks>EntityAttribute9}===''? ${Tasks>EntityAttribute10}: ${Tasks>EntityAttribute10} +' ('+${Tasks>EntityAttribute9}+')'} "
+						tooltip="{=${Tasks>EntityAttribute9}===''? ${Tasks>EntityAttribute10}: ${Tasks>EntityAttribute10} +' ('+${Tasks>EntityAttribute9}+')'}"/>
+				</table:template>
+			</table:Column>
+			<!--additional feilds-->
+			<table:Column sortProperty="EntityAttribute12" filterProperty="EntityAttribute12" width="15rem"
+				tooltip="{i18n>List.FilterBar.Sales.Order.Request.Payment.No}">
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Payment.No}"/>
+				<table:template>
+					<Text
+						text="{=${Tasks>EntityAttribute11}===''? ${Tasks>EntityAttribute12}: ${Tasks>EntityAttribute12} +' ('+${Tasks>EntityAttribute11}+')'} "
+						tooltip="{=${Tasks>EntityAttribute11}===''? ${Tasks>EntityAttribute12}: ${Tasks>EntityAttribute12} +' ('+${Tasks>EntityAttribute11}+')'}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityAttribute8" filterProperty="EntityAttribute8" width="15rem"
+				tooltip="{i18n>List.FilterBar.Sales.Order.Request.salesoffice.No}">
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.salesoffice.No}"/>
+				<table:template>
+					<Text text="{=${Tasks>EntityAttribute7}===''? ${Tasks>EntityAttribute8}: ${Tasks>EntityAttribute8} +' ('+${Tasks>EntityAttribute7}+')'} "
+						tooltip="{=${Tasks>EntityAttribute7}===''? ${Tasks>EntityAttribute8}: ${Tasks>EntityAttribute8} +' ('+${Tasks>EntityAttribute7}+')'}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityAttribute14" filterProperty="EntityAttribute14" width="15rem"
+				tooltip="{i18n>List.FilterBar.Sales.Order.Request.Plant.No}">
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Plant.No}"/>
+				<table:template>
+					<Text
+						text="{=${Tasks>EntityAttribute13}===''? ${Tasks>EntityAttribute14}: ${Tasks>EntityAttribute14} +' ('+${Tasks>EntityAttribute13}+')'} "
+						tooltip="{=${Tasks>EntityAttribute13}===''? ${Tasks>EntityAttribute14}: ${Tasks>EntityAttribute14} +' ('+${Tasks>EntityAttribute13}+')'}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityAttribute16" filterProperty="EntityAttribute16" width="15rem"
+				tooltip="{i18n>List.FilterBar.Sales.Order.Request.Transportzone.No}">
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Transportzone.No}"/>
+				<table:template>
+					<Text
+						text="{=${Tasks>EntityAttribute15}===''? ${Tasks>EntityAttribute16}: ${Tasks>EntityAttribute16} +' ('+${Tasks>EntityAttribute15}+')'} "
+						tooltip="{=${Tasks>EntityAttribute15}===''? ${Tasks>EntityAttribute16}: ${Tasks>EntityAttribute16} +' ('+${Tasks>EntityAttribute15}+')'}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityAttribute18" filterProperty="EntityAttribute18" width="15rem"
+				tooltip="{i18n>List.FilterBar.Sales.Order.Request.DCA.No}">
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.DCA.No}"/>
+				<table:template>
+					<Text
+						text="{=${Tasks>EntityAttribute17}===''? ${Tasks>EntityAttribute18}: ${Tasks>EntityAttribute18} +' ('+${Tasks>EntityAttribute17}+')'} "
+						tooltip="{=${Tasks>EntityAttribute17}===''? ${Tasks>EntityAttribute18}: ${Tasks>EntityAttribute18} +' ('+${Tasks>EntityAttribute17}+')'}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityQty1" filterProperty="EntityQty1" hAlign="Right" width="7rem"
+				tooltip="{i18n>QuotationItemDetails.Quantity}" filterType="\{type: 'sap.ui.model.type.Float'\}">
+				<Text textAlign="End" text="{i18n>QuotationItemDetails.Quantity}"/>
+				<table:template>
+					<ObjectNumber textAlign="End" emphasized="false" number="{path:'Tasks>EntityQty1', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.Quantity}: {path:'Tasks>EntityQty1', type: 'sap.ui.model.type.Float'} {Tasks>EntityUOM}"
+						unit="{Tasks>EntityUOM}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityUOM" filterProperty="EntityUOM" hAlign="Right" width="7rem" tooltip="{i18n>QuotationItemDetails.UOM}">
+				<Text textAlign="End" text="{i18n>QuotationItemDetails.UOM}"/>
+				<table:template>
+					<Text textAlign="End" emphasized="false" text="{path:'Tasks>EntityUOM'}" tooltip="{i18n>QuotationItemDetails.UOM}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="EntityValue1" filterProperty="EntityValue1" hAlign="Right" width="8rem"
+				tooltip="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}" filterType="\{type: 'sap.ui.model.type.Float'\}">
+				<Text textAlign="End" text="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}"/>
+				<table:template>
+					<ObjectNumber textAlign="End" emphasized="false" number="{path:'Tasks>EntityValue1', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}: {path:'Tasks>EntityValue1', type: 'sap.ui.model.type.Float'} {Tasks>EntityCurrency}"
+						unit="{Tasks>EntityCurrency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+	<Table busy="false" class="sapUiNoMargin" id="ApproveTable" inset="false" items="{Tasks>/}" visible="false">
+		<headerToolbar>
+			<Toolbar>
+				<Label design="Bold" text="{i18n>ApproveList.Table.Items.header}"/>
+				<ToolbarSpacer/>
+				<Button icon="sap-icon://drop-down-list" press="sorterFilterApprove"/>
+				<Button icon="sap-icon://download" press="exportToExcel" tooltip="DownLoad XL" visible="{= ${device>/system/phone}? false : true}"/>
+			</Toolbar>
+		</headerToolbar>
+		<infoToolbar>
+			<Toolbar active="true" press="sorterFilterApprove" visible="false">
+				<Label text="?"/>
+			</Toolbar>
+		</infoToolbar>
+		<columns>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.No}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>QuotationItemDetails.SalesOrderRequestDate}"/>
+			</Column>
+			<Column>
+				<Text text="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}"/>
+			</Column>
+			<Column>
+				<Text text="{SFGW_INQ>/Quotations/CustomerName/#@sap:label}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Type}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Type.Desc}"/>
+			</Column>
+			<!--<Column>-->
+			<!--	<Text text="{SFGW_INQ>/Quotations/SalesArea/#@sap:label}"/>-->
+			<!--</Column>-->
+			<!--<Column>-->
+			<!--	<Text text="{SFGW_INQ>/Quotations/SalesAreaDesc/#@sap:label}"/>-->
+			<!--</Column>-->
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Material.No}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Material.Desc}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Payment.No}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Payment.Desc}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.salesoffice.No}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.salesoffice.Desc}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Plant.No}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Plant.Desc}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Transportzone.No}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.Transportzone.Desc}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.DCA.No}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>List.FilterBar.Sales.Order.Request.DCA.Name}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>QuotationItemDetails.Quantity}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>QuotationItemDetails.UOM}"/>
+			</Column>
+			<Column>
+				<Text text="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem id="SOItem_column_List_Item_All" press="getQuotDetails" type="Navigation">
+				<cells>
+					<Text text="{Tasks>EntityKeyID}" tooltip="{Tasks>EntityKeyIDTemp}"/>
+					<Text text="{ path: 'Tasks>EntityDate1', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+						tooltip="{ path: 'Tasks>EntityDate1', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+					<Text text="{Tasks>EntityAttribute1}" tooltip="{Tasks>EntityAttribute1}"/>
+					<Text text="{Tasks>EntityAttribute2}" tooltip="{Tasks>EntityAttribute2}"/>
+					<Text text="{Tasks>EntityAttribute5}" tooltip="{Tasks>EntityAttribute5}"/>
+					<Text text="{Tasks>EntityAttribute6}" tooltip="{Tasks>EntityAttribute6}"/>
+					<!--<Text text="{Tasks>EntityAttribute3}" tooltip="{Tasks>EntityAttribute3}"/>-->
+					<!--<Text text="{Tasks>EntityAttribute4}" tooltip="{Tasks>EntityAttribute4}"/>-->
+					<Text text="{Tasks>EntityAttribute9}" tooltip="{Tasks>EntityAttribute9}"/>
+					<Text text="{Tasks>EntityAttribute10}" tooltip="{Tasks>EntityAttribute10}"/>
+					<Text text="{Tasks>EntityAttribute11}" tooltip="{Tasks>EntityAttribute11}"/>
+					<Text text="{Tasks>EntityAttribute12}" tooltip="{Tasks>EntityAttribute12}"/>
+					<Text text="{Tasks>EntityAttribute7}" tooltip="{Tasks>EntityAttribute7}"/>
+					<Text text="{Tasks>EntityAttribute8}" tooltip="{Tasks>EntityAttribute8}"/>
+					<Text text="{Tasks>EntityAttribute13}" tooltip="{Tasks>EntityAttribute13}"/>
+					<Text text="{Tasks>EntityAttribute14}" tooltip="{Tasks>EntityAttribute14}"/>
+					<Text text="{Tasks>EntityAttribute15}" tooltip="{Tasks>EntityAttribute15}"/>
+					<Text text="{Tasks>EntityAttribute16}" tooltip="{Tasks>EntityAttribute16}"/>
+					<Text text="{Tasks>EntityAttribute17}" tooltip="{Tasks>EntityAttribute17}"/>
+					<Text text="{Tasks>EntityAttribute18}" tooltip="{Tasks>EntityAttribute18}"/>
+					<ObjectNumber textAlign="End" emphasized="false" number="{path:'Tasks>EntityQty1', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.Quantity}: {path:'Tasks>EntityQty1', type: 'sap.ui.model.type.Float'} {Tasks>EntityUOM}"
+						unit="{Tasks>EntityUOM}" xmlns="sap.m"/>
+					<Text text="{Tasks>EntityUOM}" tooltip="{Tasks>EntityUOM}"/>
+					<ObjectNumber textAlign="End" emphasized="false" number="{path:'Tasks>EntityValue1', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}: {path:'Tasks>EntityValue1', type: 'sap.ui.model.type.Float'} {Tasks>EntityCurrency}"
+						unit="{Tasks>EntityCurrency}" xmlns="sap.m"/>
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+</mvc:View>

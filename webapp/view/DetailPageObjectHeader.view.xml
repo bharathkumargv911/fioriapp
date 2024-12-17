@@ -1,0 +1,23 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteriatech.zsf.quot.controller.DetailPageObjectHeader" xmlns:html="http://www.w3.org/1999/xhtml"
+	id="DetailPageObjectHeaderView" displayBlock="true">
+	<ObjectHeader id="DetailPageObjectHeader" binding="{Quotations>/}" responsive="true" icon="sap-icon://sales-order-item" fullScreenOptimized="false"
+		backgroundDesign="Transparent"  intro="{Quotations>/CustomerName} ({Quotations>/CustomerNo})"
+		title="{i18n>Detail.PageObjectHeader.title}: {Quotations>/QuotationNo}"
+		introActive="true" introPress="handleVendorQuickViewPress" numberState="Success" showMarkers="true"
+		number="{path:'Quotations>/NetAmount', type: 'sap.ui.model.type.Float'}" numberUnit="{Quotations>/Currency}">
+		<statuses>
+			<!--<ObjectStatus text="{Quotations>/StatusDesc}" tooltip="{Quotations>/StatusDesc}"
+				icon="{path:'Quotations>/StatusID', formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatItemStatusIcon'}"
+				state="{path:'Quotations>/StatusID', formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatItemStatusColor'}"/>
+			<ObjectStatus id="ReleaseStatusID" text="{Quotations>/ReleaseStatusDesc}" tooltip="{Quotations>/ReleaseStatusDesc}"
+				icon="{path:'Quotations>/ReleaseStatusID', formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatItemReleaseStatusIcon'}"
+				state="{path:'Quotations>/ReleaseStatusID', formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatItemReleaseStatusColor'}"/>-->
+		</statuses>
+		<!--{parts:[{path:'Quotations>/QuotationTypeDesc'},{path:'Quotations>/QuotationNo'}, formatter:'com.arteriatech.pps.pomat.util.POFormatter.formatObjectHeaderText'}-->
+		<attributes>
+			<ObjectAttribute title="{PSGW_PUR>/Quotations/QuotationDate/#@sap:label}" text="Quotation Date: { path: 'Quotations>/QuotationDate', type: 'sap.ui.model.type.Date' }"></ObjectAttribute>
+			<ObjectAttribute id="DReleaseStatusID" title="" text=""></ObjectAttribute>
+		</attributes>
+	</ObjectHeader>
+	</mvc:View>

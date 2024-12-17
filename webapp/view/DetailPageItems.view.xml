@@ -1,0 +1,473 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteriatech.zsf.quot.controller.DetailPageItems" xmlns:html="http://www.w3.org/1999/xhtml" id="DetailPageItemsView"
+	displayBlock="true" xmlns:table="sap.ui.table">
+	<table:Table id="UIItemsTable" rows="{QuotationItemDetails>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+		enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="false"
+		visibleRowCount="{= ${LocalViewSettingDtl>/ItemsCount} > 5 ? 5:${LocalViewSettingDtl>/ItemsCount}}"
+		visible="{LocalViewSettingDtl>/editMode}" visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar id="UIDetailItemToolBar1">
+				<Title id="UIListTableTitle1"
+					text="{i18n>Detail.Table.Title} {= (!${LocalViewSettingDtl>/ItemsCount} > 0) ? '' : '('+${LocalViewSettingDtl>/ItemsCount}+')'}" level="H2"/>
+				<ToolbarSpacer></ToolbarSpacer>
+				<!--<Button id="addItem" icon="sap-icon://add" press="addItem"/>-->
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column width="5rem" autoResizable="true" tooltip="{SFGW_INQ>/QuotationItemDetails/ItemNo/#@sap:label}">
+				<Text text="{SFGW_INQ>/QuotationItemDetails/ItemNo/#@sap:label}"/>
+				<table:template>
+					<!--<Text text="{QuotationItemDetails>ItemNo}" tooltip="{QuotationItemDetails>ItemNo}"/>-->
+					<Link text="{path:'QuotationItemDetails>ItemNo'}" class="sapUiTinyMarginTopBottom" press="goToItemDetails"
+						tooltip="{SFGW_INQ>/QuotationItemDetails/ItemNo/#@sap:label}"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="22.3rem" autoResizable="true" tooltip="{SFGW_INQ>/QuotationItemDetails/Material/#@sap:label}">
+				<Text text="{SFGW_INQ>/QuotationItemDetails/Material/#@sap:label}"/>
+				<table:template>
+					<VBox>
+						<MultiInput id="inputMaterial" width="21rem" visible="{QuotationItemDetails>MatF4Input}"
+							maxLength="{path:'SFGW_INQ>/#QuotationItemDetail/Material/@maxLength', type:'sap.ui.model.type.Float'}"
+							valueStateText="{QuotationItemDetails>MaterialNoValueStateText}" valueState="{QuotationItemDetails>MaterialNoValueState}"
+							valueHelpRequest="MaterialNoF4" showTableSuggestionValueHelp="true" showSuggestion="true" filterSuggests="false"
+							suggest="handleMaterialSuggest" suggestionItemSelected="suggestionItemSelected" suggestionItems="" change="onChangeMaterial"
+							tokenChange="handleMaterialTokenRemove">
+							<suggestionItems>
+								<core:ListItem text="{MaterialSuggestorModel>MaterialDesc}" additionalText="{MaterialSuggestorModel>MaterialNo}"/>
+							</suggestionItems>
+						</MultiInput>
+						<Input visible="{QuotationItemDetails>MatInput}" enabled="false" width="21rem"
+							value="{parts:[{path:'QuotationItemDetails>MaterialDesc'},{path:'QuotationItemDetails>Material'}], formatter:'.formatText'}"
+							tooltip="{parts:[{path:'QuotationItemDetails>MaterialDesc'},{path:'QuotationItemDetails>Material'}], formatter:'.formatText'}"/>
+					</VBox>
+				</table:template>
+			</table:Column>
+			<!--<table:Column width="6rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}"-->
+			<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/HSNCode/#@sap:label}" hAlign="Right">-->
+			<!--	<Text text="{SFGW_INQ>/QuotationItemDetails/HSNCode/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemDetails>HSNCode}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/HSNCode/#@sap:label}: {QuotationItemDetails>HSNCode}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="6rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}"-->
+			<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/AlternativeUOM1/#@sap:label}" hAlign="Right">-->
+			<!--	<Text text="{SFGW_INQ>/QuotationItemDetails/AlternativeUOM1/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemDetails>AlternativeUOM1}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/AlternativeUOM1/#@sap:label}: {QuotationItemDetails>AlternativeUOM1}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column sortProperty="" filterProperty="" width="15%" autoResizable="true" visible="true"-->
+			<!--	tooltip="{i18n>List.Table.Column.ConvrsFactor}">-->
+			<!--	<Text text="{i18n>List.Table.Column.ConvrsFactor}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" tooltip="{i18n>List.Table.Column.ConvrsFactor}"-->
+			<!--			text="{QuotationItemDetails>AlternativeUOM1Num} : {QuotationItemDetails>AlternativeUOM1Den}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="7rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right"-->
+			<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/MRP/#@sap:label}">-->
+			<!--	<Text textAlign="Right" text="{SFGW_INQ>/QuotationItemDetails/MRP/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>MRP', type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/MRP/#@sap:label}: {path:'QuotationItemDetails>MRP', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+			<!--			unit="{QuotationItemDetails>Currency}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<table:Column width="7rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}"
+				tooltip="{i18n>QuotationItemDetails.Quantity}" hAlign="Right">
+				<Text text="{i18n>QuotationItemDetails.Quantity}" id="id_Qty"/>
+				<table:template>
+					<Input value="{QuotationItemDetails>Quantity}" liveChange="validateNumeric1" valueState="{QuotationItemDetails>QuantityValueState}"
+						description="{QuotationItemDetails>Uom}" valueStateText="{QuotationItemDetails>QuantityValueStateText}" change="onChangeQuantity"
+						textAlign="End" maxLength="{path:'SFGW_INQ>/QuotationItemDetails/Quantity/#@precision', type:'sap.ui.model.type.Float'}" fieldWidth="70%"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="8rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right"
+				tooltip="{i18n>QuotationItemDetails.BasicPrice}">
+				<Text textAlign="Right" text="{i18n>QuotationItemDetails.BasicPrice}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>UnitPrice', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.BasicPrice}: {path:'QuotationItemDetails>UnitPrice', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}">
+				<Text textAlign="End" text="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>GrossAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}: {path:'QuotationItemDetails>GrossAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="7rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right"
+				tooltip="{i18n>QuotationItemDetails.Discount}">
+				<Text textAlign="Right" text="{i18n>QuotationItemDetails.Discount}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>DiscAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.Discount}: {path:'QuotationItemDetails>DiscAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="8rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right"
+				tooltip="{SFGW_INQ>/QuotationItemDetails/FrieghtAmount/#@sap:label}">
+				<Text textAlign="Right" text="{SFGW_INQ>/QuotationItemDetails/FrieghtAmount/#@sap:label}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>FrieghtAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/QuotationItemDetails/FrieghtAmount/#@sap:label}: {path:'QuotationItemDetails>FrieghtAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<!--<table:Column width="8rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right"-->
+			<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount1/#@sap:label}">-->
+			<!--	<Text textAlign="Right" text="{SFGW_INQ>/QuotationItemDetails/TaxAmount1/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>TaxAmount1', type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount1/#@sap:label}: {path:'QuotationItemDetails>TaxAmount1', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+			<!--			unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/Tax1Prcnt/#@sap:label}">-->
+			<!--	<Text textAlign="End" text="{SFGW_INQ>/QuotationItemDetails/Tax1Prcnt/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" text="{path:'QuotationItemDetails>Tax1Prcnt',type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/Tax1Prcnt/#@sap:label} : {path:'QuotationItemDetails>Tax1Prcnt',type: 'sap.ui.model.type.Float'}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="8rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right"-->
+			<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount2/#@sap:label}">-->
+			<!--	<Text textAlign="Right" text="{SFGW_INQ>/QuotationItemDetails/TaxAmount2/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>TaxAmount2', type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount2/#@sap:label}: {path:'QuotationItemDetails>TaxAmount2', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+			<!--			unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/Tax2Prcnt/#@sap:label}">-->
+			<!--	<Text textAlign="End" text="{SFGW_INQ>/QuotationItemDetails/Tax2Prcnt/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" text="{path:'QuotationItemDetails>Tax2Prcnt',type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/Tax2Prcnt/#@sap:label} : {path:'QuotationItemDetails>Tax2Prcnt',type: 'sap.ui.model.type.Float'}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="8rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right"-->
+			<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount3/#@sap:label}">-->
+			<!--	<Text textAlign="Right" text="{SFGW_INQ>/QuotationItemDetails/TaxAmount3/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>TaxAmount3', type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount3/#@sap:label}: {path:'QuotationItemDetails>TaxAmount3', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+			<!--			unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/Tax3Prcnt/#@sap:label}">-->
+			<!--	<Text textAlign="End" text="{SFGW_INQ>/QuotationItemDetails/Tax3Prcnt/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" text="{path:'QuotationItemDetails>Tax3Prcnt',type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/Tax3Prcnt/#@sap:label} : {path:'QuotationItemDetails>Tax3Prcnt',type: 'sap.ui.model.type.Float'}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<table:Column width="12rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right"
+				tooltip="{i18n>QuotationItemDetails.TaxAmount}">
+				<Text textAlign="Right" text="{i18n>QuotationItemDetails.TaxAmount}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>TaxAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.TaxAmount}: {path:'QuotationItemDetails>TaxAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="8rem" autoResizable="true" filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right"
+				tooltip="{SFGW_INQ>/QuotationItemDetails/NetValue/#@sap:label}">
+				<Text textAlign="Right" text="{SFGW_INQ>/QuotationItemDetails/NetValue/#@sap:label}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>NetValue', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/QuotationItemDetails/NetValue/#@sap:label}: {path:'QuotationItemDetails>NetValue', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="10rem" autoResizable="true" visible="true" hAlign="Right" tooltip="{i18n>View.Price.BreakUp}">
+				<Text textAlign="End" text="{i18n>View.Price.BreakUp}"/>
+				<table:template>
+					<Link text="{i18n>View.Price.BreakUp}" press="onPressPriceBreakUp"></Link>
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+	<table:Table id="UIItemsTable_ALL" rows="{QuotationItemDetails>/}" showColumnVisibilityMenu="true" enableGrouping="false"
+		selectionMode="None" enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="false"
+		visibleRowCount="{= ${LocalViewSettingDtl>/ItemsCount} > 5 ? 5:${LocalViewSettingDtl>/ItemsCount}}"
+		visible="{= (${device>/system/Desktop} || (${LocalViewSettingDtl>/detailMode}) || ${LocalViewSettingDtl>/reviewMode})? true : false}"
+		visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar id="UIDetailItemToolBar">
+				<Title id="UIListTableTitle"
+					text="{i18n>Detail.Table.Title} {= (!${LocalViewSettingDtl>/ItemsCount} > 0) ? '' : '('+${LocalViewSettingDtl>/ItemsCount}+')'}" level="H2"/>
+				<ToolbarSpacer></ToolbarSpacer>
+				<Button id="UIExportToExcelButton" icon="sap-icon://download" press="ExportToExcel" visible="{LocalViewSettingDtl>/detailMode}"
+					tooltip="{ppcutili18n>common.ExportToExcelTooltip}"/>
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column width="5rem" sortProperty="ItemNo" autoResizable="true" filterProperty="ItemNo"
+				tooltip="{SFGW_INQ>/QuotationItemDetails/ItemNo/#@sap:label}">
+				<Text text="{SFGW_INQ>/QuotationItemDetails/ItemNo/#@sap:label}"/>
+				<table:template>
+					<Text text="{QuotationItemDetails>ItemNo}" tooltip="{QuotationItemDetails>ItemNo}"/>
+					<Link text="{path:'QuotationItemDetails>ItemNo'}" class="sapUiTinyMarginTopBottom" press="goToItemDetails"
+						tooltip="{SFGW_INQ>/QuotationItemDetails/ItemNo/#@sap:label}"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="19rem" sortProperty="MaterialDesc" autoResizable="true" filterProperty="MaterialDesc"
+				tooltip="{SFGW_INQ>/QuotationItemDetails/Material/#@sap:label}">
+				<Text text="{SFGW_INQ>/QuotationItemDetails/Material/#@sap:label}"/>
+				<table:template>
+					<Text
+						tooltip="{=${QuotationItemDetails>Material} === '' ? ${QuotationItemDetails>MaterialDesc}: ${QuotationItemDetails>MaterialDesc} +' ('+${QuotationItemDetails>Material}+')'}"
+						text="{=${QuotationItemDetails>Material} === '' ? ${QuotationItemDetails>MaterialDesc}: ${QuotationItemDetails>MaterialDesc} +' ('+${QuotationItemDetails>Material}+')'}"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="7rem" sortProperty="Quantity" autoResizable="true" filterProperty="Quantity"
+				filterType="\{type: 'sap.ui.model.type.Float'\}" tooltip="{i18n>QuotationItemDetails.Quantity}" hAlign="Right">
+				<Text text="{i18n>QuotationItemDetails.Quantity}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemDetails>Quantity}"
+						tooltip="{i18n>QuotationItemDetails.Quantity}: {QuotationItemDetails>Quantity} {QuotationItemDetails>Uom}" unit="{QuotationItemDetails>Uom}"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="8rem" sortProperty="UnitPrice" autoResizable="true" filterProperty="UnitPrice"
+				filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right" tooltip="{i18n>QuotationItemDetails.BasicPrice}">
+				<Text textAlign="Right" text="{i18n>QuotationItemDetails.BasicPrice}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>UnitPrice', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.BasicPrice}: {path:'QuotationItemDetails>UnitPrice', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}">
+				<Text textAlign="End" text="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>GrossAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}: {path:'QuotationItemDetails>GrossAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="7rem" autoResizable="true" visible="true" hAlign="Right" tooltip="{i18n>QuotationItemDetails.Discount}">
+				<Text textAlign="End" text="{i18n>QuotationItemDetails.Discount}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>DiscAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.Discount}: {path:'QuotationItemDetails>DiscAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="7rem" sortProperty="FrieghtAmount" autoResizable="true" filterProperty="FrieghtAmount"
+				filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/FrieghtAmount/#@sap:label}">
+				<Text textAlign="Right" text="{SFGW_INQ>/QuotationItemDetails/FrieghtAmount/#@sap:label}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>FrieghtAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/QuotationItemDetails/FrieghtAmount/#@sap:label}: {path:'QuotationItemDetails>FrieghtAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<!--<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/Tax1Prcnt/#@sap:label}">-->
+			<!--	<Text textAlign="End" text="{SFGW_INQ>/QuotationItemDetails/Tax1Prcnt/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" text="{path:'QuotationItemDetails>Tax1Prcnt',type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/Tax1Prcnt/#@sap:label} : {path:'QuotationItemDetails>Tax1Prcnt',type: 'sap.ui.model.type.Float'}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount1/#@sap:label}">-->
+			<!--	<Text textAlign="End" text="{SFGW_INQ>/QuotationItemDetails/TaxAmount1/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" text="{path:'QuotationItemDetails>TaxAmount1',type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount1/#@sap:label} : {path:'QuotationItemDetails>TaxAmount1',type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--Tax Amount 2-->
+			<!--<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/Tax2Prcnt/#@sap:label}">-->
+			<!--	<Text textAlign="End" text="{SFGW_INQ>/QuotationItemDetails/Tax2Prcnt/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" text="{path:'QuotationItemDetails>Tax2Prcnt',type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/Tax2Prcnt/#@sap:label} : {path:'QuotationItemDetails>Tax2Prcnt',type: 'sap.ui.model.type.Float'}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount2/#@sap:label}">-->
+			<!--	<Text textAlign="End" text="{SFGW_INQ>/QuotationItemDetails/TaxAmount2/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" text="{path:'QuotationItemDetails>TaxAmount2',type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount2/#@sap:label} : {path:'QuotationItemDetails>TaxAmount2',type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--Tax Amount 3-->
+			<!--<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/Tax3Prcnt/#@sap:label}">-->
+			<!--	<Text textAlign="End" text="{SFGW_INQ>/QuotationItemDetails/Tax3Prcnt/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" text="{path:'QuotationItemDetails>Tax3Prcnt',type: 'sap.ui.model.type.Float'}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/Tax3Prcnt/#@sap:label} : {path:'QuotationItemDetails>Tax3Prcnt',type: 'sap.ui.model.type.Float'}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<!--<table:Column width="8rem" autoResizable="true" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount3/#@sap:label}">-->
+			<!--	<Text textAlign="End" text="{SFGW_INQ>/QuotationItemDetails/TaxAmount3/#@sap:label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text textAlign="End" text="{path:'QuotationItemDetails>TaxAmount3',type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+			<!--			tooltip="{SFGW_INQ>/QuotationItemDetails/TaxAmount3/#@sap:label} : {path:'QuotationItemDetails>TaxAmount3',type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<table:Column width="12rem" autoResizable="true" hAlign="Right" tooltip="{i18n>QuotationItemDetails.TaxAmount}">
+				<Text textAlign="End" text="{i18n>QuotationItemDetails.TaxAmount}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>TaxAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.TaxAmount}: {path:'QuotationItemDetails>TaxAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="8rem" sortProperty="NetValue" autoResizable="true" filterProperty="NetValue"
+				filterType="\{type: 'sap.ui.model.type.Float'\}" hAlign="Right" tooltip="{SFGW_INQ>/QuotationItemDetails/NetValue/#@sap:label}">
+				<Text textAlign="Right" text="{SFGW_INQ>/QuotationItemDetails/NetValue/#@sap:label}"/>
+				<table:template>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>NetValue', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/QuotationItemDetails/NetValue/#@sap:label}: {path:'QuotationItemDetails>NetValue', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</table:template>
+			</table:Column>
+			<table:Column width="10rem" autoResizable="true" visible="true" hAlign="Right" tooltip="{i18n>View.Price.BreakUp}">
+				<Text textAlign="End" text="{i18n>View.Price.BreakUp}"/>
+				<table:template>
+					<Link text="{i18n>View.Price.BreakUp}" press="onPressPriceBreakUp"></Link>
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+	<Table id="ItemsTable_ALL" items="{QuotationItemDetails>/}" width="auto" visible="false">
+		<headerToolbar>
+			<Toolbar id="DetailItemToolBar">
+				<ToolbarSpacer></ToolbarSpacer>
+				<Button id="sorterFilterButton" icon="sap-icon://drop-down-list" press="" tooltip="{ppcutili18n>common.TableFilterSorterTooltip}"/>
+				<Button id="exportToExcelButton" icon="sap-icon://download" press="ExportToExcel" visible="{= ${device>/system/phone}? false : true}"
+					tooltip="{ppcutili18n>common.ExportToExcelTooltip}"/>
+			</Toolbar>
+		</headerToolbar>
+		<infoToolbar >
+			<Toolbar id="detailItemTableInfoToolBar" active="true" press="sorterfilterSOItem" visible="false">
+				<Label id="SOItems_Toolbar_ALL_Lbl" text="?"/>
+			</Toolbar>
+		</infoToolbar>
+		<columns>
+			<Column>
+				<Text text="{SFGW_INQ>/QuotationItemDetails/ItemNo/#@sap:label}"/>
+			</Column>
+			<Column>
+				<Text text="{SFGW_INQ>/QuotationItemDetails/Material/#@sap:label}"/>
+			</Column>
+			<Column>
+				<Text text="{SFGW_INQ>/QuotationItemDetails/MaterialDesc/#@sap:label}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>QuotationItemDetails.Quantity}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>QuotationItemDetails.BasicPrice}"/>
+			</Column>
+			<Column>
+				<Text text="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}"/>
+			</Column>
+			<Column>
+				<Text text="{i18n>QuotationItemDetails.Discount}"/>
+			</Column>
+			<Column>
+				<Text text="{SFGW_INQ>/QuotationItemDetails/FrieghtAmount/#@sap:label}"/>
+			</Column>
+			<Column>
+				<Text textAlign="End" text="{i18n>List.Item.Price.Tax1Amount}"/>
+			</Column>
+			<!--<Column>-->
+			<!--	<Text text="{i18n>List.Item.Price.Tax1Percentage}"/>-->
+			<!--</Column>-->
+			<!--<Column>-->
+			<!--	<Text textAlign="End" text="{i18n>List.Item.Price.Tax2Amount}"/>-->
+			<!--</Column>-->
+			<!--<Column>-->
+			<!--	<Text text="{i18n>List.Item.Price.Tax2Percentage}"/>-->
+			<!--</Column>-->
+			<!--<Column>-->
+			<!--	<Text textAlign="End" text="{i18n>List.Item.Price.Tax3Amount}"/>-->
+			<!--</Column>-->
+			<!--<Column>-->
+			<!--	<Text text="{i18n>List.Item.Price.Tax3Percentage}"/>-->
+			<!--</Column>-->
+			<!--<Column>-->
+			<!--	<Text text="{SFGW_INQ>/QuotationItemDetails/ZZTCSAmount/#@sap:label}"/>-->
+			<!--</Column>-->
+			<!--<Column>-->
+			<!--	<Text text="{SFGW_INQ>/QuotationItemDetails/ZZTCSPrcnt/#@sap:label}"/>-->
+			<!--</Column>-->
+			<!--<Column>-->
+			<!--	<Text text="{SFGW_INQ>/QuotationItemDetails/ZZTDSAmount/#@sap:label}"/>-->
+			<!--</Column>-->
+			<!--<Column>-->
+			<!--	<Text text="{SFGW_INQ>/QuotationItemDetails/ZZTDSPrcnt/#@sap:label}"/>-->
+			<!--</Column>-->
+			<Column>
+				<Text text="{i18n>QuotationItemDetails.TaxAmount}"/>
+			</Column>
+			<Column>
+				<Text text="{SFGW_INQ>/QuotationItemDetails/NetValue/#@sap:label}"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem id="ItemsTable_Item">
+				<cells>
+					<Text text="{QuotationItemDetails>ItemNo}" tooltip="{SFGW_INQ>/QuotationItemDetails/ItemNo/#@sap:label}"/>
+					<Text text="{QuotationItemDetails>Material}" tooltip="{SFGW_INQ>/QuotationItemDetails/Material/#@sap:label}"/>
+					<Text text="{QuotationItemDetails>MaterialDesc}" tooltip="{SFGW_INQ>/QuotationItemDetails/MaterialDesc/#@sap:label}"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemDetails>Quantity}"
+						tooltip="{i18n>QuotationItemDetails.Quantity}: {QuotationItemDetails>Quantity} {QuotationItemDetails>Uom}" unit="{QuotationItemDetails>Uom}"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>UnitPrice', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.BasicPrice}: {path:'QuotationItemDetails>UnitPrice', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>GrossAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}: {path:'QuotationItemDetails>GrossAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>DiscAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/QuotationItemDetails/DiscountAmount/#@sap:label}: {path:'QuotationItemDetails>DiscAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>FrieghtAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/QuotationItemDetails/FrieghtAmount/#@sap:label}: {path:'QuotationItemDetails>FrieghtAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>TaxAmount1', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{i18n>List.Item.Price.Tax1Amount}: {path:'QuotationItemDetails>TaxAmount1', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+					<!--	unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>-->
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>Tax1Prcnt', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{i18n>List.Item.Price.Tax1Percentage}: {path:'QuotationItemDetails>Tax1Prcnt', type: 'sap.ui.model.type.Float'}" xmlns="sap.m"/>-->
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>TaxAmount2', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{i18n>List.Item.Price.Tax2Amount}: {path:'QuotationItemDetails>TaxAmount2', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+					<!--	unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>-->
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>Tax2Prcnt', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{i18n>List.Item.Price.Tax2Percentage}: {path:'QuotationItemDetails>Tax2Prcnt', type: 'sap.ui.model.type.Float'}" xmlns="sap.m"/>-->
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>TaxAmount3', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{i18n>List.Item.Price.Tax3Amount}: {path:'QuotationItemDetails>TaxAmount3', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+					<!--	unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>-->
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>Tax3Prcnt', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{i18n>List.Item.Price.Tax3Percentage}: {path:'QuotationItemDetails>Tax3Prcnt', type: 'sap.ui.model.type.Float'}" xmlns="sap.m"/>-->
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>ZZTCSAmount', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/ZZTCSAmount/#@sap:label}: {path:'QuotationItemDetails>ZZTCSAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+					<!--	unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>-->
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>ZZTCSPrcnt', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/ZZTCSPrcnt/#@sap:label}: {path:'QuotationItemDetails>ZZTCSPrcnt', type: 'sap.ui.model.type.Float'}"-->
+					<!--	xmlns="sap.m"/>-->
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>ZZTDSAmount', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/ZZTDSAmount/#@sap:label}: {path:'QuotationItemDetails>ZZTDSAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"-->
+					<!--	unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>-->
+					<!--<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>ZZTDSPrcnt', type: 'sap.ui.model.type.Float'}"-->
+					<!--	tooltip="{SFGW_INQ>/QuotationItemDetails/ZZTDSPrcnt/#@sap:label}: {path:'QuotationItemDetails>Tax3Prcnt', type: 'sap.ui.model.type.Float'}"-->
+					<!--	xmlns="sap.m"/>-->
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>TaxAmount', type: 'sap.ui.model.type.Float'}"
+						tooltip="{i18n>QuotationItemDetails.TaxAmount}: {path:'QuotationItemDetails>TaxAmount', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationItemDetails>NetValue', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/QuotationItemDetails/NetValue/#@sap:label}: {path:'QuotationItemDetails>NetValue', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>Currency}"
+						unit="{QuotationItemDetails>Currency}" xmlns="sap.m"/>
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+</mvc:View>

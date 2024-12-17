@@ -1,0 +1,78 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:uxap="sap.uxap" xmlns:l="sap.ui.layout"
+	controllerName="com.arteriatech.zsf.quot.controller.ItemDetailPage" xmlns:html="http://www.w3.org/1999/xhtml" id="ItemDetailScreen">
+	<App>
+		<pages>
+			<Page title="{i18n>Detail.title}" showNavButton="true" navButtonType="Back" navButtonPress="navigateBack">
+				<content>
+					<uxap:ObjectPageLayout id="ObjectPageLayout" enableLazyLoading="false" flexEnabled="true" isChildPage="false"
+						alwaysShowContentHeader="false" showHeaderContent="true" showTitleInHeaderContent="true">
+						<uxap:headerTitle>
+							<uxap:ObjectPageHeader objectImageURI="sap-icon://capital-projects" id="ObjectPageHeader"
+								objectTitle="{SFGW_INQ>/QuotationItemDetails/ItemNo/#@sap:label}: {LocalViewSettingItemDtl>/ItemNo}" objectImageShape="Square"
+								isObjectTitleAlwaysVisible="false" isObjectSubtitleAlwaysVisible="false"
+								objectSubtitle="{i18n>Detail.Item.QuotationNo}: {LocalViewSettingItemDtl>/QuotationNo}">
+								<uxap:actions></uxap:actions>
+							</uxap:ObjectPageHeader>
+						</uxap:headerTitle>
+						<uxap:headerContent>
+							<l:VerticalLayout >
+								<ObjectStatus title="{SFGW_INQ>/QuotationItemDetails/PurchaseNo/#@sap:label}"
+									tooltip="{SFGW_SLS>/QuotationItemDetails/PurchaseNo/#@sap:label}" text="{path: 'QuotationItemDetails>/PurchaseNo'}"/>
+								<ObjectStatus title="{SFGW_SLS>/QuotationItemDetails/PurchaseDate/#@sap:label}"
+									tooltip="{SFGW_SLS>/QuotationItemDetails/PurchaseDate/#@sap:label}"
+									text="{path: 'QuotationItemDetails>/PurchaseDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+							</l:VerticalLayout>
+							<!--<l:VerticalLayout >
+								<Label text="{SFGW_INQ>/QuotationItemDetails/MaterialNo/#@sap:label}"></Label>
+								<Text
+									text="{= ${QuotationItemDetails>/MaterialNo} !== '' ? ${QuotationItemDetails>/MaterialDesc}+' ('+ ${QuotationItemDetails>/MaterialNo}+')' : ${QuotationItemDetails>/MaterialDesc}}"
+									tooltip="{SFGW_INQ>/QuotationItemDetails/MaterialNo/#@sap:label}"/>
+								<Label text="{SFGW_INQ>/QuotationItemDetails/PlantID/#@sap:label}"></Label>
+								<Text
+									text="{= ${QuotationItemDetails>/PlantID} !== '' ? ${QuotationItemDetails>/PlantDesc}+' ('+ ${QuotationItemDetails>/PlantID}+')' : ${QuotationItemDetails>/PlantDesc}}"
+									tooltip="{SFGW_INQ>/QuotationItemDetails/PlantID/#@sap:label}"/>
+							</l:VerticalLayout>-->
+							<!--<l:VerticalLayout>
+								<Label text="{SFGW_INQ>/QuotationItemDetails/TargetQty/#@sap:label}: "></Label>
+								<ObjectNumber number="{path:'QuotationItemDetails>/TargetQty', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>/UOM}" state="Success"
+									tooltip="{SFGW_INQ>/QuotationItemDetails/TargetQty/#@sap:label}: {path:'QuotationItemDetails>/TargetQty',type:'sap.ui.model.type.Float'} {QuotationItemDetails>/UOM}"/>
+								<Label text="{SFGW_INQ>/QuotationItemDetails/ActualQty/#@sap:label}: "></Label>
+								<ObjectNumber number="{path:'QuotationItemDetails>/ActualQty', type: 'sap.ui.model.type.Float'} {QuotationItemDetails>/UOM}" state="Success"
+									tooltip="{SFGW_INQ>/QuotationItemDetails/ActualQty/#@sap:label}: {path:'QuotationItemDetails>/ActualQty',type:'sap.ui.model.type.Float'} {QuotationItemDetails>/UOM}"/>
+							</l:VerticalLayout>-->
+						</uxap:headerContent>
+						<uxap:sections>
+							<uxap:ObjectPageSection id="QuotationItemCondtions" title="Conditions">
+								<uxap:subSections>
+									<uxap:ObjectPageSubSection id="QuotationItemCondtionsView_SubSection" title="{LocalViewSettingItemDtl>/QuotItemConditionCount} Conditions">
+										<uxap:blocks>
+											<mvc:XMLView id="QuotationItemCondtionsView" viewName="com.arteriatech.zsf.quot.view.QuotItemCondtionsView"/>
+										</uxap:blocks>
+									</uxap:ObjectPageSubSection>
+								</uxap:subSections>
+							</uxap:ObjectPageSection>
+							<uxap:ObjectPageSection id="QuotationItemPF" title="PartnerFunctions" visible="false">
+								<uxap:subSections>
+									<uxap:ObjectPageSubSection id="QuotationItemPFView_SubSection" title="{LocalViewSettingItemDtl>/QuotationPFItemCount} PartnerFunctions">
+										<uxap:blocks>
+											<mvc:XMLView id="QuotationItemPFView" viewName="com.arteriatech.zsf.quot.view.QuotItemPF"/>
+										</uxap:blocks>
+									</uxap:ObjectPageSubSection>
+								</uxap:subSections>
+							</uxap:ObjectPageSection>
+							<uxap:ObjectPageSection id="QuotationItemSchedules" title="Schedules" visible="false">
+								<uxap:subSections>
+									<uxap:ObjectPageSubSection id="QuotationItemScdlsView_SubSection" title="{LocalViewSettingItemDtl>/QuotItemSchdlsCount} Schedules">
+										<uxap:blocks>
+											<mvc:XMLView id="QuotationItemScdlView" viewName="com.arteriatech.zsf.quot.view.QuotItemSchedulesView"/>
+										</uxap:blocks>
+									</uxap:ObjectPageSubSection>
+								</uxap:subSections>
+							</uxap:ObjectPageSection>
+						</uxap:sections>
+					</uxap:ObjectPageLayout>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

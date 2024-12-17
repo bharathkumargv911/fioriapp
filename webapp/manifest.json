@@ -1,0 +1,326 @@
+{
+	"_version": "1.8.0",
+	"sap.app": {
+		"handleValidation": true,
+		"id": "com.arteriatech.zsf.quot",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"ppcutili18n": "/sap/bc/ui5_ui5/ARTEC/PPCUTIL/utils/i18n/i18n.properties",
+		"title": "{{common.appTitle}}",
+		"description": "{{common.appDescription}}",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"ach": "CA-UI5-DOC",
+		"dataSources": {
+			"ZART_DP_COMMON": {
+				"uri": "/sap/opu/odata/sap/ZART_DP_COMMON/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			},
+			"SFGW_INQ": {
+				"uri": "/sap/opu/odata/ARTEC/SFGW_INQ",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			},
+			"PCGW": {
+				"uri": "/sap/opu/odata/ARTEC/PCGW/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			},
+			"SFGW_MST": {
+				"uri": "/sap/opu/odata/ARTEC/SFGW_MST/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			},
+			"PUGW": {
+				"uri": "/sap/opu/odata/ARTEC/PUGW/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		},
+		"supportedThemes": [
+			"sap_bluecrystal"
+		]
+	},
+	"sap.ui5": {
+		"rootView": "com.arteriatech.zsf.quot.view.Main",
+		"dependencies": {
+			"minUI5Version": "1.71.1",
+			"libs": {
+				"sap.ca.ui": {
+					"minVersion": "1.71.1"
+				},
+				"sap.m": {
+					"minVersion": "1.71.1"
+				},
+				"sap.ui.fl": {
+					"minVersion": "1.71.1"
+				},
+				"sap.ui.layout": {
+					"minVersion": "1.71.1"
+				},
+				"sap.ui.table": {
+					"minVersion": "1.71.1"
+				},
+				"sap.ushell": {
+					"minVersion": "1.71.1"
+				},
+				"sap.uxap": {
+					"minVersion": "1.71.1"
+				}
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/Style.css"
+				}
+			]
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "com.arteriatech.zsf.quot.i18n.i18n"
+				},
+				"preload": true,
+				"async": true
+			},
+			"ppcutili18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleUrl": "/sap/bc/ui5_ui5/ARTEC/PPCUTIL/utils/i18n/i18n.properties"
+				},
+				"preload": true,
+				"async": true
+			},
+			"ZART_DP_COMMON": {
+				"dataSource": "ZART_DP_COMMON",
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"SFGW_INQ": {
+				"dataSource": "SFGW_INQ",
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"SFGW_MST": {
+				"dataSource": "SFGW_MST",
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"PUGW": {
+				"dataSource": "PUGW",
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"PCGW": {
+				"dataSource": "PCGW",
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			}
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"viewPath": "com.arteriatech.zsf.quot.view",
+				"controlId": "sfquot",
+				"controlAggregation": "pages",
+				"bypassed": {
+					"target": [
+						"NoMatching"
+					]
+				}
+			},
+			"routes": [
+				{
+					"pattern": "View/{contextPath}",
+					"name": "DetailPage",
+					"target": [
+						"DetailPage"
+					]
+				},
+				{
+					"pattern": "Change/{contextPath}",
+					"name": "qochange",
+					"target": [
+						"DetailPage"
+					]
+				},
+				{
+					"pattern": "ViewItem/{contextPath}",
+					"name": "ItemDetailPage",
+					"target": [
+						"ItemDetailPage"
+					]
+				},
+				{
+					"pattern": "View/",
+					"name": "View",
+					"target": [
+						"ViewPage"
+					]
+				},
+				{
+					"pattern": "",
+					"name": "ListPage",
+					"target": [
+						"ListPage"
+					]
+				},
+				{
+					"pattern": "Search/{contextPath}",
+					"name": "SearchListPage",
+					"target": [
+						"ListPage"
+					]
+				},
+				{
+					"pattern": "SearchApprove/{contextPath}",
+					"name": "searchquotapprovelist",
+					"target": [
+						"ApproveListPage"
+					]
+				},
+				{
+					"pattern": "Approve",
+					"name": "quotapprovelist",
+					"target": [
+						"ApproveListPage"
+					]
+				},
+				{
+					"pattern": "ViewApprove/{contextPath}",
+					"name": "approveDetailPage",
+					"target": [
+						"DetailPage"
+					]
+				},
+				{
+					"pattern": "NoMatching",
+					"name": "NoMatching",
+					"target": [
+						"NoMatching"
+					]
+				},
+				{
+					"pattern": "{all*}",
+					"name": "NotFound",
+					"target": [
+						"NotFound"
+					]
+				}
+			],
+			"targets": {
+				"ListPage": {
+					"viewName": "ListPage",
+					"viewId": "ListPage"
+				},
+				"DetailPage": {
+					"viewName": "DetailPage",
+					"viewId": "DetailScreen"
+				},
+				"ApproveListPage": {
+					"viewName": "ApproveListPage",
+					"viewId": "ApproveListPageID"
+				},
+				"ViewPage": {
+					"viewName": "ViewPage",
+					"viewId": "ViewPage"
+				},
+				"ItemDetailPage": {
+					"viewName": "ItemDetailPage",
+					"viewId": "ItemDetailPage"
+				},
+				"NoMatching": {
+					"viewName": "NoMatching",
+					"viewId": "NoMatching"
+				},
+				"NotFound": {
+					"viewName": "NotFound",
+					"viewId": "NotFound"
+				},
+				"ErrorLog": {
+					"viewType": "XML",
+					"viewName": "ErrorLog"
+				}
+			}
+		}
+	},
+	"sap.platform.hcp": {
+		"uri": "",
+		"_version": "1.1.0"
+	}
+}

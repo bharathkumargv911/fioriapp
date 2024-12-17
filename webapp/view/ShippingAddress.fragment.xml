@@ -1,0 +1,97 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout">
+	<Popover showHeader="false" contentWidth="auto" placement="Auto" xmlns:table="sap.ui.table">
+		<f:SimpleForm columnsL="1" class="editableForm" columnsM="1" editable="true" emptySpanL="0" emptySpanM="0" labelSpanL="5" labelSpanM="5"
+			layout="ResponsiveGridLayout" maxContainerCols="1" title="">
+			<f:content>
+				<core:Title text=""/>
+				<l:VerticalLayout visible="{LocalViewSettingDtl>/ShippingAdress}">
+					<Text text="{Quotations>/Address1}" tooltip="{Quotations>/Address1}"
+						visible="{path: 'Quotations>/Address1', formatter: 'com.arteriatech.zsf.quot.util.Formatter.formatAddressVisible'}"/>
+					<Text text="{Quotations>/Address2} " tooltip="{Quotations>/Address2}"
+						visible="{path: 'Quotations>/Address2', formatter: 'com.arteriatech.zsf.quot.util.Formatter.formatAddressVisible'}"/>
+					<Text text="{Quotations>/Address3} " tooltip="{Quotations>/Address3}"
+						visible="{path: 'Quotations>/Address3', formatter: 'com.arteriatech.zsf.quot.util.Formatter.formatAddressVisible'}"/>
+					<Text text="{Quotations>/Address4} " tooltip="{Quotations>/Address4}"
+						visible="{path: 'Quotations>/Address4', formatter: 'com.arteriatech.zsf.quot.util.Formatter.formatAddressVisible'}"/>
+					<Text text="{Quotations>/District}" tooltip="{Quotations>/District}"
+						visible="{path: 'Quotations>/District', formatter: 'com.arteriatech.zsf.quot.util.Formatter.formatAddressVisible'}"/>
+					<Text text="{Quotations>/City}" tooltip="{Quotations>/City}"
+						visible="{path: 'Quotations>/City', formatter: 'com.arteriatech.zsf.quot.util.Formatter.formatAddressVisible'}"/>
+					<Text text="{Quotations>/StateDesc}" tooltip="{Quotations>/StateDesc}"
+						visible="{path: 'Quotations>/StateDesc', formatter: 'com.arteriatech.zsf.quot.util.Formatter.formatAddressVisible'}"/>
+					<Text tooltip="{SFGW_INQ>/#Quotation/Address1/@sap:label}"
+						text="{parts: [{path: 'Quotations>/CountryCodeDesc'},{path:'Quotations>/PostalCode'}], formatter: 'com.arteriatech.zsf.quot.util.Formatter.formatCountryNameAndPostalCode'}"
+						visible="{path: 'Quotations>/CountryCodeDesc', formatter: 'com.arteriatech.zsf.quot.util.Formatter.formatAddressVisible'}"/>
+				</l:VerticalLayout>
+				<l:VerticalLayout visible="{LocalViewSettingDtl>/PriceBreakUp}">
+					<ObjectStatus title="{i18n>QuotationItemDetails.BasicPrice}"
+						text="{path: 'LocalViewSettingDtl>/TempUnitPrice', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempUnitPrice', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>QuotationItemDetails.Quantity}"
+						text="{path: 'LocalViewSettingDtl>/Quantity', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/Quantity', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>QuotationItemDetails.GrossAmount}"
+						text="{path: 'LocalViewSettingDtl>/TempGrossAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempGrossAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>QuotationItemDetails.Discount}"
+						text="{path: 'LocalViewSettingDtl>/TempDiscAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempDiscAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{SFGW_INQ>/QuotationItemDetails/FrieghtAmount/#@sap:label}"
+						text="{path: 'LocalViewSettingDtl>/TempFrieghtAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempFrieghtAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>QuotationItemDetails.ZZTaxValue}"
+						text="{path: 'LocalViewSettingDtl>/ZZTaxValue', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/ZZTaxValue', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.Tax1Percentage}"
+						text="{path: 'LocalViewSettingDtl>/TempTax1Prcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempTax1Prcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.Tax1Amount}"
+						text="{path: 'LocalViewSettingDtl>/TempTaxAmount1', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempTaxAmount1', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.Tax2Percentage}"
+						text="{path: 'LocalViewSettingDtl>/TempTax2Prcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempTax2Prcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.Tax2Amount}"
+						text="{path: 'LocalViewSettingDtl>/TempTaxAmount2', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempTaxAmount2', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.Tax3Percentage}"
+						text="{path: 'LocalViewSettingDtl>/TempTax3Prcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempTax3Prcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.Tax3Amount}"
+						text="{path: 'LocalViewSettingDtl>/TempTaxAmount3', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempTaxAmount3', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.Tax4Percentage}"
+						text="{path: 'LocalViewSettingDtl>/TempTax4Prcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempTax4Prcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.Tax4Amount}"
+						text="{path: 'LocalViewSettingDtl>/TempTaxAmount4', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempTaxAmount4', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.ZZTotalGST}"
+						text="{path: 'LocalViewSettingDtl>/ZZTotalGST', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/ZZTotalGST', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.ZZValueAftrGst}"
+						text="{path: 'LocalViewSettingDtl>/ZZValueAftrGst', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/ZZValueAftrGst', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{SFGW_INQ>/QuotationItemDetails/ZZTDSAmount/#@sap:label}"
+						text="{path: 'LocalViewSettingDtl>/TempZZTDSAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempZZTDSAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{SFGW_INQ>/QuotationItemDetails/ZZTDSPrcnt/#@sap:label}"
+						text="{path: 'LocalViewSettingDtl>/TempZZTDSPrcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempZZTDSPrcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<!--<ObjectStatus title="{i18n>QuotationItemDetails.TaxAmount}"-->
+					<!--	text="{path: 'LocalViewSettingDtl>/TempTaxAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"-->
+					<!--	tooltip="{path: 'LocalViewSettingDtl>/TempTaxAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>-->
+					<ObjectStatus title="{SFGW_INQ>/QuotationItemDetails/ZZTCSAmount/#@sap:label}"
+						text="{path: 'LocalViewSettingDtl>/TempZZTCSAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempZZTCSAmount', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{SFGW_INQ>/QuotationItemDetails/ZZTCSPrcnt/#@sap:label}"
+						text="{path: 'LocalViewSettingDtl>/TempZZTCSPrcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempZZTCSPrcnt', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+					<ObjectStatus title="{i18n>List.Item.Price.NetReceivablevalue}"
+						text="{path: 'LocalViewSettingDtl>/TempNetValue', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"
+						tooltip="{path: 'LocalViewSettingDtl>/TempNetValue', formatter: 'com.arteriatech.zsf.quot.util.Formatter.PriceBreakUpFormatter'}"/>
+				</l:VerticalLayout>
+			</f:content>
+		</f:SimpleForm>
+	</Popover>
+</core:FragmentDefinition>

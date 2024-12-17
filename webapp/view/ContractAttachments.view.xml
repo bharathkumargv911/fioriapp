@@ -1,0 +1,42 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteriatech.zsf.quot.controller.ContractAttachments" xmlns:html="http://www.w3.org/1999/xhtml">
+	<UploadCollection id="UploadCollection" maximumFilenameLength="55" maximumFileSize="50" multiple="false" showSeparators="All"
+		change="onChange" fileDeleted="onFileDeleted" filenameLengthExceed="onFilenameLengthExceed" fileRenamed="onFileRenamed"
+		fileSizeExceed="onFileSizeExceed" typeMissmatch="onTypeMissmatch" uploadComplete="onUploadComplete"
+		beforeUploadStarts="onBeforeUploadStarts" uploadTerminated="onUploadTerminated" items="{QuotationDocuments>/}"
+		noDataText="{ppcutili18n>common.NoAttachments}" uploadEnabled="">
+		<toolbar>
+			<OverflowToolbar id="myId">
+				<Title id="attachmentTitle">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow"/>
+					</layoutData>
+				</Title>
+				<ToolbarSpacer/>
+				<Button tooltip="{i18n>ContractAttachments.Page.UploadCollection.Dialog.Title}" type="Emphasized"
+					text="{i18n>ContractAttachments.Page.UploadCollection.Dialog.Title}" press="selectDocumentType"
+					visible="{LocalViewSettingDtl>/uploadvisibility}">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow"/>
+					</layoutData>
+				</Button>
+			</OverflowToolbar>
+		</toolbar>
+		<items press="getDetails">
+			<UploadCollectionItem id="UploadCollectionItem" documentId="{QuotationDocuments>DocumentID}" fileName="{QuotationDocuments>FileName}"
+				url="/sap/opu/odata/ARTEC/SFGW_INQ/QuotationDocuments(QuotationNo='{QuotationDocuments>QuotationNo}',DocumentStore='{QuotationDocuments>DocumentStore}',DocumentID='{QuotationDocuments>DocumentID}')/$value?"
+				enableEdit="false" enableDelete="{LocalViewSettingDtl>/uploadvisibility}" visibleDelete="{LocalViewSettingDtl>/uploadvisibility}"
+				visibleEdit="false">
+				<attributes>
+					<ObjectAttribute title="{i18n>ContractAttachments.Page.UploadCollectionItem.ObjectAttribute.UploadedOn}"
+						text="{path:'QuotationDocuments>CreatedOn', formatter:'com.arteriatech.ss.utils.js.Common.getFormattedDate'}" active="false"/>
+					<ObjectAttribute title="{i18n>ContractAttachments.Page.UploadCollectionItem.ObjectAttribute.UploadedBy}"
+						text="{= ${QuotationDocuments>CreatedByName} ? ${QuotationDocuments>CreatedByName} : ${QuotationDocuments>CreatedBy}}" active="false"></ObjectAttribute>
+					<ObjectAttribute title="{i18n>ContractAttachments.Page.UploadCollectionItem.ObjectAttribute.FileSize}"
+						text="{path : 'QuotationDocuments>DocumentSize', formatter : 'com.arteriatech.ppc.utils.js.Common.fileSizeFormatter'}"></ObjectAttribute>
+				</attributes>
+				<statuses></statuses>
+			</UploadCollectionItem>
+		</items>
+	</UploadCollection>
+</mvc:View>

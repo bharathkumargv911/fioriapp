@@ -1,0 +1,50 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:layout="sap.ui.layout" xmlns:fb="sap.ui.comp.filterbar" xmlns:forms="sap.ui.layout.form"
+	xmlns="sap.m" xmlns:table="sap.ui.table" xmlns:core="sap.ui.core"
+	controllerName="com.arteriatech.zsf.quot.controller.ErrorLog" xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UIChangelogviewTable" rows="{ChangeLogs>/}" showColumnVisibilityMenu="false" enableGrouping="false"
+		visibleRowCount="{= ${LocalViewSetting>/ChangeLogsItemsCount} > 10 ? 10:${LocalViewSetting>/ChangeLogsItemsCount}}" enableSelectAll="false"
+		enableColumnFreeze="true" noData="{ppcutili18n>common.NoItemSelected}" visibleRowCountMode="Fixed" selectionMode="None"
+		visible="true">
+		<table:columns>
+			<table:Column sortProperty="QuotationNo" filterProperty="QuotationNo" tooltip="{i18n>ChangeLogs.List.QuotationNo}" width="13rem">
+				<Text text="{i18n>ChangeLogs.List.QuotationNo}"/>
+				<table:template>
+					<Text text="{ChangeLogs>QuotationNo}" tooltip="{ChangeLogs>QuotationNo}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="LogMessage" filterProperty="LogMessage" tooltip="{i18n>ChangeLogs.List.LogMessage}">
+				<Text text="{i18n>ChangeLogs.List.LogMessage}"/>
+				<table:template>
+					<Text text="{path:'ChangeLogs>LogMessage'}" tooltip="{path:'ChangeLogs>LogMessage'}"/>
+				</table:template>
+			</table:Column>
+			<!--<table:Column sortProperty="NewValue" filterProperty="NewValue" tooltip="{i18n>ChangeLogs.List.NewValue}">-->
+			<!--	<Text text="{i18n>ChangeLogs.List.NewValue}"/>-->
+			<!--	<table:template>-->
+			<!--		<Text text="{path:'ChangeLogs>NewValue'}" tooltip="{path:'ChangeLogs>NewValue'}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<table:Column tooltip="{i18n>ChangeLogs.CreatedBy}" sortProperty="CreatedBy" filterProperty="CreatedBy" autoResizable="true" width="7rem">
+				<Text text="{i18n>ChangeLogs.CreatedBy}" tooltip="{i18n>ChangeLogs.CreatedBy}"/>
+				<table:template>
+					<Text text="{ChangeLogs>CreatedBy}" tooltip="{ChangeLogs>CreatedBy}"/>
+				</table:template>
+			</table:Column>
+			<table:Column tooltip="{i18n>ChangeLogs.CreatedOn}" sortProperty="CreatedOn" filterProperty="CreatedOn" autoResizable="true" width="7rem"
+				filterType="\{type: 'sap.ui.model.type.Date', formatOptions: \{ UTC: true, pattern: 'dd/MM/yyyy'\}\}">
+				<Text text="{i18n>ChangeLogs.CreatedOn}" tooltip="{i18n>ChangeLogs.CreatedOn}"/>
+				<table:template>
+					<Text text="{path: 'ChangeLogs>CreatedOn', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+						tooltip="{i18n>ChangeLogs.CreatedOn}" textAlign="Right"/>
+				</table:template>
+			</table:Column>
+			<table:Column tooltip="{i18n>ChangeLogs.CreatedAt}" sortProperty="CreatedAt" filterProperty="CreatedAt" autoResizable="true" width="7rem"
+				filterType="\{type: 'sap.ui.model.type.Date', formatOptions: \{ UTC: true, pattern: 'dd/MM/yyyy'\}\}">
+				<Text text="{i18n>ChangeLogs.CreatedAt}" tooltip="{i18n>ChangeLogs.CreatedAt}"/>
+				<table:template>
+					<Text text="{ChangeLogs>CreatedAt}"/>
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+</mvc:View>

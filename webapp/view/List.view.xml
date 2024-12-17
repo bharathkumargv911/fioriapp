@@ -1,0 +1,542 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:l="sap.ui.layout" xmlns:fb="sap.ui.comp.filterbar" xmlns="sap.m"
+	width="auto" controllerName="com.arteriatech.zsf.quot.controller.List" xmlns:u="sap.ui.unified" xmlns:html="http://www.w3.org/1999/xhtml"
+	displayBlock="true" xmlns:table="sap.ui.table" id="ListView">
+	<fb:FilterBar search="onSearch" id="FilterBar" reset="onReset" showRestoreOnFB="false" showRestoreButton="false"
+		filterContainerWidth="16rem" filterBarExpanded="true" useToolbar="false" showFilterConfiguration="false">
+		<fb:filterItems>
+			<fb:FilterItem id="Customer" name="Customer" label="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}"
+				labelTooltip="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}" visible="{LocalViewSetting>/CustomerDD}">
+				<fb:control>
+					<Select id="customer" change="getSelectedCustomerName" selectedKey="{SelectedCustomer>/Code}" tooltip="{SelectedCustomer>/Description}"
+						items="{Customers>/}">
+						<core:ListItem id="Customer_item" key="{Customers>CustomerNo}" text="{Customers>CustomerNo} {Customers>Seperator} {Customers>Name}"></core:ListItem>
+					</Select>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="CustomerMultiCombo" name="CustomerMultiCombo" mandatory="false" label="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}"
+				labelTooltip="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}" visible="{LocalViewSetting>/CustomerMC}">
+				<fb:control>
+					<MultiComboBox id="customerMultiCombo" items="{Customers>/}" selectionChange="onCustomerMCSelectionChange">
+						<core:ListItem id="CustomerMultiCombo_item" key="{Customers>CustomerNo}"
+							text="{Customers>CustomerNo}{Customers>Seperator}{Customers>CustomerName}" tooltip="{Customers>CustomerName}"></core:ListItem>
+					</MultiComboBox>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="CustomerValueHelp" name="CustomerValueHelp" label="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}"
+				labelTooltip="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}" visible="{LocalViewSetting>/CustomerVH}">
+				<fb:control>
+					<MultiInput id="inputCustomerNo" valueHelpRequest="CustomerF4" showTableSuggestionValueHelp="true" showSuggestion="true"
+						visible="{LocalViewSetting>/CustomerVH}" filterSuggests="false" suggest="handleCustomerSuggest"
+						suggestionItemSelected="suggestionItemSelectedCustomerF4" tokenUpdate="ontokenUpdateCustomer" suggestionItems="{CustomerF4SuggestorModel>/}"
+						maxSuggestionWidth="45%" change="onChangeCustomerF4">
+						<suggestionItems>
+							<core:ListItem text="{CustomerF4SuggestorModel>Name}" additionalText=" {CustomerF4SuggestorModel>CustomerNo}"/>
+						</suggestionItems>
+					</MultiInput>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="QuotationDate" name="QuotationDate" label="{i18n>QuotationItemDetails.SalesOrderRequestDate}"
+				labelTooltip="{i18n>QuotationItemDetails.SalesOrderRequestDate}" mandatory="true">
+				<fb:control>
+					<Select autoAdjustWidth="true" change="onQuotationDateSelectionChanged" id="inputQuotationDate" items="{QuotationDateViewSetting>/}"
+						name="QuotationDate">
+						<core:ListItem id="QuotationDate_item" key="{QuotationDateViewSetting>DateKey}" text="{QuotationDateViewSetting>DateDesc}"
+							tooltip="{QuotationDateViewSetting>DateDesc}"></core:ListItem>
+					</Select>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="QuotationType" name="QuotationType" label="{i18n>List.FilterBar.Sales.Order.Request.Type}"
+				labelTooltip="{i18n>List.FilterBar.Sales.Order.Request.Type}" mandatory="false">
+				<fb:control>
+					<MultiComboBox id="inputQuotationType" change="onQuotationtypeSelectionChanged" tooltip="{i18n>List.FilterBar.Sales.Order.Request.Type}"
+						items="{QuotationTypeDD>/}">
+						<core:ListItem id="QuotationType_item" key="{QuotationTypeDD>Key}"
+							text="{QuotationTypeDD>Key} {QuotationTypeDD>Seperator} {QuotationTypeDD>Text}" tooltip="{QuotationTypeDD>Text}"></core:ListItem>
+					</MultiComboBox>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="QuotationNo" name="QuotationNo" label="{i18n>List.FilterBar.Sales.Order.Request.No}"
+				labelTooltip="{i18n>List.FilterBar.Sales.Order.Request.No}" mandatory="false">
+				<fb:control>
+					<MultiInput id="inputQuotationNo" maxLength="{path:'SFGW_INQ>/#Quotation/QuotationNo/@maxLength', type:'sap.ui.model.type.Float'}"
+						valueHelpRequest="QuotationNoF4" showTableSuggestionValueHelp="true" showSuggestion="true" filterSuggests="false"
+						suggest="handleQuotationSuggest" suggestionItemSelected="suggestionquotationItemSelectedQuot" suggestionItems="{QuotationSuggestorModel>/}"
+						change="onChangeQuotation" tokenUpdate="QuotationNoTokenChange">
+						<suggestionItems>
+							<core:ListItem text="{QuotationSuggestorModel>QuotationNo}"
+								additionalText="{path: 'QuotationSuggestorModel>QuotationDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+						</suggestionItems>
+					</MultiInput>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="Material" label="{SFGW_INQ>/QuotationItems/Material/#@sap:label}"
+				labelTooltip="{SFGW_INQ>/QuotationItems/Material/#@sap:label}" name="Material" visible="false">
+				<fb:control>
+					<MultiInput id="inputMaterial" maxLength="{path:'SFGW_INQ>/#QuotationItems/Material/@maxLength', type:'sap.ui.model.type.Float'}"
+						valueHelpRequest="MaterialF4" showTableSuggestionValueHelp="true" showSuggestion="true" filterSuggests="false"
+						suggest="handleMaterialSuggest" suggestionItemSelected="suggestionItemSelectedMat" suggestionItems="{MaterialSuggestorModel>/}"
+						change="onChangeMaterial">
+						<suggestionItems>
+							<core:ListItem text="{MaterialSuggestorModel>MaterialDesc}" additionalText="{MaterialSuggestorModel>Material}"/>
+						</suggestionItems>
+					</MultiInput>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="Status" label="{SFGW_INQ>/QuotationItems/StatusID/#@sap:label}"
+				labelTooltip="{SFGW_INQ>/QuotationItems/StatusID/#@sap:label}" name="StatusID">
+				<fb:control>
+					<MultiComboBox id="inputStatus" items="{StatusIDDD>/}">
+						<core:ListItem id="StatusMultiCombo_item" key="{StatusIDDD>Key}" text="{StatusIDDD>Key}{StatusIDDD>Seperator}{StatusIDDD>Text}"
+							tooltip="{StatusIDDD>Text}"></core:ListItem>
+					</MultiComboBox>
+				</fb:control>
+			</fb:FilterItem>
+			<fb:FilterItem id="ZZApprovalStatus" label="{SFGW_INQ>/Quotations/ZZApprovalStatus/#@sap:label}"
+				labelTooltip="{SFGW_INQ>/Quotations/ZZApprovalStatus/#@sap:label}" name="ZZApprovalStatus">
+				<fb:control>
+					<MultiComboBox id="inputZZApprovalStatus" items="{ApprovalStatusDD>/}">
+						<core:ListItem id="ZZApprovalStatusMultiCombo_item" key="{ApprovalStatusDD>Key}"
+							text="{ApprovalStatusDD>Key}{ApprovalStatusDD>Seperator}{ApprovalStatusDD>Text}" tooltip="{ApprovalStatusDD>Text}"></core:ListItem>
+					</MultiComboBox>
+				</fb:control>
+			</fb:FilterItem>
+		</fb:filterItems>
+	</fb:FilterBar>
+	<Panel backgroundDesign="Solid" class="sapUiResponsiveContentPadding" xmlns="sap.m">
+		<content>
+			<HBox>
+				<Title id="UIListTableLegend" text="{i18n>common.Legend} | " tooltip="{i18n>common.Legend} | " level="H2" class="sapUiTinyMarginEnd"/>
+				<Title text=" {SFGW_INQ>/QuotationItems/StatusID/#@sap:label} : " tooltip="{SFGW_INQ>/QuotationItems/StatusID/#@sap:label} : " level="H2"
+					class="sapUiTinyMarginEnd"/>
+				<core:Icon color="Negative" src="sap-icon://task" class="sapUiTinyMarginEnd"></core:Icon>
+				<Text text="Open" tooltip="Open" class="sapUiTinyMarginEnd"/>
+				<core:Icon color="Critical" src="sap-icon://status-in-process" class="sapUiTinyMarginEnd"></core:Icon>
+				<Text text="{i18n>Status.PartiallyProcessed}" tooltip="{i18n>Status.PartiallyProcessed}" class="sapUiTinyMarginEnd"/>
+				<core:Icon color="Positive" src="sap-icon://home" class="sapUiTinyMarginEnd"></core:Icon>
+				<Text text="Closed" tooltip="Closed" class="sapUiTinyMarginEnd"/>
+				<Title level="H2" text="| {SFGW_INQ>/Quotations/ZZApprovalStatus/#@sap:label} :" class="sapUiTinyMarginEnd"/>
+				<core:Icon color="Critical" src="sap-icon://pending" class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.pendingForApproval}"></core:Icon>
+				<Text text="{i18n>List.Table.Status.pendingForApproval} " class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.pendingForApproval}"/>
+				<core:Icon color="Positive" src="sap-icon://complete" class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.approved}"></core:Icon>
+				<Text text="{i18n>List.Table.Status.approved} " class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.approved}"/>
+				<core:Icon color="Negative" src="sap-icon://sys-cancel-2" class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.rejected}"></core:Icon>
+				<Text text="{i18n>List.Table.Status.rejected} " class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.rejected}"/>
+			</HBox>
+			<table:Table id="UIListTable" rows="{Quotations>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+				enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="true"
+				visibleRowCount="{= ${LocalViewSetting>/ListItemsCount} > 5 ? 5:${LocalViewSetting>/ListItemsCount}}" visible="true"
+				visibleRowCountMode="Fixed">
+				<table:toolbar>
+					<Toolbar id="UIListTableToolBar">
+						<Title id="UIListTableTitle"
+							tooltip="{i18n>List.Table.Title} {= (!${LocalViewSetting>/ListItemsCount} > 0) ? '' : '('+${LocalViewSetting>/ListItemsCount}+')'}"
+							text="{i18n>List.Table.Title} {= (!${LocalViewSetting>/ListItemsCount} > 0) ? '' : '('+${LocalViewSetting>/ListItemsCount}+')'}" level="H2"/>
+						<!--<Title id="UIListTableLegend" text="| {i18n>common.Legend} | " tooltip="| {i18n>common.Legend} | " level="H3" class="sapUiTinyMarginEnd"/>-->
+						<!--<Title text=" {SFGW_INQ>/QuotationItems/StatusID/#@sap:label} : " tooltip="{SFGW_INQ>/QuotationItems/StatusID/#@sap:label} : " level="H3"-->
+						<!--	class="sapUiTinyMarginEnd"/>-->
+						<!--<core:Icon color="Negative" src="sap-icon://task" class="sapUiTinyMarginEnd"></core:Icon>-->
+						<!--<Text text="Open" tooltip="Open" class="sapUiTinyMarginEnd"/>-->
+						<!--<core:Icon color="Critical" src="sap-icon://status-in-process" class="sapUiTinyMarginEnd"></core:Icon>-->
+						<!--<Text text="{i18n>Status.PartiallyProcessed}" tooltip="{i18n>Status.PartiallyProcessed}" class="sapUiTinyMarginEnd"/>-->
+						<!--<core:Icon color="Positive" src="sap-icon://home" class="sapUiTinyMarginEnd"></core:Icon>-->
+						<!--<Text text="Closed" tooltip="Closed" class="sapUiTinyMarginEnd"/>-->
+						<!--<Title level="H3" text="| {SFGW_INQ>/Quotations/ZZApprovalStatus/#@sap:label} :"-->
+						<!--	tooltip="| {SFGW_INQ>/Quotations/ZZApprovalStatus/#@sap:label} :" class="sapUiTinyMarginEnd"/>-->
+						<!--<core:Icon color="Critical" src="sap-icon://pending" class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.pendingForApproval}"></core:Icon>-->
+						<!--<Text text="{i18n>List.Table.Status.pendingForApproval} " class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.pendingForApproval}"/>-->
+						<!--<core:Icon color="Positive" src="sap-icon://complete" class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.approved}"></core:Icon>-->
+						<!--<Text text="{i18n>List.Table.Status.approved} " class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.approved}"/>-->
+						<!--<core:Icon color="Negative" src="sap-icon://sys-cancel-2" class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.rejected}"></core:Icon>-->
+						<!--<Text text="{i18n>List.Table.Status.rejected} " class="sapUiTinyMarginEnd" tooltip="{i18n>List.Table.Status.rejected}"/>-->
+						<ToolbarSpacer/>
+						<Button id="UIListTableExportButton" icon="sap-icon://download" tooltip="{ppcutili18n>common.ExportToExcelTooltip}" press="exportToExcel"/>
+					</Toolbar>
+				</table:toolbar>
+				<table:Column sortProperty="QuotationNoTemp" filterProperty="QuotationNo" width="8rem" autoResizable="true"
+					tooltip="{i18n>List.FilterBar.Sales.Order.Request.No}">
+					<Text text="{i18n>List.FilterBar.Sales.Order.Request.No}"/>
+					<table:template>
+						<Link text="{Quotations>QuotationNo}" press="gotoDetails" tooltip="{Quotations>QuotationNo}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="QuotationDate" filterProperty="QuotationDate" width="8rem" autoResizable="true"
+					tooltip="{i18n>QuotationItemDetails.SalesOrderRequestDate}"
+					filterType="\{type: 'sap.ui.model.type.Date', formatOptions: \{ UTC: true, pattern: 'dd/MM/yyyy'\}\}">
+					<Text text="{i18n>QuotationItemDetails.SalesOrderRequestDate}"/>
+					<table:template>
+						<Text text="{path: 'Quotations>QuotationDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{path: 'Quotations>QuotationDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="ZZDCAName" filterProperty="ZZDCAName" width="13rem" autoResizable="true"
+					tooltip="{i18n>List.FilterBar.Sales.Order.Request.DCA}">
+					<Text text="{i18n>List.FilterBar.Sales.Order.Request.DCA}"/>
+					<table:template>
+						<Text text="{= ${Quotations>ZZDCACode} !== '' ? ${Quotations>ZZDCAName} +' ('+ ${Quotations>ZZDCACode}+')' : ${Quotations>ZZDCAName} }"
+							tooltip="{= ${Quotations>ZZDCACode} !== '' ? ${Quotations>ZZDCAName} +' ('+ ${Quotations>ZZDCACode}+')' : ${Quotations>ZZDCAName} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="QuotationTypeDesc" filterProperty="QuotationTypeDesc" width="13rem" autoResizable="true"
+					tooltip="{i18n>List.FilterBar.Sales.Order.Request.Type}">
+					<Text text="{i18n>List.FilterBar.Sales.Order.Request.Type}"/>
+					<table:template>
+						<Text
+							text="{= ${Quotations>QuotationType} !== '' ? ${Quotations>QuotationTypeDesc} +' ('+ ${Quotations>QuotationType}+')' : ${Quotations>QuotationTypeDesc} }"
+							tooltip="{= ${Quotations>QuotationType} !== '' ? ${Quotations>QuotationTypeDesc} +' ('+ ${Quotations>QuotationType}+')' : ${Quotations>QuotationTypeDesc} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="SalesAreaDesc" filterProperty="SalesAreaDesc" width="14rem" autoResizable="true"
+					tooltip="{SFGW_INQ>/Quotations/SalesArea/#@sap:label}">
+					<Text text="{SFGW_INQ>/Quotations/SalesArea/#@sap:label}"/>
+					<table:template>
+						<Text
+							text="{= ${Quotations>SalesArea} !== '' ? ${Quotations>SalesAreaDesc} +' ('+ ${Quotations>SalesArea}+')' : ${Quotations>SalesAreaDesc} }"
+							tooltip="{= ${Quotations>SalesArea} !== '' ? ${Quotations>SalesAreaDesc} +' ('+ ${Quotations>SalesArea}+')' : ${Quotations>SalesAreaDesc} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="SaleOfcDesc" filterProperty="SaleOfcDesc" width="10rem" autoResizable="true"
+					tooltip="{SFGW_INQ>/Quotations/SalesOffice/#@sap:label}">
+					<Text text="{SFGW_INQ>/Quotations/SalesOffice/#@sap:label}"/>
+					<table:template>
+						<Text
+							text="{= ${Quotations>SalesOffice} !== '' ? ${Quotations>SaleOfcDesc} +' ('+ ${Quotations>SalesOffice}+')' : ${Quotations>SaleOfcDesc} }"
+							tooltip="{= ${Quotations>SalesOffice} !== '' ? ${Quotations>SaleOfcDesc} +' ('+ ${Quotations>SalesOffice}+')' : ${Quotations>SaleOfcDesc} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column width="9rem" sortProperty="Quantity" autoResizable="true" filterProperty="Quantity"
+					filterType="\{type: 'sap.ui.model.type.Float'\}" tooltip="{i18n>QuotationItemDetails.Quantity}" hAlign="Right">
+					<Text text="{i18n>QuotationItemDetails.List.Quantity}"/>
+					<table:template>
+						<ObjectNumber textAlign="Right" emphasized="false" number="{Quotations>Quantity}"
+							tooltip="{i18n>QuotationItemDetails.List.Quantity}: {QuotationItemDetails>Quantity} {QuotationItemDetails>Uom}" unit="{Quotations>Uom}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="PaytermDesc" filterProperty="PaytermDesc" width="12rem" autoResizable="true"
+					tooltip="{SFGW_INQ>/Quotations/Payterm/#@sap:label}">
+					<Text text="{SFGW_INQ>/Quotations/Payterm/#@sap:label}"/>
+					<table:template>
+						<Text text="{= ${Quotations>Payterm} !== '' ? ${Quotations>PaytermDesc} +' ('+ ${Quotations>Payterm}+')' : ${Quotations>PaytermDesc} }"
+							tooltip="{= ${Quotations>Payterm} !== '' ? ${Quotations>PaytermDesc} +' ('+ ${Quotations>Payterm}+')' : ${Quotations>PaytermDesc} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="ZZCity" filterProperty="ZZCity" width="7rem" autoResizable="true" tooltip="{i18n>List.FilterBar.Location}">
+					<Text text="{i18n>List.FilterBar.Location}"/>
+					<table:template>
+						<Text text="{Quotations>ZZCity}" tooltip="{Quotations>ZZCity}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="ReqDeliveryDate" filterProperty="ReqDeliveryDate" width="10rem" autoResizable="true"
+					tooltip="{i18n>QuotationItemDetails.ReqDeliveryDate}"
+					filterType="\{type: 'sap.ui.model.type.Date', formatOptions: \{ UTC: true, pattern: 'dd/MM/yyyy'\}\}">
+					<Text text="{i18n>QuotationItemDetails.ReqDeliveryDate}"/>
+					<table:template>
+						<Text text="{path: 'Quotations>ReqDeliveryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+							tooltip="{path: 'Quotations>ReqDeliveryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column width="6rem" autoResizable="true" tooltip="{SFGW_INQ>/QuotationItems/Uom/#@sap:label}" hAlign="Right" sortProperty="Uom"
+					filterProperty="Uom">
+					<Text text="{SFGW_INQ>/QuotationItems/Uom/#@sap:label}"/>
+					<table:template>
+						<ObjectNumber textAlign="Right" emphasized="false" number="{Quotations>Uom}" tooltip="{SFGW_INQ>/QuotationItems/Uom/#@sap:label}"/>
+					</table:template>
+				</table:Column>
+				<table:Column width="9rem" sortProperty="ZZSOQuantity" autoResizable="true" filterProperty="ZZSOQuantity"
+					filterType="\{type: 'sap.ui.model.type.Float'\}" tooltip="{i18n>QuotationItemDetails.List.ZZSOQuantity}" hAlign="Right">
+					<Text text="{i18n>QuotationItemDetails.List.ZZSOQuantity}"/>
+					<table:template>
+						<ObjectNumber textAlign="Right" emphasized="false" number="{Quotations>ZZSOQuantity}"
+							tooltip="{i18n>QuotationItemDetails.List.ZZSOQuantity}: {QuotationItemDetails>ZZSOQuantity} {QuotationItemDetails>Uom}"
+							unit="{Quotations>Uom}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="GrossAmount" filterProperty="GrossAmount" filterType="\{type: 'sap.ui.model.type.Float'\} " width="8rem"
+					autoResizable="true" tooltip="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}" hAlign="End">
+					<Text text="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{path:'Quotations>GrossAmount', type: 'sap.ui.model.type.Float'}"
+							tooltip="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}: {path:'Quotations>GrossAmount', type: 'sap.ui.model.type.Float'} {Quotations>Currency}"
+							unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="Discount" filterProperty="Discount" filterType="\{type: 'sap.ui.model.type.Float'\} " width="7rem"
+					autoResizable="true" tooltip="{SFGW_INQ>/Quotations/Discount/#@sap:label}" hAlign="End">
+					<Text text="{SFGW_INQ>/Quotations/Discount/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{path:'Quotations>DiscAmount', type: 'sap.ui.model.type.Float'}"
+							tooltip="{SFGW_INQ>/Quotations/DiscAmount/#@sap:label}: {path:'Quotations>DiscAmount', type: 'sap.ui.model.type.Float'} {Quotations>Currency}"
+							unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="FreightAmount" filterProperty="FreightAmount" filterType="\{type: 'sap.ui.model.type.Float'\} " width="7rem"
+					autoResizable="true" tooltip="{SFGW_INQ>/Quotations/FreightAmount/#@sap:label}" hAlign="End">
+					<Text text="{SFGW_INQ>/Quotations/FreightAmount/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{path:'Quotations>FrieghtAmount', type: 'sap.ui.model.type.Float'}"
+							tooltip="{SFGW_INQ>/Quotations/FreightAmount/#@sap:label}: {path:'Quotations>FreightAmount', type: 'sap.ui.model.type.Float'} {Quotations>Currency}"
+							unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="TaxAmount" filterProperty="TaxAmount" filterType="\{type: 'sap.ui.model.type.Float'\} " width="8rem"
+					autoResizable="true" tooltip="{i18n>QuotationItemDetails.TaxAmount}" hAlign="End">
+					<Text text="{i18n>QuotationItemDetails.TaxAmount}" textAlign="Right"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{path:'Quotations>TaxAmount', type: 'sap.ui.model.type.Float'}"
+							tooltip="{i18n>QuotationItemDetails.TaxAmount}: {path:'Quotations>TaxAmount', type: 'sap.ui.model.type.Float'} {Quotations>Currency}"
+							unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="NetAmount" filterProperty="NetAmount" filterType="\{type: 'sap.ui.model.type.Float'\}" width="8rem"
+					autoResizable="true" tooltip="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}" hAlign="End">
+					<Text text="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<ObjectNumber emphasized="false" number="{path:'Quotations>NetValue', type: 'sap.ui.model.type.Float'}"
+							tooltip="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}: {path:'Quotations>NetValue', type: 'sap.ui.model.type.Float'} {Quotations>Currency}"
+							unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="RejReasonDesc" filterProperty="RejReasonDesc" width="12rem" autoResizable="true"
+					tooltip="{SFGW_INQ>/QuotationItems/RejReason/#@sap:label}">
+					<Text text="{SFGW_INQ>/QuotationItems/RejReason/#@sap:label}"/>
+					<table:template>
+						<Text
+							text="{= ${Quotations>RejReason} !== '' ? ${Quotations>RejReasonDesc} +' ('+ ${Quotations>RejReason}+')' : ${Quotations>RejReasonDesc} }"
+							tooltip="{= ${Quotations>RejReason} !== '' ? ${Quotations>RejReasonDesc} +' ('+ ${Quotations>RejReason}+')' : ${Quotations>RejReasonDesc} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="CustomerName" filterProperty="CustomerName" width="15rem" autoResizable="true"
+					tooltip="{SFGW_INQ>/QuotationItems/CustomerNo/#@sap:label}">
+					<Text text="{SFGW_INQ>/QuotationItems/CustomerNo/#@sap:label}"/>
+					<table:template>
+						<Text
+							text="{= ${Quotations>CustomerNo} !== '' ? ${Quotations>CustomerName} +' ('+ ${Quotations>CustomerNo}+')' : ${Quotations>CustomerName} }"
+							tooltip="{= ${Quotations>CustomerNo} !== '' ? ${Quotations>CustomerName} +' ('+ ${Quotations>CustomerNo}+')' : ${Quotations>CustomerName} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="MaterialDesc" filterProperty="MaterialDesc" width="12rem" autoResizable="true"
+					tooltip="{SFGW_INQ>/QuotationItems/Material/#@sap:label}">
+					<Text text="{SFGW_INQ>/QuotationItems/Material/#@sap:label}"/>
+					<table:template>
+						<Text text="{= ${Quotations>Material} !== '' ? ${Quotations>MaterialDesc} +' ('+ ${Quotations>Material}+')' : ${Quotations>MaterialDesc} }"
+							tooltip="{= ${Quotations>Material} !== '' ? ${Quotations>MaterialDesc} +' ('+ ${Quotations>Material}+')' : ${Quotations>MaterialDesc} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="PlantDsec" filterProperty="PlantDsec" width="12rem" autoResizable="true"
+					tooltip="{i18n>QuotationItemDetails.Plant}">
+					<Text text="{i18n>QuotationItemDetails.Plant}"/>
+					<table:template>
+						<Text text="{= ${Quotations>Plant} !== '' ? ${Quotations>PlantDsec} +' ('+ ${Quotations>Plant}+')' : ${Quotations>PlantDsec} }"
+							tooltip="{= ${Quotations>Plant} !== '' ? ${Quotations>PlantDsec} +' ('+ ${Quotations>Plant}+')' : ${Quotations>PlantDsec} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="ZZSoNo" filterProperty="ZZSoNo" width="8rem" autoResizable="true" tooltip="{i18n>List.FilterBar.ZZSoNo.No}">
+					<Text text="{i18n>List.FilterBar.ZZSoNo.No}"/>
+					<table:template>
+						<Text text="{Quotations>ZZSoNo}" tooltip="{Quotations>QuotationNo}"/>
+					</table:template>
+				</table:Column>
+				<table:Column width="3rem" autoResizable="true" tooltip="{SFGW_INQ>/Quotations/StatusID/#@sap:label}">
+					<ObjectStatus id="lUIStatus" text="{= ${device>/system/phone}? ${SFGW_INQ>/Quotations/StatusID/#@sap:label} : ''}"
+						icon="sap-icon://order-status" tooltip="{SFGW_INQ>/Quotations/StatusID/#@sap:label}"></ObjectStatus>
+					<table:template>
+						<ObjectStatus id="fiUIStatus" tooltip="{SFGW_INQ>/Quotations/StatusID/#@sap:label} : {Quotations>StatusDesc}"
+							text="{= ${device>/system/phone}? ${Quotations>StatusDesc} : ''}"
+							icon="{ path: 'Quotations>StatusID', formatter:'com.arteriatech.zsf.quot.util.Formatter.formatImage' }"
+							state="{ path: 'Quotations>StatusID', formatter:'com.arteriatech.zsf.quot.util.Formatter.formatImageColor' }"/>
+					</table:template>
+				</table:Column>
+				<table:Column hAlign="Left" width="9rem" autoResizable="true" tooltip="{SFGW_INQ>/Quotations/ZZApprovalStatus/#@sap:label}"
+					sortProperty="ZZApprovalStsDesc" filterProperty="ZZApprovalStsDesc">
+					<Text text="{SFGW_INQ>/Quotations/ZZApprovalStatus/#@sap:label}" textAlign="Right"/>
+					<table:template>
+						<Text text="{Quotations>ZZApprovalStsDesc}" tooltip="{Quotations>ZZApprovalStsDesc}"/>
+					</table:template>
+				</table:Column>
+				<table:Column sortProperty="ZZCrdtBlckStsDesc" filterProperty="ZZCrdtBlckStsDesc" width="10rem" autoResizable="true"
+					tooltip="{i18n>QuotationItemDetails.ZZCrdtBlckSts}">
+					<Text text="{i18n>QuotationItemDetails.ZZCrdtBlckSts}"/>
+					<table:template>
+						<Text
+							text="{= ${Quotations>ZZCrdtBlckSts} !== '' ? ${Quotations>ZZCrdtBlckStsDesc} +' ('+ ${Quotations>ZZCrdtBlckSts}+')' : ${Quotations>ZZCrdtBlckStsDesc} }"
+							tooltip="{= ${Quotations>ZZCrdtBlckSts} !== '' ? ${Quotations>ZZCrdtBlckStsDesc} +' ('+ ${Quotations>ZZCrdtBlckSts}+')' : ${Quotations>ZZCrdtBlckStsDesc} }"/>
+					</table:template>
+				</table:Column>
+				<table:Column hAlign="Center" width="8rem" autoResizable="true" tooltip="Error Log">
+					<Text text="Error Log"></Text>
+					<table:template>
+						<Button text="Error log" tooltip="Error Log" press="getChangeLogDetails" type="Accept"></Button>
+					</table:template>
+				</table:Column>
+			</table:Table>
+			<!-- sap.m.Table (Visible in Mobile & Table)-->
+			<Table id="ListTable" items="{Quotations>/}" inset="false" noDataText="{ppcutili18n>common.NoItemSelected}" class="sapUiNoMargin"
+				busy="false" visible="false">
+				<headerToolbar>
+					<Toolbar id="ListTableToolBar">
+						<Title id="ListTableTitle"
+							text="{i18n>List.Table.Title} {= (!${LocalViewSetting>/ListItemsCount} > 0) ? '' : '('+${LocalViewSetting>/ListItemsCount}+')'}" level="H2"/>
+						<Text id="ListTableLegend" text="| {i18n>common.Legend} : "/>
+						<core:Icon id="ListTableLegendIcon_1" tooltip="TOAdd" src="sap-icon://status-error" color="#f00"/>
+						<Text id="ListTableLegendDesc_1" text="TOAdd"/>
+						<ToolbarSpacer/>
+						<Button id="ListTableFilterSorterButton" icon="sap-icon://add-filter" press="handleViewSettingsDialogButtonPressed"
+							tooltip="{ppcutili18n>common.TableFilterSorterTooltip}"/>
+						<Button id="ListTableExportButton" icon="sap-icon://download" tooltip="{ppcutili18n>common.ExportToExcelTooltip}" press="exportToExcel"/>
+					</Toolbar>
+				</headerToolbar>
+				<infoToolbar>
+					<Toolbar id="ListTableInfoToolBar" active="true" visible="false" press="handleViewSettingsDialogButtonPressed">
+						<Label id="ListTableInfoToolBarLabel" text="?"/>
+					</Toolbar>
+				</infoToolbar>
+				<columns>
+					<Column>
+						<Text text="{i18n>List.FilterBar.Sales.Order.Request.No}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>QuotationItemDetails.SalesOrderRequestDate}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>List.FilterBar.Sales.Order.Request.DCA.No}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>List.FilterBar.Sales.Order.Request.DCA.Name}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>List.FilterBar.Sales.Order.Request.Type}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>List.FilterBar.Sales.Order.Request.Type.Desc}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/SalesArea/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/SalesAreaDesc/#@sap:label}"/>
+					</Column>
+						<Column>
+						<Text text="{SFGW_INQ>/Quotations/SalesOffice/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>QuotationItemDetails.List.SalesOfficeDesc}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>QuotationItemDetails.List.Quantity}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/QuotationItems/Uom/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>QuotationItemDetails.List.ZZSOQuantity}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/QuotationItems/Payterm/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>List.FilterBar.Location}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>QuotationItemDetails.ReqDeliveryDate}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/Discount/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/FreightAmount/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>QuotationItemDetails.TaxAmount}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>QuotationItemDetails.RejectionReason}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>QuotationItemDetails.RejReasonDesc}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/CustomerName/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/Material/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/MaterialDesc/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/Plant/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/PlantDsec/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>List.FilterBar.ZZSoNo.No}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/StatusID/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{SFGW_INQ>/Quotations/ZZApprovalStatus/#@sap:label}"/>
+					</Column>
+					<Column>
+						<Text text="{i18n>QuotationItemDetails.ZZCrdtBlckSts}"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem id="Quotation_column_List_Item" press="gotoDetails" type="Navigation">
+						<cells>
+							<Text text="{Quotations>QuotationNo}" tooltip="{i18n>List.FilterBar.Sales.Order.Request.No}"/>
+							<Text text="{path: 'Quotations>QuotationDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+								tooltip="{SFGW_INQ>/Quotations>QuotationDate/#@sap:label}" textAlign="Right"/>
+							<Text text="{Quotations>ZZDCACode}" tooltip="{Quotations>ZZDCACode}"/>
+							<Text text="{Quotations>ZZDCAName}" tooltip="{Quotations>ZZDCAName}"/>
+							<Text text="{Quotations>QuotationType}" tooltip="{Quotations>QuotationType}"/>
+							<Text text="{Quotations>QuotationTypeDesc}" tooltip="{Quotations>QuotationTypeDesc}"/>
+							<Text text="{Quotations>SalesArea}" tooltip="{Quotations>SalesArea}"/>
+							<Text text="{Quotations>SalesAreaDesc}" tooltip="{Quotations>SalesAreaDesc}"/>
+							<Text text="{Quotations>SalesOffice}" tooltip="{Quotations>SalesOffice}"/>
+							<Text text="{Quotations>SaleOfcDesc}" tooltip="{Quotations>SaleOfcDesc}"/>
+							<Text text="{Quotations>Quantity}" tooltip="{Quotations>Quantity}"/>
+							<Text text="{Quotations>Uom}" tooltip="{Quotations>Uom}"/>
+							<Text text="{Quotations>ZZSOQuantity}" tooltip="{Quotations>ZZSOQuantity}"/>
+							<Text text="{Quotations>Payterm}" tooltip="{Quotations>Payterm}"/>
+							<Text text="{Quotations>ZZCity}" tooltip="{Quotations>ZZCity}"/>
+							<Text text="{path: 'Quotations>ReqDeliveryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+								tooltip="{SFGW_INQ>/Quotations>ReqDeliveryDate/#@sap:label}" textAlign="Right"/>
+							<ObjectNumber emphasized="false" number="{path:'Quotations>GrossAmount'}" tooltip="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}"
+								unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+							<ObjectNumber emphasized="false" number="{path:'Quotations>DiscAmount'}" tooltip="{SFGW_INQ>/Quotations/Discount/#@sap:label}"
+								unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+							<ObjectNumber emphasized="false" number="{path:'Quotations>FrieghtAmount'}" tooltip="{SFGW_INQ>/Quotations/FreightAmount/#@sap:label}"
+								unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+							<ObjectNumber emphasized="false" number="{path:'Quotations>TaxAmount', type: 'sap.ui.model.type.Float'}"
+								tooltip="{i18n>QuotationItemDetails.TaxAmount}" unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+							<ObjectNumber emphasized="false" number="{path:'Quotations>NetValue', type: 'sap.ui.model.type.Float'}"
+								tooltip="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}" unit="{Quotations>Currency}" xmlns="sap.m" textAlign="Right"/>
+							<Text text="{Quotations>RejReason}" tooltip="{Quotations>RejReason}"/>
+							<Text text="{Quotations>RejReasonDesc}" tooltip="{Quotations>RejReasonDesc}"/>
+							<Text text="{Quotations>CustomerNo}" tooltip="{Quotations>CustomerNo}"/>
+							<Text text="{Quotations>CustomerName}" tooltip="{Quotations>CustomerName}"/>
+							<Text text="{Quotations>Material}" tooltip="{Quotations>Material}"/>
+							<Text text="{Quotations>MaterialDesc}" tooltip="{Quotations>MaterialDesc}"/>
+							<Text text="{Quotations>Plant}" tooltip="{Quotations>Plant}"/>
+							<Text text="{Quotations>PlantDsec}" tooltip="{Quotations>PlantDsec}"/>
+							<Text text="{Quotations>ZZSoNo}" tooltip="{Quotations>ZZSoNo}"/>
+							<Text text="{Quotations>StatusDesc}" tooltip="{Quotations>StatusDesc}"/>
+							<Text text="{Quotations>ZZApprovalStsDesc}" tooltip="{Quotations>ZZApprovalStsDesc}"/>
+							<Text text="{Quotations>ZZCrdtBlckStsDesc}" tooltip="{Quotations>ZZCrdtBlckStsDesc}"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+	</Panel>
+</mvc:View>

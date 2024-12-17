@@ -1,0 +1,46 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteriatech.zsf.quot.controller.ASNVIAttachment" xmlns:html="http://www.w3.org/1999/xhtml">
+	<UploadCollection id="UploadCollectionView" maximumFilenameLength="55" maximumFileSize="{LocalAttachmentCount>/maximumFileSize}" multiple="false" showSeparators="All"
+		change="onChange" fileDeleted="onFileDeleted" filenameLengthExceed="onFilenameLengthExceed" fileRenamed="onFileRenamed"
+		fileSizeExceed="onFileSizeExceed" typeMissmatch="onTypeMissmatch" uploadComplete="onUploadComplete"
+		beforeUploadStarts="onBeforeUploadStarts" uploadTerminated="onUploadTerminated" noDataText="{ppcutili18n>common.NoAttachments}"
+		items="{ASNDocumentList>/}" uploadEnabled="">
+	
+
+		<toolbar>
+			<OverflowToolbar id="myId" design="Transparent">
+				<Title id="attachmentTitle">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow"/>
+					</layoutData>
+				</Title>
+				<ToolbarSpacer/>
+				<Button tooltip="Upload" type="Emphasized" text="Upload" press="onUploadClick" visible="{LocalViewSettingDtl>/uploadvisibility}">
+					<layoutData>
+						<OverflowToolbarLayoutData priority="NeverOverflow"/>
+					</layoutData>
+				</Button>
+			</OverflowToolbar>
+		</toolbar>
+	
+	
+		<items press="getDetails">
+			<UploadCollectionItem id="UploadCollectionItem" type="Navigation" documentId="{ASNDocumentList>DocumentID}"
+				fileName="{ASNDocumentList>FileName}" thumbnailUrl=""
+				url="/sap/opu/odata/ARTEC/SFGW_INQ/QuotationDocuments(QuotationNo='{ASNDocumentList>QuotationNo}',DocumentID='{ASNDocumentList>DocumentID}',DocumentStore='{ASNDocumentList>DocumentStore}')/$value?"
+				enableEdit="false" enableDelete="{LocalViewSettingDtl>/uploadvisibility}" visibleEdit="false" uploadEnabled="false">
+				<attributes>
+					<ObjectAttribute title="{i18n>ASNAttachment.Page.UploadCollectionItem.ObjectAttribute.UploadedOn}"
+						text="{path:'ASNDocumentList>CreatedOn', formatter:'com.arteriatech.pps.utils.js.Common.getFormattedDate'}" active="false" textDirection="{textDirection}"/>
+					<ObjectAttribute title="{i18n>ASNAttachment.Page.UploadCollectionItem.ObjectAttribute.UploadedBy}"
+						text="{= ${ASNDocumentList>CreatedByName} ? ${ASNDocumentList>CreatedByName} : ${ASNDocumentList>CreatedBy}}" active="false"
+						textDirection="{textDirection}"></ObjectAttribute>
+					<ObjectAttribute title="{i18n>ASNAttachment.Page.UploadCollectionItem.ObjectAttribute.FileSize}"
+						text="{path : 'ASNDocumentList>DocumentSize', formatter : 'com.arteriatech.ppc.utils.js.Common.fileSizeFormatter'}" active="{active}"
+						textDirection="{textDirection}"></ObjectAttribute>
+				</attributes>
+				<statuses></statuses>
+			</UploadCollectionItem>
+		</items>
+	</UploadCollection>
+</mvc:View>

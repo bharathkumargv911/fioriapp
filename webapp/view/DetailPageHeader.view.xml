@@ -1,0 +1,300 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteriatech.zsf.quot.controller.DetailPageHeader" xmlns:html="http://www.w3.org/1999/xhtml" id="DetailPageHeaderView"
+	displayBlock="true" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form">
+	<f:SimpleForm class="editableForm" columnsL="3" columnsM="3" editable="true" emptySpanL="0" emptySpanM="0" labelSpanL="5" labelSpanM="5"
+		layout="ResponsiveGridLayout" maxContainerCols="3" title=""
+		visible="{= ((${LocalViewSettingDtl>/detailMode}) || (${LocalViewSettingDtl>/reviewMode}) || (${LocalViewSettingDtl>/HeadereditApprove}) ) }">
+		<f:content>
+			<core:Title text="Customer"/>
+			<Label text="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}"></Label>
+			<Text
+				text="{= ${Quotations>/CustomerNo} !== '' ? ${Quotations>/CustomerName} +' ('+ ${Quotations>/CustomerNo}+')' : ${Quotations>/CustomerName} }"
+				tooltip="{= ${Quotations>/CustomerNo} !== '' ? ${Quotations>/CustomerName} +' ('+ ${Quotations>/CustomerNo}+')' : ${Quotations>/CustomerName} }"/>
+			<Label text="{i18n>List.FilterBar.Sales.Order.Request.Type}" tooltip="{i18n>List.FilterBar.Sales.Order.Request.Type}"></Label>
+			<Text
+				text="{= ${Quotations>/QuotationType} !== '' ? ${Quotations>/QuotationTypeDesc} +' ('+ ${Quotations>/QuotationType}+')' : ${Quotations>/QuotationTypeDesc} }"
+				tooltip="{= ${Quotations>/QuotationType} !== '' ? ${Quotations>/QuotationTypeDesc} +' ('+ ${Quotations>/QuotationType}+')' : ${Quotations>/QuotationTypeDesc} }"/>
+			<!--<Label text="{SFGW_INQ>/Quotations/SalesArea/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/SalesArea/#@sap:label}"></Label>-->
+			<!--<Text-->
+			<!--	text="{= ${Quotations>/SalesArea} !== '' ? ${Quotations>/SalesAreaDesc} +' ('+ ${Quotations>/SalesArea}+')' : ${Quotations>/SalesAreaDesc} }"-->
+			<!--	tooltip="{SFGW_INQ>/Quotations/SalesArea/#@sap:label}"/>-->
+			<!--GrpCompCode-->
+			<Label text="{i18n>List.FilterBar.Sales.Order.Request.GrpComp}" tooltip="{i18n>List.FilterBar.Sales.Order.Request.GrpComp}"></Label>
+			<Text
+				text="{= ${Quotations>/GrpCompCode} !== '' ? ${Quotations>/GrpCompName} +' ('+ ${Quotations>/GrpCompCode}+')' : ${Quotations>/GrpCompName} }"
+				tooltip="{= ${Quotations>/GrpCompCode} !== '' ? ${Quotations>/GrpCompName} +' ('+ ${Quotations>/GrpCompCode}+')' : ${Quotations>/GrpCompName} }"/>
+			<!--GrpCompCode-->
+			<Label text="{SFGW_INQ>/Quotations/ShipToParty/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/ShipToParty/#@sap:label}"></Label>
+			<Text
+				text="{= ${Quotations>/ShipToParty} !== '' ? ${Quotations>/ShipToPartyName} +' ('+ ${Quotations>/ShipToParty}+')' : ${Quotations>/ShipToPartyName} }"
+				tooltip="{= ${Quotations>/ShipToParty} !== '' ? ${Quotations>/ShipToPartyName} +' ('+ ${Quotations>/ShipToParty}+')' : ${Quotations>/ShipToPartyName} }"/>
+			
+			<Label visible="false"></Label>
+			<Link text="{i18n>List.FilterBar.Sales.Order.View.Shipping.Address}" tooltip="{i18n>List.FilterBar.Sales.Order.View.Shipping.Address}"
+				press="onPressShippingAdress"></Link>
+		
+			<!--Payer-->
+			<Label text="{SFGW_INQ>/Quotations/Payer/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/Payer/#@sap:label}"></Label>
+			<Text text="{= ${Quotations>/Payer} !== '' ? ${Quotations>/PayerDesc} +' ('+ ${Quotations>/Payer}+')' : ${Quotations>/PayerDesc} }"
+				tooltip="{= ${Quotations>/Payer} !== '' ? ${Quotations>/PayerDesc} +' ('+ ${Quotations>/Payer}+')' : ${Quotations>/PayerDesc} }"/>
+			<!--Payer-->
+			<Label text="{SFGW_INQ>/Quotations/SalesOffice/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/SalesOffice/#@sap:label}"></Label>
+			<Text
+				text="{= ${Quotations>/SalesOffice} !== '' ? ${Quotations>/SalesOfficeDesc} +' ('+ ${Quotations>/SalesOffice}+')' : ${Quotations>/SalesOfficeDesc} }"
+				tooltip="{= ${Quotations>/SalesOffice} !== '' ? ${Quotations>/SalesOfficeDesc} +' ('+ ${Quotations>/SalesOffice}+')' : ${Quotations>/SalesOfficeDesc} }"/>
+			<!--<Label id="LROrderReason" text="Order {SFGW_INQ>/Quotations/OrderReason/#@sap:label}"-->
+			<!--	tooltip="{SFGW_INQ>/Quotations/OrderReason/#@sap:label}"></Label>-->
+			<!--<Text-->
+			<!--	text="{= ${Quotations>/OrderReason} !== '' ? ${Quotations>/OrderReasonDesc} +' ('+ ${Quotations>/OrderReason}+')' : ${Quotations>/OrderReasonDesc} }"-->
+			<!--	tooltip="{SFGW_INQ>/Quotations/OrderReason/#@sap:label}"/>-->
+			<core:Title text="Order Details"/>
+			<!--Plant-->
+			<Label text="{SFGW_INQ>/Quotations/Plant/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/Plant/#@sap:label}"></Label>
+			<Text text="{= ${Quotations>/Plant} !== '' ? ${Quotations>/PlantDesc} +' ('+ ${Quotations>/Plant}+')' : ${Quotations>/PlantDesc} }"
+				tooltip="{= ${Quotations>/Plant} !== '' ? ${Quotations>/PlantDesc} +' ('+ ${Quotations>/Plant}+')' : ${Quotations>/PlantDesc} }"/>
+			<!--Plant-->
+			<!--<Label text="{SFGW_INQ>/Quotations/ShipType/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/ShipType/#@sap:label}"></Label>-->
+			<!--<Text-->
+			<!--	text="{= ${Quotations>/ShipType} !== '' ? ${Quotations>/ShipTypeDesc} +' ('+ ${Quotations>/ShipType}+')' : ${Quotations>/ShipTypeDesc} }"-->
+			<!--	tooltip="{SFGW_INQ>/Quotations/ShipType/#@sap:label}"/>-->
+			<!--<Label text="{SFGW_INQ>/Quotations/MeansOfTranstyp/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/MeansOfTranstyp/#@sap:label}"></Label>-->
+			<!--<Text tooltip="{SFGW_INQ>/Quotations/MeansOfTranstyp/#@sap:label}"-->
+			<!--	text="{= ${Quotations>/MeansOfTranstyp} !== '' ? ${Quotations>/MeansOfTranstypDesc} +' ('+ ${Quotations>/MeansOfTranstyp}+')' : ${Quotations>/MeansOfTranstypDesc} }"/>-->
+			<!--Payterm-->
+			<Label text="{SFGW_INQ>/Quotations/Payterm/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/Payterm/#@sap:label}"></Label>
+			<Text text="{= ${Quotations>/Payterm} !== '' ? ${Quotations>/PaytermDesc} +' ('+ ${Quotations>/Payterm}+')' : ${Quotations>/PaytermDesc} }"
+				tooltip="{= ${Quotations>/Payterm} !== '' ? ${Quotations>/PaytermDesc} +' ('+ ${Quotations>/Payterm}+')' : ${Quotations>/PaytermDesc} }"/>
+			<!--Payterm-->
+			<!--ShippCondition-->
+			<Label text="{SFGW_INQ>/Quotations/ShippCondition/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/ShippCondition/#@sap:label}"></Label>
+			<Text
+				text="{= ${Quotations>/ShippCondition} !== '' ? ${Quotations>/ShippCondDesc} +' ('+ ${Quotations>/ShippCondition}+')' : ${Quotations>/ShippCondDesc} }"
+				tooltip="{= ${Quotations>/ShippCondition} !== '' ? ${Quotations>/ShippCondDesc} +' ('+ ${Quotations>/ShippCondition}+')' : ${Quotations>/ShippCondDesc} }"/>
+			<!--ShippCondition-->
+			<!--<Label text="{SFGW_INQ>/Quotations/Incoterm1/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/Incoterm1/#@sap:label}"></Label>-->
+			<!--<Text-->
+			<!--	text="{= ${Quotations>/Incoterm1} !== '' ? ${Quotations>/Incoterm1Desc} +' ('+ ${Quotations>/Incoterm1}+')' : ${Quotations>/Incoterm1Desc} }"-->
+			<!--	tooltip="{SFGW_INQ>/Quotations/Incoterm1/#@sap:label}"/>-->
+			<!--<core:Title text="Order Details"/>-->
+			<!--<Label text="{SFGW_INQ>/Quotations/Incoterm2/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/Incoterm2/#@sap:label}"></Label>-->
+			<!--<Text text="{Quotations>/Incoterm2}" tooltip="{SFGW_INQ>/Quotations/Incoterm2/#@sap:label}"/>-->
+			<!--PoNo-->
+			<Label text="{i18n>List.FilterBar.PO.Number}" tooltip="{i18n>List.FilterBar.PO.Number}"></Label>
+			<Text text="{Quotations>/PoNo}" tooltip="{Quotations>/PoNo}"></Text>
+			<!--PoNo-->
+			<!--PoDate-->
+			<Label text="{i18n>List.FilterBar.PO.Date}" tooltip="{i18n>List.FilterBar.PO.Date}"></Label>
+			<Text text="{path:'Quotations>/PoDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+				tooltip="{path:'Quotations>/PoDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+			<!--PoDate-->
+			<!--ReqDlvryDate-->
+			<Label text="{SFGW_INQ>/Quotations/ReqDlvryDate/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/ReqDlvryDate/#@sap:label}"></Label>
+			<Text text="{path:'Quotations>/ReqDlvryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+				tooltip="{path:'Quotations>/ReqDlvryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+			<!--ReqDlvryDate-->
+			<!--Validity-->
+			<Label text="Validity" tooltip="Validity"></Label>
+			<Text
+				tooltip="{path:'Quotations>/ValidFrom', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'} - {path:'Quotations>/ValidTo', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+				text="{path:'Quotations>/ValidFrom', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'} - {path:'Quotations>/ValidTo', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+			<!--Validity-->
+			<core:Title text="Ship to party"/>
+			
+				<!--BillToParty-->
+			<Label text="{SFGW_INQ>/Quotations/BillToParty/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/BillToParty/#@sap:label}"></Label>
+			<Text
+				text="{= ${Quotations>/BillToParty} !== '' ? ${Quotations>/BillToDesc} +' ('+ ${Quotations>/BillToParty}+')' : ${Quotations>/BillToDesc} }"
+				tooltip="{= ${Quotations>/BillToParty} !== '' ? ${Quotations>/BillToDesc} +' ('+ ${Quotations>/BillToParty}+')' : ${Quotations>/BillToDesc} }"/>
+			<!--BillToParty-->
+			<!--BpGstNO-->
+			<Label text="{SFGW_INQ>/Quotations/BpGstNO/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/BpGstNO/#@sap:label}"></Label>
+			<Text text="{Quotations>/BpGstNO}" tooltip="{Quotations>/BpGstNO}"/>
+			<!--BpGstNO-->
+			
+			
+			<!--TransportZone-->
+			<Label text="{SFGW_INQ>/Quotations/TransportZone/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/TransportZone/#@sap:label}"></Label>
+			<Text
+				text="{= ${Quotations>/TransportZone} !== '' ? ${Quotations>/TransZoneDesc} +' ('+ ${Quotations>/TransportZone}+')' : ${Quotations>/TransZoneDesc} }"
+				tooltip="{= ${Quotations>/TransportZone} !== '' ? ${Quotations>/TransZoneDesc} +' ('+ ${Quotations>/TransportZone}+')' : ${Quotations>/TransZoneDesc} }"/>
+			<!--TransportZone-->
+			<!--PricingZone-->
+			<Label text="{i18n>List.Item.PricingZone}" tooltip="{i18n>List.Item.PricingZone}"></Label>
+			<Text
+				text="{= ${Quotations>/PriceList} !== '' ? ${Quotations>/PriceListDesc} +' ('+ ${Quotations>/PriceList}+')' : ${Quotations>/PriceListDesc} }"
+				tooltip="{= ${Quotations>/PriceList} !== '' ? ${Quotations>/PriceListDesc} +' ('+ ${Quotations>/PriceList}+')' : ${Quotations>/PriceListDesc} }"/>
+			<!--PricingZone-->
+			<!--Batch NO-->
+			<Label text="{i18n>List.FilterBar.Batch.Number}" tooltip="{i18n>List.FilterBar.Batch.Number}"></Label>
+			<VBox>
+				<Text text="{LocalViewSettingDtl>/BatchNo}" tooltip="{LocalViewSettingDtl>/BatchNo}"
+					visible="{=${LocalViewSettingDtl>/EditBatch}? false:true}"></Text>
+				<!--<Label text="{i18n>List.FilterBar.Batch.Number}" tooltip="{i18n>List.FilterBar.Batch.Number}" visible="{=${LocalViewSettingDtl>/EditBatch}? false:true}"></Label>-->
+				<Input value="{LocalViewSettingDtl>/BatchNo}" width="10rem" tooltip="{LocalViewSettingDtl>/BatchNo}"
+					visible="{LocalViewSettingDtl>/EditBatch}"></Input>
+			</VBox>
+			<!--tcs-->
+			<Label text="{i18n>List.Header.Industry}" tooltip="{i18n>List.Header.Industry}"></Label>
+			<Text
+				text="{= ${Quotations>/ZZBussinessID1} !== '' ? ${Quotations>/ZZBussinessID2} +' ('+ ${Quotations>/ZZBussinessID1}+')' : ${Quotations>/ZZBussinessID2} }"
+				tooltip="{= ${Quotations>/ZZBussinessID1} !== '' ? ${Quotations>/ZZBussinessID2} +' ('+ ${Quotations>/ZZBussinessID1}+')' : ${Quotations>/ZZBussinessID2} }"/>
+			<!--tcs-->
+			<!--Batch NO-->
+		</f:content>
+	</f:SimpleForm>
+	<f:SimpleForm class="editableForm1" columnsL="3" columnsM="3" editable="true" emptySpanL="0" emptySpanM="0" labelSpanL="5" labelSpanM="5"
+		layout="ResponsiveGridLayout" maxContainerCols="3" title=""
+		visible="{= ${LocalViewSettingDtl>/editMode} &amp;&amp; (!${LocalViewSettingDtl>/HeadereditApprove})}">
+		<f:content>
+			<core:Title text="Basic Data"/>
+			<Label text="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}" id="LCustomerNo"></Label>
+			<Text
+				text="{= ${Quotations>/CustomerNo} !== '' ? ${Quotations>/CustomerName} +' ('+ ${Quotations>/CustomerNo}+')' : ${Quotations>/CustomerName} }"
+				tooltip="{= ${Quotations>/CustomerNo} !== '' ? ${Quotations>/CustomerName} +' ('+ ${Quotations>/CustomerNo}+')' : ${Quotations>/CustomerName} }"/>
+			<Label text="{i18n>List.FilterBar.Sales.Order.Request.Type}" tooltip="{i18n>List.FilterBar.Sales.Order.Request.Type}" id="LQuotationType"></Label>
+			<Text
+				text="{= ${Quotations>/QuotationType} !== '' ? ${Quotations>/QuotationTypeDesc} +' ('+ ${Quotations>/QuotationType}+')' : ${Quotations>/QuotationTypeDesc} }"
+				tooltip="{= ${Quotations>/QuotationType} !== '' ? ${Quotations>/QuotationTypeDesc} +' ('+ ${Quotations>/QuotationType}+')' : ${Quotations>/QuotationTypeDesc} }"/>
+			<!--Group Company DD-->
+			<Label id="LGrpCompCode" text="{i18n>List.FilterBar.Sales.Order.Request.GrpComp}"
+				tooltip="{i18n>List.FilterBar.Sales.Order.Request.GrpComp}" required="true"></Label>
+			<Select autoAdjustWidth="true" change="onSelectGroupCompanyDD" id="GrpCompCode" items="{GroupCompanyDD>/}"
+				selectedKey="{Quotations>/GrpCompCode}"
+				tooltip="{= ${Quotations>/GrpCompCode} !== '' ? ${Quotations>/GrpCompCode} +' - '+ ${Quotations>/GrpCompName} : ${Quotations>/GrpCompName} }">
+				<core:ListItem id="GrpCompCode_item" key="{GroupCompanyDD>Key}" text="{GroupCompanyDD>Key}{GroupCompanyDD>Seperator}{GroupCompanyDD>Text}"
+					tooltip="{GroupCompanyDD>Text}"></core:ListItem>
+			</Select>
+			<!--Group Company DD-->
+			<!--BillToPartyDD-->
+			<Label required="true" id="LShipToParty" text="{SFGW_INQ>/Quotations/ShipToParty/#@sap:label}"
+				tooltip="{SFGW_INQ>/Quotations/ShipToParty/#@sap:label}"></Label>
+			<Select autoAdjustWidth="true" change="onSelectShipToParty" id="ShipToParty" items="{ShipToParties>/}"
+				selectedKey="{Quotations>/ShipToParty}"
+				tooltip="{= ${Quotations>/ShipToParty} !== '' ? ${Quotations>/ShipToParty} +' - '+ ${Quotations>/ShipToPartyName} : ${Quotations>/ShipToPartyName} }">
+				<core:ListItem id="ShipToParty_item" key="{ShipToParties>Key}" text="{ShipToParties>Key}{ShipToParties>Seperator}{ShipToParties>Text}"
+					tooltip="{ShipToParties>Text}"></core:ListItem>
+			</Select>
+			<Label visible="false"></Label>
+			<Link text="{i18n>List.FilterBar.Sales.Order.View.Shipping.Address}" tooltip="{i18n>List.FilterBar.Sales.Order.View.Shipping.Address}"
+				press="onPressShippingAdress" id="ShippingAdress"></Link>
+			<!--PayerDD-->
+			<Label id="LPayer" text="{SFGW_INQ>/Quotations/Payer/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/Payer/#@sap:label}" required="true"></Label>
+			<Select autoAdjustWidth="true" change="onSelectPayerDD" id="Payer" items="{PayerDD>/}" selectedKey="{Quotations>/Payer}"
+				tooltip="{= ${Quotations>/Payer} !== '' ? ${Quotations>/Payer} +' - '+ ${Quotations>/PayerDesc} : ${Quotations>/PayerDesc} }">
+				<core:ListItem id="Payer_item" key="{PayerDD>BusinessPartnerNo}"
+					text="{PayerDD>BusinessPartnerNo}{PayerDD>Seperator}{PayerDD>BusinessPartnerName}" tooltip="{PayerDD>BusinessPartnerName}"></core:ListItem>
+			</Select>
+			<!--PayerDD-->
+			<!--Sales Office-->
+			<Label text="{SFGW_INQ>/Quotations/SalesOffice/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/SalesOffice/#@sap:label}" id="LSalesOffice"></Label>
+			<Text
+				text="{= ${Quotations>/SalesOffice} !== '' ? ${Quotations>/SalesOfficeDesc} +' ('+ ${Quotations>/SalesOffice}+')' : ${Quotations>/SalesOfficeDesc} }"
+				tooltip="{= ${Quotations>/SalesOffice} !== '' ? ${Quotations>/SalesOfficeDesc} +' ('+ ${Quotations>/SalesOffice}+')' : ${Quotations>/SalesOfficeDesc} }"/>
+			<!--Sales Office-->
+			<core:Title text="Order Details"/>
+			<!--Plant DD-->
+			<!--<Label required="true" id="LPlant" text="{SFGW_INQ>/Quotations/Plant/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/Plant/#@sap:label}"></Label>-->
+			<!--<Select autoAdjustWidth="true" change="onSelectPlant" id="Plant" items="{Plants>/}" selectedKey="{Quotations>/Plant}">-->
+			<!--	<core:ListItem id="Plant_item" key="{Plants>Key}" text="{Plants>Key}{Plants>Seperator}{Plants>Text}" tooltip="{Plants>Text}"></core:ListItem>-->
+			<!--</Select>-->
+			<!--Plant DD-->
+			<!--Plant-->
+			<Label text="{SFGW_INQ>/Quotations/Plant/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/Plant/#@sap:label}" id="LPlant"></Label>
+			<Text text="{= ${Quotations>/Plant} !== '' ? ${Quotations>/PlantDesc} +' ('+ ${Quotations>/Plant}+')' : ${Quotations>/PlantDesc} }"
+				tooltip="{= ${Quotations>/Plant} !== '' ? ${Quotations>/PlantDesc} +' ('+ ${Quotations>/Plant}+')' : ${Quotations>/PlantDesc} }"/>
+			<!--Plant-->
+			<!--Payment Term DD-->
+			<Label required="true" id="LPayterm" text="{SFGW_INQ>/Quotations/Payterm/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/Payterm/#@sap:label}"></Label>
+			<Select autoAdjustWidth="true" change="onSelectPayterm" id="Payterm" items="{Payterms>/}" selectedKey="{Quotations>/Payterm}"
+				tooltip="{= ${Quotations>/Payterm} !== '' ? ${Quotations>/Payterm} +' - '+ ${Quotations>/PaytermDesc} : ${Quotations>/PaytermDesc} }">
+				<core:ListItem id="Payterm_item" key="{Payterms>Key}" text="{Payterms>Key}{Payterms>Seperator}{Payterms>Text}" tooltip="{Payterms>Text}"></core:ListItem>
+			</Select>
+			<!--Payment Term DD-->
+			<!--ShippConditionDD-->
+			<Label id="LShippCondition" text="{SFGW_INQ>/Quotations/ShippCondition/#@sap:label}"
+				tooltip="{SFGW_INQ>/Quotations/ShippCondition/#@sap:label}" required="true"></Label>
+			<Select autoAdjustWidth="true" change="onSelectShippConditionDD" id="ShippCondition" items="{ShippConditionDD>/}"
+				selectedKey="{Quotations>/ShippCondition}"
+				tooltip="{= ${Quotations>/ShippCondition} !== '' ? ${Quotations>/ShippCondition} +' - '+ ${Quotations>/ShippCondDesc} : ${Quotations>/ShippCondDesc} }">
+				<core:ListItem id="ShippCondition_item" key="{ShippConditionDD>Key}"
+					text="{ShippConditionDD>Key}{ShippConditionDD>Seperator}{ShippConditionDD>Text}" tooltip="{ShippConditionDD>Text}"></core:ListItem>
+			</Select>
+			<!--ShippConditionDD-->
+			<!--PO NO-->
+			<Label id="LCustomerPO" text="{i18n>List.FilterBar.PO.Number}" tooltip="{i18n>List.FilterBar.PO.Number}"></Label>
+			<Input value="{Quotations>/PoNo}" change="onChangePoNo" id="CustomerPO"
+				maxLength="{path:'SFGW_INQ>/#Quotation/PoNo/@maxLength', type:'sap.ui.model.type.Float'}"></Input>
+			<!--PO No-->
+			<!--PO DATE-->
+			<Label id="LCustomerPODate" text="{i18n>List.FilterBar.PO.Date}" tooltip="{i18n>List.FilterBar.PO.Date}"></Label>
+			<!--<DatePicker id="PoDate" dateValue="{Quotations>/PoDate}" displayFormat="{LocalViewSettingDtl>/DateFormat}"-->
+			<!--	maxDate="{LocalViewSettingDtl>/CurrentDate}" change="onChangePoDate"/>-->
+			<DatePicker id="PoDate" change="onChangePoDate" value="{LocalViewSettingDtl>/PoDate}" displayFormat="{LocalViewSettingDtl>/DateFormat}"
+				valueFormat="{LocalViewSettingDtl>/DateFormat}" maxDate="{LocalViewSettingDtl>/CurrentDate}"/>
+			<!--PO DATE-->
+			<!--Req Deliveru Date-->
+			<Label id="LReqDlvryDate" text="{SFGW_INQ>/Quotations/ReqDlvryDate/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/ReqDlvryDate/#@sap:label}"
+				required="true"></Label>
+			<DatePicker id="ReqDlvryDate" dateValue="{Quotations>/ReqDlvryDate}" displayFormat="{LocalViewSettingDtl>/DateFormat}"
+				change="onChangeReqDlvryDate" minDate="{LocalViewSettingDtl>/CurrentDate}"/>
+			<!--Req Deliveru Date-->
+			<!--Valid From & To -->
+			<Label id="LCustomerValidTo" text="{i18n>List.FilterBar.Valid.From}" tooltip="{i18n>List.FilterBar.Valid.From}" required="true"></Label>
+			<!--<DateRangeSelection id="fValidFromEdit" dateValue="{Quotations>/ValidFrom}" minDate="{path: 'LocalViewSettingDtl>/CurrentDate'}"-->
+			<!--	secondDateValue="{Quotations>/ValidTo}" tooltip="{i18n>List.FilterBar.Validity}" displayFormat="{LocalViewSettingDtl>/DateFormat}"/>-->
+			<DatePicker id="fValidFromEdit" dateValue="{Quotations>/ValidFrom}" displayFormat="{LocalViewSettingDtl>/DateFormat}"
+				change="onChangeReqDlvryDate" minDate="{path: 'LocalViewSettingDtl>/CurrentDate'}" maxDate="{Quotations>/ValidTo}"/>
+			<!--Valid From & To -->
+			<core:Title text="Ship to party"/>
+			<Label text="{i18n>List.FilterBar.Valid.To}" tooltip="{i18n>List.FilterBar.Valid.To}" required="true"></Label>
+			<Text text="{path:'Quotations>/ValidTo', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+				tooltip="{path:'Quotations>/ValidTo', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+			<!--billtoparty	-->
+			<Label id="LBillToParty" text="{SFGW_INQ>/Quotations/BillToParty/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/BillToParty/#@sap:label}"
+				required="true"></Label>
+			<Select autoAdjustWidth="true" change="onSelectBillToPartyDD" id="BillToParty" items="{BillToPartyDD>/}"
+				selectedKey="{Quotations>/BillToParty}"
+				tooltip="{= ${Quotations>/BillToParty} !== '' ? ${Quotations>/BillToParty} +' - '+ ${Quotations>/BillToDesc} : ${Quotations>/BillToDesc} }">
+				<core:ListItem id="BillToParty_item" key="{BillToPartyDD>Key}" text="{BillToPartyDD>Key}{BillToPartyDD>Seperator}{BillToPartyDD>Text}"
+					tooltip="{BillToPartyDD>Text}"></core:ListItem>
+			</Select>
+			<!--BillToPartyDD-->
+			<!--Bill To GSTIN-->
+			<Label id="LBpGstNO" text="{SFGW_INQ>/Quotations/BpGstNO/#@sap:label}" tooltip="{SFGW_INQ>/Quotations/BpGstNO/#@sap:label}" required="true"></Label>
+			<Text text="{Quotations>/BpGstNO}" tooltip="{Quotations>/BpGstNO}"/>
+			<!--Bill To GSTIN-->
+			<!--TransportZoneDD-->
+			<Label id="LTransportZone" text="{SFGW_INQ>/Quotations/TransportZone/#@sap:label}"
+				tooltip="{SFGW_INQ>/Quotations/TransportZone/#@sap:label}" required="true"></Label>
+			<Select autoAdjustWidth="true" change="onSelectTransportZoneDD" id="TransportZone" items="{TransportZoneDD>/}"
+				selectedKey="{Quotations>/TransportZone}"
+				tooltip="{= ${Quotations>/TransportZone} !== '' ? ${Quotations>/TransportZone} +' - '+ ${Quotations>/TransZoneDesc} : ${Quotations>/TransZoneDesc} }">
+				<core:ListItem id="TransportZone_item" key="{TransportZoneDD>Key}"
+					text="{TransportZoneDD>Key}{TransportZoneDD>Seperator}{TransportZoneDD>Text}" tooltip="{TransportZoneDD>Text}"></core:ListItem>
+			</Select>
+			<!--TransportZoneDD-->
+				<!--PricingZoneDD-->
+			<Label id="LPricingZone" text="{i18n>List.Item.PricingZone}"
+				tooltip="{i18n>List.Item.PricingZone}" required="true"></Label>
+			<Select autoAdjustWidth="true" change="onSelectPricingZoneDD" id="PricingZone" items="{PricingZoneDD>/}"
+				selectedKey="{Quotations>/PriceList}"
+				tooltip="{= ${Quotations>/PriceList} !== '' ? ${Quotations>/PriceListDesc} +' - '+ ${Quotations>/PriceListDesc} : ${Quotations>/PriceListDesc} }">
+				<core:ListItem id="PricingZoneDD_item" key="{PricingZoneDD>Key}"
+					text="{PricingZoneDD>Key}{PricingZoneDD>Seperator}{PricingZoneDD>Text}"
+					tooltip="{PricingZoneDD>Key}{PricingZoneDD>Seperator}{PricingZoneDD>Text}"></core:ListItem>
+			</Select>
+			<!--PricingZoneDD-->
+			<!--Batch NO-->
+			<Label id="LBatchNo" text="{i18n>List.FilterBar.Batch.Number}" tooltip="{i18n>List.FilterBar.Batch.Number}"></Label>
+			<Input value="{LocalViewSettingDtl>/BatchNo}" change="onChangeBatchNo" id="BatchNo" liveChange="onLiveChangeBatchNo"
+				maxLength="{path:'SFGW_INQ>/#QuotationItemDetail/BatchNo/@maxLength', type:'sap.ui.model.type.Float'}"></Input>
+			
+			<!--tcs/tds	-->
+				
+				<Label text="{i18n>List.Header.Industry}" tooltip="{i18n>List.Header.Industry}" id="LIndustry"></Label>
+			<Text text="{= ${Quotations>/ZZBussinessID1} !== '' ? ${Quotations>/ZZBussinessID2} +' ('+ ${Quotations>/ZZBussinessID1}+')' : ${Quotations>/ZZBussinessID2} }"
+				tooltip="{= ${Quotations>/ZZBussinessID1} !== '' ? ${Quotations>/ZZBussinessID2} +' ('+ ${Quotations>/ZZBussinessID1}+')' : ${Quotations>/ZZBussinessID2} }"/>
+			<!--Batch NO-->
+		</f:content>
+	</f:SimpleForm>
+</mvc:View>

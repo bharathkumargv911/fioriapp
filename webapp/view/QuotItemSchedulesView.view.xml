@@ -1,0 +1,112 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table"
+	controllerName="com.arteriatech.zsf.quot.controller.QuotItemSchedules" xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UIQuotItemShdlsTable" rows="{QuotationItemSchedules>/}" showColumnVisibilityMenu="true" enableGrouping="false"
+		selectionMode="None" enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="true" columnHeaderHeight="45"
+		minAutoRowCount="{ path: 'LocalViewSettingItemDtl>/QuotItemSchdlsCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visibleRowCount="{ path: 'LocalViewSettingItemDtl>/QuotItemSchdlsCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visible="{= (${device>/system/phone} || ${device>/system/tablet})? false : true}" visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar id="UISchdlTableToolBar">
+				<Title id="UIQuotItemSchdlTitle" level="H2"
+					text="{i18n>Detail.Schedule.Table.Title} {= (!${LocalViewSettingItemDtl>/QuotItemSchdlsCount} > 0) ? '' : '('+${LocalViewSettingItemDtl>/QuotItemSchdlsCount}+')'}"/>
+				<ToolbarSpacer/>
+				<Button id="UIQuotItemSchdlExportButton" icon="sap-icon://download" tooltip="{ppcutili18n>common.ExportToExcelTooltip}"
+					press="exportToExcel" visible="false"/>
+			</Toolbar>
+		</table:toolbar>
+		<table:Column sortProperty="ScheduleLineCatDesc" filterProperty="ScheduleLineCatDesc" autoResizable="true"
+			tooltip="{SFGW_INQ>/QuotationItemSchedules/ScheduleLineCatID/#@sap:label}">
+			<Text text="{SFGW_INQ>/QuotationItemSchedules/ScheduleLineCatID/#@sap:label}"/>
+			<table:template>
+				<Text
+					text="{= ${QuotationItemSchedules>ScheduleLineCatID} !== '' ? ${QuotationItemSchedules>ScheduleLineCatDesc}+' ('+ ${QuotationItemSchedules>ScheduleLineCatID}+')' : ${QuotationItemSchedules>ScheduleLineCatDesc}}"
+					class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationItemSchedules/ScheduleLineCatID/#@sap:label}"/>
+			</table:template>
+		</table:Column>
+		<!--<table:Column sortProperty="DeliveryDate" filterProperty="DeliveryDate" autoResizable="true"-->
+		<!--	tooltip="{SFGW_INQ>/QuotationItemSchedules/DeliveryDate/#@sap:label}">-->
+		<!--	<Text text="{SFGW_INQ>/QuotationItemSchedules/DeliveryDate/#@sap:label}"/>-->
+		<!--	<table:template>-->
+		<!--		<Text text="{path: 'QuotationItemSchedules>DeliveryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"-->
+		<!--			class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationItemSchedules>DeliveryDate/#@sap:label}" textAlign="Right"/>-->
+		<!--	</table:template>-->
+		<!--</table:Column>-->
+		<table:Column sortProperty="OrderQty" autoResizable="true" filterProperty="OrderQty" filterType="\{type: 'sap.ui.model.type.Float'\}"
+			tooltip="{SFGW_INQ>/QuotationItemSchedules/OrderQty/#@sap:label}" hAlign="Right">
+			<Text text="{SFGW_INQ>/QuotationItemSchedules/OrderQty/#@sap:label}"/>
+			<table:template>
+				<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemSchedules>OrderQty}"
+					tooltip="{SFGW_INQ>/QuotationItemSchedules/OrderQty/#@sap:label}: {QuotationItemSchedules>OrderQty} {QuotationItemSchedules>UOM}"
+					unit="{QuotationItemSchedules>UOM}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="RequiredQty" autoResizable="true" filterProperty="RequiredQty" filterType="\{type: 'sap.ui.model.type.Float'\}"
+			tooltip="{SFGW_INQ>/QuotationItemSchedules/ConfirmedQty/#@sap:label}" hAlign="Right">
+			<Text text="{SFGW_INQ>/QuotationItemSchedules/RequiredQty/#@sap:label}"/>
+			<table:template>
+				<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemSchedules>RequiredQty}"
+					tooltip="{SFGW_INQ>/QuotationItemSchedules/RequiredQty/#@sap:label}: {QuotationItemSchedules>RequiredQty} {QuotationItemSchedules>UOM}"
+					unit="{QuotationItemSchedules>UOM}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="ConfirmedQty" autoResizable="true" filterProperty="ConfirmedQty"
+			filterType="\{type: 'sap.ui.model.type.Float'\}" tooltip="{SFGW_INQ>/QuotationItemSchedules/ConfirmedQty/#@sap:label}" hAlign="Right">
+			<Text text="{SFGW_INQ>/QuotationItemSchedules/ConfirmedQty/#@sap:label}"/>
+			<table:template>
+				<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemSchedules>ConfirmedQty}"
+					tooltip="{SFGW_INQ>/QuotationItemSchedules/ConfirmedQty/#@sap:label}: {QuotationItemSchedules>ConfirmedQty} {QuotationItemSchedules>UOM}"
+					unit="{QuotationItemSchedules>UOM}"/>
+			</table:template>
+		</table:Column>
+	</table:Table>
+	<Table id="QuotationItemScheduleTable" items="{QuotationItemSchedules>/}" inset="false" noDataText="{ppcutili18n>common.NoItemSelected}"
+		busy="false" visible="{= (${device>/system/phone} || ${device>/system/tablet})? true : false}">
+		<headerToolbar>
+			<Toolbar id="QuotationItemScheduleTableToolBar">
+				<Title id="QuotationItemScheduleTableTitle" level="H2"/>
+			</Toolbar>
+		</headerToolbar>
+		<infoToolbar>
+			<Toolbar id="QuotationItemScheduleTableInfoToolBar" active="true" visible="false" press="handleViewSettingsDialogButtonPressed">
+				<Label id="QuotationItemScheduleInfoToolBarLabel" text="?"/>
+			</Toolbar>
+		</infoToolbar>
+		<columns>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text text="{SFGW_INQ>/QuotationItemSchedules/ScheduleLineCatID/#@sap:label}"/>
+			</Column>
+			<!--<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">-->
+			<!--	<Text text="{SFGW_INQ>/QuotationItemSchedules/DeliveryDate/#@sap:label}"/>-->
+			<!--</Column>-->
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text text="{SFGW_INQ>/QuotationItemSchedules/OrderQty/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text text="{SFGW_INQ>/QuotationItemSchedules/RequiredQty/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text text="{SFGW_INQ>/QuotationItemSchedules/ConfirmedQty/#@sap:label}"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem id="columnListItem">
+				<cells>
+					<Text
+						text="{= ${QuotationItemSchedules>ScheduleLineCatID} !== '' ? ${QuotationItemSchedules>ScheduleLineCatDesc}+' ('+ ${QuotationItemSchedules>ScheduleLineCatID}+')' : ${QuotationItemSchedules>ScheduleLineCatDesc}}"
+						class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationItemSchedules/ScheduleLineCatID/#@sap:label}"/>
+					<!--<Text text="{path: 'QuotationItemSchedules>DeliveryDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"-->
+						<!--class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationItemSchedules>DeliveryDate/#@sap:label}" textAlign="Right"/>-->
+					<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemSchedules>OrderQty}"
+						tooltip="{SFGW_INQ>/QuotationItemSchedules/OrderQty/#@sap:label}: {QuotationItemSchedules>OrderQty} {QuotationItemSchedules>UOM}"
+						unit="{QuotationItemSchedules>UOM}"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemSchedules>RequiredQty}"
+						tooltip="{SFGW_INQ>/QuotationItemSchedules/RequiredQty/#@sap:label}: {QuotationItemSchedules>RequiredQty} {QuotationItemSchedules>UOM}"
+						unit="{QuotationItemSchedules>UOM}"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{QuotationItemSchedules>ConfirmedQty}"
+						tooltip="{SFGW_INQ>/QuotationItemSchedules/ConfirmedQty/#@sap:label}: {QuotationItemSchedules>ConfirmedQty} {QuotationItemSchedules>UOM}"
+						unit="{QuotationItemSchedules>UOM}"/>
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+</mvc:View>

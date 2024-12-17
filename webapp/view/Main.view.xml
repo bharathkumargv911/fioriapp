@@ -1,0 +1,4 @@
+<mvc:View controllerName="com.arteriatech.zsf.quot.controller.Main" displayBlock="true" height="100%" xmlns:core="sap.ui.core" xmlns="sap.m"
+	id="MainScreen" xmlns:mvc="sap.ui.core.mvc">
+	<App id="sfquot"></App>
+</mvc:View>

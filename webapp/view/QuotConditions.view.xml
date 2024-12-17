@@ -1,0 +1,101 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table"
+	controllerName="com.arteriatech.zsf.quot.controller.QuotConditions" xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UIQuotationConditionsTable" rows="{QuotationConditions>/}" showColumnVisibilityMenu="true" enableGrouping="false"
+		selectionMode="None" enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="true" columnHeaderHeight="45"
+		minAutoRowCount="{ path: 'LocalViewSettingDtl>/ConditionsCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visibleRowCount="{ path: 'LocalViewSettingDtl>/ConditionsCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visible="{= (${device>/system/phone} || ${device>/system/tablet})? false : true}" visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar id="UIQCondTableToolBar">
+				<Title id="UIQCondTableTitle"
+					text="{i18n>Detail.Condition.Table.Title} {= (!${LocalViewSettingDtl>/PartnersCount} > 0) ? '' : '('+${LocalViewSettingDtl>/PartnersCount}+')'}"
+					level="H2"/>
+				<ToolbarSpacer/>
+				<Button id="UIQCondTableExportButton" icon="sap-icon://download" tooltip="{ppcutili18n>common.ExportToExcelTooltip}" press="exportToExcel" visible="false"/>
+			</Toolbar>
+		</table:toolbar>
+		<table:Column sortProperty="ConditionCatDesc" filterProperty="ConditionCatDesc" autoResizable="true"
+			tooltip="{SFGW_INQ>/QuotationConditions/ConditionCatID/#@sap:label}">
+			<Text text="{SFGW_INQ>/QuotationConditions/ConditionCatID/#@sap:label}"/>
+			<table:template>
+				<Text
+					text="{= ${QuotationConditions>ConditionCatID} !== '' ? ${QuotationConditions>ConditionCatDesc}+' ('+ ${QuotationConditions>ConditionCatID}+')' : ${QuotationConditions>ConditionCatDesc}}"
+					class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationConditions/ConditionCatID/#@sap:label}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="CalculationTypeDesc" filterProperty="CalculationTypeDesc" autoResizable="true"
+			tooltip="{SFGW_INQ>/QuotationConditions/CalculationTypeID/#@sap:label}">
+			<Text text="{SFGW_INQ>/QuotationConditions/CalculationTypeID/#@sap:label}"/>
+			<table:template>
+				<Text
+					text="{= ${QuotationConditions>CalculationTypeID} !== '' ? ${QuotationConditions>CalculationTypeDesc}+' ('+ ${QuotationConditions>CalculationTypeID}+')' : ${QuotationConditions>CalculationTypeDesc}}"
+					class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationConditions/CalculationTypeID/#@sap:label}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="ConditionBaseValue" filterProperty="ConditionBaseValue" autoResizable="true" hAlign="End"
+			filterType="\{type:'sap.ui.model.type.Float'\}" tooltip="{SFGW_INQ>/QuotationConditions/ConditionBaseValue/#@sap:label}">
+			<Text textAlign="Right" text="{SFGW_INQ>/QuotationConditions/ConditionBaseValue/#@sap:label}"/>
+			<table:template>
+				<Text textAlign="Right"
+					text="{path:'QuotationConditions>ConditionBaseValue'} {QuotationConditions>Currency}"
+					class="sapUiTinyMarginTopBottom"
+					tooltip="{SFGW_INQ>/QuotationConditions/ConditionBaseValue/#@sap:label}: {path:'QuotationConditions>ConditionBaseValue'} {QuotationConditions>Currency}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="ConditionValue" filterProperty="ConditionValue" autoResizable="true" hAlign="End"
+			filterType="\{type:'sap.ui.model.type.Float'\}" tooltip="{SFGW_INQ>/QuotationConditions/ConditionValue/#@sap:label}">
+			<Text textAlign="Right" text="{SFGW_INQ>/QuotationConditions/ConditionValue/#@sap:label}"/>
+			<table:template>
+				<Text textAlign="Right" text="{path:'QuotationConditions>ConditionValue'} {QuotationConditions>Currency}"
+					class="sapUiTinyMarginTopBottom"
+					tooltip="{SFGW_INQ>/QuotationConditions/ConditionValue/#@sap:label}: {path:'QuotationConditions>ConditionValue'} {QuotationConditions>Currency}"/>
+			</table:template>
+		</table:Column>
+	</table:Table>
+	<Table id="QuotationConditionsTable" items="{QuotationConditions>/}" inset="false" noDataText="{ppcutili18n>common.NoItemSelected}"
+		busy="false" visible="{= (${device>/system/phone} || ${device>/system/tablet})? true : false}">
+		<headerToolbar>
+			<Toolbar id="ListTableToolBar">
+				<Title id="QuotationConditionsTableTitle" level="H2"/>
+			</Toolbar>
+		</headerToolbar>
+		<infoToolbar>
+			<Toolbar id="ListTableInfoToolBar" active="true" visible="false" press="handleViewSettingsDialogButtonPressed">
+				<Label id="ListTableInfoToolBarLabel" text="?"/>
+			</Toolbar>
+		</infoToolbar>
+		<columns>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lConditionCatID" text="{SFGW_INQ>/QuotationConditions/ConditionCatID/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lCalculationTypeID" text="{SFGW_INQ>/QuotationConditions/CalculationTypeID/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lConditionBaseValue" text="{SFGW_INQ>/QuotationConditions/ConditionBaseValue/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lConditionValue" text="{SFGW_INQ>/QuotationConditions/ConditionValue/#@sap:label}"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem id="columnListItem">
+				<cells>
+					<Text
+						text="{= ${QuotationConditions>ConditionCatID} !== '' ? ${QuotationConditions>ConditionCatDesc}+' ('+ ${QuotationConditions>ConditionCatID}+')' : ${QuotationConditions>ConditionCatDesc}}"
+						class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationConditions/ConditionCatID/#@sap:label}"/>
+					<Text
+						text="{= ${QuotationConditions>CalculationTypeID} !== '' ? ${QuotationConditions>CalculationTypeDesc}+' ('+ ${QuotationConditions>CalculationTypeID}+')' : ${QuotationConditions>CalculationTypeDesc}}"
+						class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationConditions/CalculationTypeID/#@sap:label}"/>
+				
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationConditions>ConditionBaseValue'}"
+						tooltip="{SFGW_INQ>/QuotationConditions/ConditionBaseValue/#@sap:label}: {path:'QuotationConditions>ConditionBaseValue'} {QuotationConditions>Currency}"
+						unit="{QuotationConditions>Currency}" xmlns="sap.m"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationConditions>ConditionValue'}"
+						tooltip="{SFGW_INQ>/QuotationConditions/ConditionValue/#@sap:label}: {path:'QuotationConditions>ConditionValue'} {QuotationConditions>Currency}"
+						unit="{QuotationConditions>Currency}" xmlns="sap.m"/>
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+</mvc:View>

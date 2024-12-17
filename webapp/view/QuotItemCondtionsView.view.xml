@@ -1,0 +1,110 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table"
+	controllerName="com.arteriatech.zsf.quot.controller.QuotItemCondtionsView" xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UIQuotItemConditionsTable" rows="{QuotationConditionItemDetails>/}" showColumnVisibilityMenu="true" enableGrouping="false"
+		selectionMode="None" enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="true" columnHeaderHeight="45"
+		minAutoRowCount="{ path: 'LocalViewSettingItemDtl>/QuotItemConditionCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visibleRowCount="{ path: 'LocalViewSettingItemDtl>/QuotItemConditionCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visible="{= (${device>/system/phone} || ${device>/system/tablet})? false : true}" visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar id="UIListTableToolBar">
+				<Title id="UIQuotItemConditionsTitle" level="H2"
+					text="{i18n>Detail.Condition.Table.Title} {= (!${LocalViewSettingItemDtl>/QuotItemConditionCount} > 0) ? '' : '('+${LocalViewSettingItemDtl>/QuotItemConditionCount}+')'}"/>
+				<ToolbarSpacer/>
+				<Button id="UIQuotItemCondExportButton" icon="sap-icon://download" tooltip="{ppcutili18n>common.ExportToExcelTooltip}" press="exportToExcel" visible="false"/>
+			</Toolbar>
+		</table:toolbar>
+		<!--<table:Column sortProperty="MaterialDesc" filterProperty="MaterialDesc" autoResizable="true"-->
+		<!--	tooltip="{SFGW_INQ>/QuotationConditionItemDetails/MaterialNo/#@sap:label}">-->
+		<!--	<Text text="{SFGW_INQ>/QuotationConditionItemDetails/MaterialNo/#@sap:label}"/>-->
+		<!--	<table:template>-->
+		<!--		<Text-->
+		<!--			text="{= ${QuotationConditionItemDetails>MaterialNo} !== '' ? ${QuotationConditionItemDetails>MaterialDesc}+' ('+ ${QuotationConditionItemDetails>MaterialNo}+')' : ${QuotationConditionItemDetails>MaterialDesc}}"-->
+		<!--			class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationConditionItemDetails/MaterialNo/#@sap:label}"/>-->
+		<!--	</table:template>-->
+		<!--</table:Column>-->
+		<table:Column sortProperty="ConditionTypeDesc" filterProperty="ConditionTypeDesc" autoResizable="true"
+			tooltip="{SFGW_INQ>/QuotationConditionItemDetails/ConditionTypeID/#@sap:label}">
+			<Text text="{SFGW_INQ>/QuotationConditionItemDetails/ConditionTypeID/#@sap:label}"/>
+			<table:template>
+				<Text
+					text="{= ${QuotationConditionItemDetails>ConditionTypeID} !== '' ? ${QuotationConditionItemDetails>ConditionTypeDesc}+' ('+ ${QuotationConditionItemDetails>ConditionTypeID}+')' : ${QuotationConditionItemDetails>ConditionTypeDesc}}"
+					class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationConditionItemDetails/ConditionTypeID/#@sap:label}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="CalculationTypeDesc" filterProperty="CalculationTypeDesc" autoResizable="true"
+			tooltip="{SFGW_INQ>/QuotationConditionItemDetails/CalculationTypeID/#@sap:label}">
+			<Text text="{SFGW_INQ>/QuotationConditionItemDetails/CalculationTypeID/#@sap:label}"/>
+			<table:template>
+				<Text
+					text="{= ${QuotationConditionItemDetails>CalculationTypeID} !== '' ? ${QuotationConditionItemDetails>CalculationTypeDesc}+' ('+ ${QuotationConditionItemDetails>CalculationTypeID}+')' : ${QuotationConditionItemDetails>CalculationTypeDesc}}"
+					class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationConditionItemDetails/CalculationTypeID/#@sap:label}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="ConditionBaseValue" filterProperty="ConditionBaseValue" autoResizable="true" hAlign="End"
+			filterType="\{type:'sap.ui.model.type.Float'\}" tooltip="{SFGW_INQ>/QuotationConditionItemDetails/ConditionBaseValue/#@sap:label}">
+			<Text textAlign="Right" text="{SFGW_INQ>/QuotationConditionItemDetails/ConditionBaseValue/#@sap:label}"/>
+			<table:template>
+				<Text textAlign="Right"
+					text="{path:'QuotationConditionItemDetails>ConditionBaseValue', type: 'sap.ui.model.type.Float'} {QuotationConditionItemDetails>Currency}"
+					class="sapUiTinyMarginTopBottom"
+					tooltip="{SFGW_INQ>/QuotationConditionItemDetails/ConditionBaseValue/#@sap:label}: {path:'QuotationConditionItemDetails>ConditionBaseValue',type:'sap.ui.model.type.Float'} {QuotationConditionItemDetails>Currency}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="ConditionValue" filterProperty="ConditionValue" autoResizable="true" hAlign="End"
+			filterType="\{type:'sap.ui.model.type.Float'\}" tooltip="{SFGW_INQ>/QuotationConditionItemDetails/ConditionValue/#@sap:label}">
+			<Text textAlign="Right" text="{SFGW_INQ>/QuotationConditionItemDetails/ConditionValue/#@sap:label}"/>
+			<table:template>
+				<Text textAlign="Right"
+					text="{path:'QuotationConditionItemDetails>ConditionValue'} {QuotationConditionItemDetails>Currency}"
+					class="sapUiTinyMarginTopBottom"
+					tooltip="{SFGW_INQ>/QuotationConditionItemDetails/ConditionValue/#@sap:label}: {path:'QuotationConditionItemDetails>ConditionValue'} {QuotationConditionItemDetails>Currency}"/>
+			</table:template>
+		</table:Column>
+	</table:Table>
+	<Table id="QuotItemConditionsTable" items="{QuotationConditionItemDetails>/}" inset="false" noDataText="{ppcutili18n>common.NoItemSelected}"
+		busy="false" visible="{= (${device>/system/phone} || ${device>/system/tablet})? true : false}">
+		<headerToolbar>
+			<Toolbar id="QuotItemCondTableToolBar">
+				<Title id="QuotItemCondTableTitle" level="H2"/>
+			</Toolbar>
+		</headerToolbar>
+		<infoToolbar>
+			<Toolbar id="CondTableInfoToolBar" active="true" visible="false" press="handleViewSettingsDialogButtonPressed">
+				<Label id="CondTableInfoToolBarLabel" text="?"/>
+			</Toolbar>
+		</infoToolbar>
+		<columns>
+			
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lConditionTypeID" text="{SFGW_INQ>/QuotationConditionItemDetails/ConditionTypeID/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lCalculationTypeID" text="{SFGW_INQ>/QuotationConditionItemDetails/CalculationTypeID/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lConditionBaseValue" text="{SFGW_INQ>/QuotationConditionItemDetails/ConditionBaseValue/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lConditionValue" text="{SFGW_INQ>/QuotationConditionItemDetails/ConditionValue/#@sap:label}"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem id="columnListItem">
+				<cells>
+					<Text
+						text="{= ${QuotationConditionItemDetails>ConditionCatID} !== '' ? ${QuotationConditionItemDetails>ConditionCatDesc}+' ('+ ${QuotationConditionItemDetails>ConditionCatID}+')' : ${QuotationConditionItemDetails>ConditionCatDesc}}"
+						class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationConditionItemDetails/ConditionCatID/#@sap:label}"/>
+					<Text
+						text="{= ${QuotationConditionItemDetails>CalculationTypeID} !== '' ? ${QuotationConditionItemDetails>CalculationTypeDesc}+' ('+ ${QuotationConditionItemDetails>CalculationTypeID}+')' : ${QuotationConditionItemDetails>CalculationTypeDesc}}"
+						class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationConditionItemDetails/CalculationTypeID/#@sap:label}"/>
+				
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationConditionItemDetails>ConditionBaseValue', type: 'sap.ui.model.type.Float'}"
+						tooltip="{SFGW_INQ>/QuotationConditionItemDetails/ConditionBaseValue/#@sap:label}: {path:'QuotationConditionItemDetails>ConditionBaseValue', type: 'sap.ui.model.type.Float'} {QuotationConditionItemDetails>Currency}"
+						unit="{QuotationConditionItemDetails>Currency}" xmlns="sap.m"/>
+					<ObjectNumber textAlign="Right" emphasized="false" number="{path:'QuotationConditionItemDetails>ConditionValue'}"
+						tooltip="{SFGW_INQ>/QuotationConditionItemDetails/ConditionValue/#@sap:label}: {path:'QuotationConditionItemDetails>ConditionValue'} {QuotationConditionItemDetails>Currency}"
+						unit="{QuotationConditionItemDetails>Currency}" xmlns="sap.m"/>			</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+</mvc:View>

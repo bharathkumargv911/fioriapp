@@ -1,0 +1,127 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="com.arteriatech.zsf.quot.controller.DetailPage"
+	xmlns:html="http://www.w3.org/1999/xhtml" xmlns:Block="com.arteriatech.zsf.quot.view" id="DetailScreen" xmlns:uxap="sap.uxap"
+	xmlns:l="sap.ui.layout">
+	<App id="DetailApp">
+		<pages>
+			<Page id="DetailPage" title="{i18n>Detail.title}" showNavButton="true" navButtonType="Back" navButtonPress="navigateBack">
+				<content>
+					<uxap:ObjectPageLayout id="ObjectPageLayout" enableLazyLoading="false" flexEnabled="true" isChildPage="false"
+						alwaysShowContentHeader="false" showHeaderContent="true" showTitleInHeaderContent="true">
+						<uxap:headerTitle>
+							<uxap:ObjectPageHeader objectImageURI="sap-icon://sales-quote" id="ObjectPageHeader"
+								objectTitle="{i18n>List.FilterBar.Sales.Order.Request.No}: {Quotations>/QuotationNo}" objectImageShape="Square"
+								isObjectTitleAlwaysVisible="false" isObjectSubtitleAlwaysVisible="false" objectSubtitle="">
+								<!--{SFGW_INQ>/Quotations/CustomerNo/#@sap:label}: {= ${Quotations>/CustomerNo} !== '' ? ${Quotations>/CustomerName}+' ('+ ${Quotations>/CustomerNo}+')' : ${Quotations>/CustomerName}}-->
+								<uxap:actions>
+									<Button icon="sap-icon://edit" type="Ghost" press="onEdit" text="Edit" visible="{LocalViewSettingDtl>/editButtonVisible}"/>
+								</uxap:actions>
+							</uxap:ObjectPageHeader>
+						</uxap:headerTitle>
+						<uxap:headerContent>
+							<l:VerticalLayout >
+								<ObjectStatus title="{i18n>QuotationItemDetails.SalesOrderRequestDate}"
+									tooltip="{path: 'Quotations>/QuotationDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+									text="{path: 'Quotations>/QuotationDate', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+							</l:VerticalLayout>
+							<l:VerticalLayout>
+								<ObjectStatus title="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}"
+									text="{path:'Quotations>/GrossAmount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"
+									tooltip="{SFGW_INQ>/Quotations/GrossAmount/#@sap:label}: {path:'Quotations>/GrossAmount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"/>
+								<ObjectStatus title="{SFGW_INQ>/Quotations/Discount/#@sap:label}"
+									text="{path:'Quotations>/Discount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"
+									tooltip="{SFGW_INQ>/Quotations/Discount/#@sap:label}: {path:'Quotations>/Discount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"/>
+								<ObjectStatus title="{SFGW_INQ>/Quotations/FreightAmount/#@sap:label}"
+									text="{path:'Quotations>/FreightAmount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"
+									tooltip="{SFGW_INQ>/Quotations/FreightAmount/#@sap:label}: {path:'Quotations>/FreightAmount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"/>
+							</l:VerticalLayout>
+							<l:VerticalLayout>
+								<ObjectStatus title="{i18n>QuotationItemDetails.TaxAmount}"
+									text="{path:'Quotations>/TaxAmount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"
+									tooltip="{i18n>QuotationItemDetails.TaxAmount}: {path:'Quotations>/TaxAmount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"/>
+								<ObjectStatus title="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}"
+									text="{path:'Quotations>/NetAmount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"
+									tooltip="{SFGW_INQ>/Quotations/NetAmount/#@sap:label}: {path:'Quotations>/NetAmount', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"/>
+							</l:VerticalLayout>
+							<l:VerticalLayout>
+								<ObjectStatus title="{i18n>QuotationItemDetails.Credit.Limit}"
+									text="{path:'Quotations>/ZZCreditLimit', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"
+									tooltip="{i18n>QuotationItemDetails.Credit.Limit}: {path:'LocalViewSetting>/PayerCreditLimit', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"/>
+								<ObjectStatus title="{i18n>QuotationItemDetails.Credit.Exposure}"
+									text="{path:'Quotations>/ZZCreditExposure', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"
+									tooltip="{i18n>QuotationItemDetails.Credit.Exposure}: {path:'LocalViewSetting>/PayerCreditExposure', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"/>
+								<ObjectStatus title="{i18n>QuotationItemDetails.Available.Credit.Limit}"
+									text="{path:'LocalViewSettingDtl>/PayerAvailableCreditLimit', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"
+									tooltip="{i18n>QuotationItemDetails.Available.Credit.Limit}: {path:'LocalViewSetting>/PayerAvailableCreditLimit', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"/>
+								<!--<ObjectStatus title="{i18n>QuotationItemDetails.Open.Sales.Order.Request}"-->
+								<!--	text="{path:'Quotations>/ZZOpenSRValue', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"-->
+								<!--	tooltip="{i18n>QuotationItemDetails.Open.Sales.Order.Request}: {path:'LocalViewSetting>/PayerOpenSRValue', type:'sap.ui.model.type.Float'} {Quotations>/Currency}"/>-->
+							</l:VerticalLayout>
+						</uxap:headerContent>
+						<uxap:sections>
+							<uxap:ObjectPageSection id="HeaderData" title="BASIC INFO">
+								<uxap:subSections>
+									<uxap:ObjectPageSubSection id="HeaderDataSection" title="">
+										<uxap:blocks>
+											<mvc:XMLView id="DetailPageHeaderView" viewName="com.arteriatech.zsf.quot.view.DetailPageHeader"/>
+										</uxap:blocks>
+									</uxap:ObjectPageSubSection>
+								</uxap:subSections>
+							</uxap:ObjectPageSection>
+							<uxap:ObjectPageSection id="ItemData" title="Items">
+								<uxap:subSections>
+									<uxap:ObjectPageSubSection id="ItemDataSection" title="{LocalViewSettingDtl>/ItemsCount} Items">
+										<uxap:blocks>
+											<mvc:XMLView id="DetailPageItemsView" viewName="com.arteriatech.zsf.quot.view.DetailPageItems"/>
+										</uxap:blocks>
+									</uxap:ObjectPageSubSection>
+								</uxap:subSections>
+							</uxap:ObjectPageSection>
+							<uxap:ObjectPageSection id="QuotAttachments" title="Attachment" visible="false">
+								<uxap:subSections>
+									<uxap:ObjectPageSubSection id="QuotAttachmentSection" title="Attachment">
+										<uxap:blocks>
+											<mvc:XMLView id="QuotAttachmentView" viewName="com.arteriatech.zsf.quot.view.ContractAttachments"/>
+										</uxap:blocks>
+									</uxap:ObjectPageSubSection>
+								</uxap:subSections>
+							</uxap:ObjectPageSection>
+							<!--<uxap:ObjectPageSection id="QuotPartnerFunctions" title="Partner Function">-->
+							<!--	<uxap:subSections>-->
+							<!--		<uxap:ObjectPageSubSection id="QuotPartnerFunctionSection" title="{LocalViewSettingDtl>/PartnersCount} PartnerFunctions">-->
+							<!--			<uxap:blocks>-->
+							<!--				<mvc:XMLView id="QuotFunctionsView" viewName="com.arteriatech.zsf.quot.view.QuotFunctionsView"/>-->
+							<!--			</uxap:blocks>-->
+							<!--		</uxap:ObjectPageSubSection>-->
+							<!--	</uxap:subSections>-->
+							<!--</uxap:ObjectPageSection>-->
+							<!--<uxap:ObjectPageSection id="QuotConditions" title="Conditions">-->
+							<!--	<uxap:subSections>-->
+							<!--		<uxap:ObjectPageSubSection id="QuotConditionsSection" title="{LocalViewSettingDtl>/ConditionsCount} Conditions">-->
+							<!--			<uxap:blocks>-->
+							<!--				<mvc:XMLView id="QuotConditionsView" viewName="com.arteriatech.zsf.quot.view.QuotConditions"/>-->
+							<!--			</uxap:blocks>-->
+							<!--		</uxap:ObjectPageSubSection>-->
+							<!--	</uxap:subSections>-->
+							<!--</uxap:ObjectPageSection>-->
+						</uxap:sections>
+					</uxap:ObjectPageLayout>
+				</content>
+				<footer>
+					<Toolbar>
+						<content>
+							<ToolbarSpacer/>
+							<Button icon="sap-icon://save" press="onSave" type="Accept" id="SaveBtn" text="Submit" visible="{LocalViewSettingDtl>/reviewMode}"/>
+							<Button icon="sap-icon://sys-cancel" press="onCancel" text="Cancel" type="Reject" visible="{LocalViewSettingDtl>/editMode}"/>
+							<Button icon="sap-icon://activities" press="onReview" id="ReviewBtn" text="Review" type="Accept" visible="{LocalViewSettingDtl>/editMode}"/>
+							<Button icon="sap-icon://accept" type="Accept" press="onApprove" text="Approve" visible="{LocalViewSettingDtl>/approveButton}"
+								enabled="{LocalViewSettingDtl>/NoApproval}"/>
+							<Button icon="sap-icon://decline" type="Reject" press="onReject" text="Reject" visible="{LocalViewSettingDtl>/rejectButton}"/>
+							<Button icon="sap-icon://user-edit" type="Accept" press="onEdit" text="Edit and Approve"
+								visible="{LocalViewSettingDtl>/editApproveButtonVisible}" enabled="{LocalViewSettingDtl>/NoApproval}"/>
+						</content>
+					</Toolbar>
+				</footer>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

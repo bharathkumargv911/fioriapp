@@ -1,0 +1,12 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" controllerName="com.arteriatech.zsf.quot.controller.ListPage"
+	xmlns:html="http://www.w3.org/1999/xhtml" id="ListScreen">
+	<App id="ListApp">
+		<pages>
+			<Page title="{i18n>List.title}" id="ListPage">
+				<content>
+					<mvc:XMLView id="ListView" viewName="com.arteriatech.zsf.quot.view.List"/>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

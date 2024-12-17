@@ -1,0 +1,88 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table"
+	controllerName="com.arteriatech.zsf.quot.controller.QuotFunctionsView" xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UIPartnerFunctionsTable" rows="{QuotationPartnerFunctions>/}" showColumnVisibilityMenu="true" enableGrouping="false"
+		selectionMode="None" enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="true" columnHeaderHeight="45"
+		minAutoRowCount="{ path: 'LocalViewSettingDtl>/PartnersCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visibleRowCount="{ path: 'LocalViewSettingDtl>/PartnersCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visible="{= (${device>/system/phone} || ${device>/system/tablet})? false : true}" visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar id="UIListTableToolBar">
+				<Title id="UIPartnerFunctionsTableTitle" text="{i18n>Detail.Partner.Table.Title} {= (!${LocalViewSettingDtl>/PartnersCount} > 0) ? '' : '('+${LocalViewSettingDtl>/PartnersCount}+')'}" level="H2"/>
+				<ToolbarSpacer/>
+				<Button id="UIListTableExportButton" icon="sap-icon://download" tooltip="{ppcutili18n>common.ExportToExcelTooltip}" press="exportToExcel" visible="false"/>
+			</Toolbar>
+		</table:toolbar>
+		<table:Column sortProperty="PersonnelName" filterProperty="PersonnelName" autoResizable="true"
+			tooltip="{SFGW_INQ>/QuotationPartnerFunctions/PersonnelNo/#@sap:label}">
+			<Text text="{SFGW_INQ>/QuotationPartnerFunctions/PersonnelNo/#@sap:label}"/>
+			<table:template>
+				<Text
+					text="{= ${QuotationPartnerFunctions>PersonnelNo} !== '' ? ${QuotationPartnerFunctions>PersonnelName}+' ('+ ${QuotationPartnerFunctions>PersonnelNo}+')' : ${QuotationPartnerFunctions>PersonnelName}}"
+					class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationPartnerFunctions/PersonnelNo/#@sap:label}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="PartnerFunctionDesc" filterProperty="PartnerFunctionDesc" autoResizable="true"
+			tooltip="{SFGW_INQ>/QuotationPartnerFunctions/PartnerFunctionID/#@sap:label}">
+			<Text text="{SFGW_INQ>/QuotationPartnerFunctions/PartnerFunctionID/#@sap:label}"/>
+			<table:template>
+				<Text
+					text="{= ${QuotationPartnerFunctions>PartnerFunctionID} !== '' ? ${QuotationPartnerFunctions>PartnerFunctionDesc}+' ('+ ${QuotationPartnerFunctions>PartnerFunctionID}+')' : ${QuotationPartnerFunctions>PartnerFunctionDesc}}"
+					class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationPartnerFunctions/PartnerFunctionID/#@sap:label}"/>
+			</table:template>
+		</table:Column>
+		<table:Column sortProperty="TransportationZoneDesc" filterProperty="TransportationZoneDesc" autoResizable="true"
+			tooltip="{SFGW_INQ>/QuotationPartnerFunctions/TransportationZoneID/#@sap:label}">
+			<Text text="{SFGW_INQ>/QuotationPartnerFunctions/TransportationZoneID/#@sap:label}"/>
+			<table:template>
+				<Text
+					text="{= ${QuotationPartnerFunctions>TransportationZoneID} !== '' ? ${QuotationPartnerFunctions>TransportationZoneDesc}+' ('+ ${QuotationPartnerFunctions>TransportationZoneID}+')' : ${QuotationPartnerFunctions>TransportationZoneDesc}}"
+					class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationPartnerFunctions/TransportationZoneID/#@sap:label}"/>
+			</table:template>
+		</table:Column>
+	</table:Table>
+	<Table id="PartnerFunctionsTable" items="{QuotationPartnerFunctions>/}" inset="false" noDataText="{ppcutili18n>common.NoItemSelected}"
+		busy="false" visible="{= (${device>/system/phone} || ${device>/system/tablet})? true : false}">
+		<headerToolbar>
+			<Toolbar id="ListTableToolBar">
+				<Title id="PartnerFunctionsTableTitle" level="H2"/>
+			</Toolbar>
+		</headerToolbar>
+		<infoToolbar>
+			<Toolbar id="ListTableInfoToolBar" active="true" visible="false" press="handleViewSettingsDialogButtonPressed">
+				<Label id="ListTableInfoToolBarLabel" text="?"/>
+			</Toolbar>
+		</infoToolbar>
+		<columns>
+			<!--<Column>-->
+			<!--	<Text text="{SFGW_INQ>/QuotationPartnerFunctions/CustomerNo/#@sap:label}"/>-->
+			<!--</Column>-->
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lPersonnelNo" text="{SFGW_INQ>/QuotationPartnerFunctions/PersonnelNo/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lPartnerFunctionID" text="{SFGW_INQ>/QuotationPartnerFunctions/PartnerFunctionID/#@sap:label}"/>
+			</Column>
+			<Column demandPopin="true" minScreenWidth="Desktop" popinDisplay="Inline">
+				<Text id="lTransportationZoneID" text="{SFGW_INQ>/QuotationPartnerFunctions/TransportationZoneID/#@sap:label}"/>
+			</Column>
+		</columns>
+		<items>
+			<ColumnListItem id="columnListItem">
+				<cells>
+					<!--<Text-->
+					<!--	text="{= ${QuotationPartnerFunctions>CustomerNo} !== '' ? ${QuotationPartnerFunctions>CustomerName}+' ('+ ${QuotationPartnerFunctions>CustomerNo}+')' : ${QuotationPartnerFunctions>CustomerName}}"-->
+					<!--	class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationPartnerFunctions/CustomerNo/#@sap:label}"/>-->
+					<Text
+						text="{= ${QuotationPartnerFunctions>PersonnelNo} !== '' ? ${QuotationPartnerFunctions>PersonnelName}+' ('+ ${QuotationPartnerFunctions>PersonnelNo}+')' : ${QuotationPartnerFunctions>PersonnelName}}"
+						class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationPartnerFunctions/PersonnelNo/#@sap:label}"/>
+					<Text
+						text="{= ${QuotationPartnerFunctions>PartnerFunctionID} !== '' ? ${QuotationPartnerFunctions>PartnerFunctionDesc}+' ('+ ${QuotationPartnerFunctions>PartnerFunctionID}+')' : ${QuotationPartnerFunctions>PartnerFunctionDesc}}"
+						class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationPartnerFunctions/PartnerFunctionID/#@sap:label}"/>
+					<Text
+						text="{= ${QuotationPartnerFunctions>TransportationZoneID} !== '' ? ${QuotationPartnerFunctions>TransportationZoneDesc}+' ('+ ${QuotationPartnerFunctions>TransportationZoneID}+')' : ${QuotationPartnerFunctions>TransportationZoneDesc}}"
+						class="sapUiTinyMarginTopBottom" tooltip="{SFGW_INQ>/QuotationPartnerFunctions/TransportationZoneID/#@sap:label}"/>
+				</cells>
+			</ColumnListItem>
+		</items>
+	</Table>
+</mvc:View>
