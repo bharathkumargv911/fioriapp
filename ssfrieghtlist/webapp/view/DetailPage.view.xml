@@ -1,0 +1,264 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	controllerName="com.arteriatech.ssfrieghtlist.controller.DetailPage" xmlns:table="sap.ui.table" xmlns:html="http://www.w3.org/1999/xhtml">
+	<Page  showNavButton="true" navButtonType="Back" navButtonPress="onBack">
+		<ObjectHeader id="ObjectPageLayout" showMarkers="false" markFlagged="true" markFavorite="true" backgroundDesign="Translucent"
+			class="sapUiResponsivePadding--header" fullScreenOptimized="false" responsive="true"
+			title="{i18n>Detail.BasInfo.OwnName}: {CPHeaderModel>/OwnerName}">
+			<ObjectAttribute title="Reference Number" text="{CPHeaderModel>/CPNo}"/>
+			<!--<ObjectAttribute title="Stock Adjsutment No" text="{MaterialDocs>/MaterialDocNo}"/>-->
+			<!--<ObjectAttribute-->
+			<!--	text="{= ${MaterialDocs>/MvmtTypeID} !== '' ? ${MaterialDocs>/MvmntTypeDesc} +' ('+ ${MaterialDocs>/MvmtTypeID}+')' : ${MaterialDocs>/MvmntTypeDesc} }"/>-->
+			<!--<statuses>-->
+			<!--	<ObjectStatus title="Stock Approval Status" text="{MaterialDocItemDetails>/0/ApprovalStatusDesc}"-->
+			<!--		state="{= ${MaterialDocItemDetails>/0/ApprovalStatusID} === '01' ? 'Warning' : ${MaterialDocItemDetails>/0/ApprovalStatusID} === '02' ? 'None': ${MaterialDocItemDetails>/0/ApprovalStatusID} === '03' ? 'Success':'Error'}"/>-->
+			<!--</statuses>-->
+		</ObjectHeader>
+		<content>
+			<IconTabBar class="sapUiResponsiveContentPadding" expanded="{device>/isNoPhone}" id="idIconTabBarNoIcons" visible="true">
+				<items>
+					<IconTabFilter text="Basis Data" tooltip="Basis Data">
+						<l:Grid defaultSpan="L12 M12 S12" vSpacing="0" width="auto">
+							<l:content>
+								<f:SimpleForm columnsL="3" columnsM="3" editable="true" emptySpanL="0" emptySpanM="0" labelSpanL="5" labelSpanM="5"
+									layout="ResponsiveGridLayout" maxContainerCols="3" visible="{LocalViewSettings>/ReviewMode}">
+									<f:content>
+										<core:Title text="Basic Data"/>
+										<Label text="{i18n>detail.Basic.DistributorSts}" visible="true"/>
+										<Text text="{CPHeaderModel>/ProspectStatusDes} ({CPHeaderModel>/ProspectStatusID})"
+											tooltip="{i18n>detail.Basic.DistributorSts} :{CPHeaderModel>/ProspectStatusID}"/>
+										<Label text="{i18n>detail.Basic.OldAW}" visible="{LocalViewSettingDt>/awCodeAndBusinessTurnoverVisibility}"/>
+										<Text text="{CPHeaderModel>/ReplacementCPUID}" tooltip="{CPHeaderModel>/ReplacementCPUID}"
+											visible="{LocalViewSettingDt>/awCodeAndBusinessTurnoverVisibility}"/>
+										<Label text="{i18n>Detail.BasInfo.Res}" visible="{LocalViewSettingDt>/reasonVisibility}"/>
+										<Text text="{CPHeaderModel>/AdditionalDetails}" tooltip="{CPHeaderModel>/AdditionalDetails}"
+											visible="{LocalViewSettingDt>/reasonVisibility}"/>
+										<Label text="{i18n>Detail.BasInfo.BTurn}" visible="{LocalViewSettingDt>/awCodeAndBusinessTurnoverVisibility}"/>
+										<Text text="{CPHeaderModel>/TurnOver}" tooltip="{CPHeaderModel>/TurnOver}"
+											visible="{LocalViewSettingDt>/awCodeAndBusinessTurnoverVisibility}"/>
+										<Label text="{i18n>Detail.BasInfo.OwnName}"/>
+										<Text text="{CPHeaderModel>/OwnerName}" tooltip="{CPHeaderModel>/OwnerName}"/>
+										<Label text="{i18n>Detail.BasInfo.GstNo}"/>
+										<HBox id="Icon">
+											<Text text="{CPHeaderModel>/TaxNumber1}" tooltip="{CPHeaderModel>/TaxNumber1}"/>
+											<!--<core:Icon src="sap-icon://sys-enter-2" color="green" class="css1" visible="{LocalViewSettings>/GstVerified}"/>-->
+										</HBox>
+										<Label text="{i18n>Detail.BasInfo.BusTyp}"/>
+										<Text text="{CPAddInfos>/LegalStatusDesc}" tooltip="{CPHeaderModel>/LegalStatusDesc}"/>
+										<Label text="{i18n>Detail.BasInfo.DOI}"/>
+										<Text text="{path:'CPHeaderModel>/DateOfBirth', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+										<core:Title text=""/>
+										<Label text="{i18n>Detail.BasInfo.BusName}"/>
+										<Text text="{CPHeaderModel>/CPName}" tooltip="{i18n>Detail.BasInfo.BusName}:{CPHeaderModel>/CPName}"/>
+										<Label text="{i18n>Detail.BasInfo.Ase}"/>
+										<Text text="{CPHeaderModel>/SalesOffice}" tooltip="{CPHeaderModel>/SalesOffice}"/>
+										<Label text="{i18n>Detail.BasInfo.Asm}"/>
+										<Text text="{CPHeaderModel>/SalesGroup}" tooltip="{CPHeaderModel>/SalesGroup}"/>
+										<Label text="{i18n>Detail.BasInfo.MobNum}"/>
+										<Text text="{CPHeaderModel>/MobileNo1}" tooltip="{CPHeaderModel>/MobileNo1}"/>
+										<Label text="{i18n>Detail.BasInfo.TelNum}"/>
+										<Text text="{CPHeaderModel>/MobileNo2}" tooltip="{CPHeaderModel>/MobileNo2}"/>
+										<Label text="{i18n>Detail.BasInfo.Email}"/>
+										<Text text="{CPHeaderModel>/EmailID}" tooltip="{CPHeaderModel>/EmailID}"/>
+										<Label text="{i18n>Detail.BasInfo.PDP}"/>
+										<Text text="{CPHeaderModel>/ConstructionType}" tooltip="{CPHeaderModel>/ConstructionType}"/>
+										<core:Title text=""/>
+										<Label text="{i18n>Detail.BasInfo.Add1}"/>
+										<Text text="{CPHeaderModel>/Address1}" tooltip="{CPHeaderModel>/Address1}"/>
+										<Label text="{i18n>Detail.BasInfo.Add2}"/>
+										<Text text="{CPHeaderModel>/Address2}" tooltip="{CPHeaderModel>/Address2}"/>
+										<Label text="{i18n>Detail.BasInfo.Add3}"/>
+										<Text text="{CPHeaderModel>/Address3}" tooltip="{CPHeaderModel>/Address3}"/>
+										<Label text="{i18n>Detail.BasInfo.Add4}"/>
+										<Text text="{CPHeaderModel>/Address4}" tooltip="{CPHeaderModel>/Address4}"/>
+										<Label text="{i18n>Detail.BasInfo.City}"/>
+										<Text text="{CPHeaderModel>/CityDesc}" tooltip="{CPHeaderModel>/CityDesc}"/>
+										<Label text="{i18n>Detail.BasInfo.District}"/>
+										<Text text="{CPHeaderModel>/DistrictDesc}" tooltip="{CPHeaderModel>/DistrictDesc}"/>
+										<Label text="{i18n>Detail.BasInfo.state}"/>
+										<Text
+											text="{= ${CPHeaderModel>/StateID} !== '' ? ${CPHeaderModel>/StateDesc} +' ('+ ${CPHeaderModel>/StateID}+')' : ${CPHeaderModel>/StateDesc} }"
+											tooltip="{= ${CPHeaderModel>/StateID} !== '' ? ${CPHeaderModel>/StateDesc} +' ('+ ${CPHeaderModel>/StateID}+')' : ${CPHeaderModel>/StateDesc} }"/>
+										<Label text="{i18n>Detail.BasInfo.PostCode}"/>
+										<Text text="{CPHeaderModel>/PostalCode}" tooltip="{CPHeaderModel>/PostalCode}"/>
+									</f:content>
+								</f:SimpleForm>
+							</l:content>
+						</l:Grid>
+					</IconTabFilter>
+					<IconTabFilter text="Frieght Details" tooltip="Frieght Details">
+						<!--<l:Grid defaultSpan="L12 M12 S12" vSpacing="0" width="auto">-->
+						<!--	<l:content>-->
+						<table:Table id="UIReplacementDetails" rows="{FrieghtModel>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+							enableSelectAll="false" enableColumnFreeze="true" noData="No results found."
+							visibleRowCount="{= ${LocalViewSettingDtl>/tableRowCount} > 5 ? 5:${LocalViewSettingDtl>/tableRowCount}}"
+							visible="{LocalViewSettingDtl>/UiTableReplace}" visibleRowCountMode="Fixed">
+							<table:toolbar>
+								<Toolbar>
+									<Title id="UIListTableTitle1"
+										text="Items {= (!${LocalViewSettingDtl>/tableRowCount} > 0) ? '' : '('+${LocalViewSettingDtl>/tableRowCount}+')'}" level="H2"/>
+									<!--<ToolbarSpacer/>-->
+									<!--<Button icon="sap-icon://add" press="addLineItem" visible="{= ${device>/system/phone}? false : true}"/>-->
+								</Toolbar>
+							</table:toolbar>
+							<table:columns>
+								<table:Column sortProperty="CustomerNo" width="7rem" filterProperty="CustomerNo" autoResizable="true" tooltip="CustomerNo">
+									<Text text="Existing AW Code"/>
+									<table:template>
+										<Text text="{FrieghtModel>CustomerNo}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="CustomerName" width="7rem" filterProperty="CustomerName" autoResizable="true" tooltip="CustomerName">
+									<Text text="Existing AW Name"/>
+									<table:template>
+										<Text text="{FrieghtModel>CustomerName}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="CustomerCity" width="7rem" filterProperty="CustomerCity" autoResizable="true" tooltip="CustomerCity">
+									<Text text="Existing AW City"/>
+									<table:template>
+										<Text text="{FrieghtModel>CustomerCity}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column width="7rem" autoResizable="true">
+									<Text text="Existing AW Distance"/>
+									<table:template>
+										<Input valueState="{FrieghtModel>AWDistanceState}" editable="{LocalViewSettingDtl>/editable}" value="{FrieghtModel>AWDistance}"
+											textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="TruckType" width="6rem" filterProperty="TruckType" autoResizable="true" tooltip="TruckType">
+									<Text text="Truck Type"/>
+									<table:template>
+										<Text text="{FrieghtModel>TruckType}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="CurrentFreigthRate" width="7rem" filterProperty="CurrentFreigthRate" autoResizable="true"
+									tooltip="CurrentFreigthRate">
+									<Text text="Current Freigth Rate"/>
+									<table:template>
+										<Text text="{FrieghtModel>CurrentFreigthRate}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="ProposedDistance" width="7rem" filterProperty="ProposedDistance" autoResizable="true" tooltip="ProposedDistance">
+									<Text text="Proposed Distance"/>
+									<table:template>
+										<Input valueState="{FrieghtModel>ProposedDistanceState}" editable="{LocalViewSettingDtl>/editable}" value="{FrieghtModel>ProposedDistance}"
+											textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="DerivedFreight" width="7rem" filterProperty="DerivedFreight" autoResizable="true" tooltip="DerivedFreight">
+									<Text text="Derived Freight"/>
+									<table:template>
+										<Text text="{FrieghtModel>DerivedFreight}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="ProposedFrieght" width="7rem" filterProperty="ProposedFrieght" autoResizable="true" tooltip="ProposedFrieght">
+									<Text text="Proposed Frieght"/>
+									<table:template>
+										<Input valueState="{FrieghtModel>ProposedFrieghtState}" editable="{LocalViewSettingDtl>/editable}" change="onChangeProposedFrieght"
+											value="{FrieghtModel>ProposedFrieght}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="Gap" width="7rem" filterProperty="Gap" autoResizable="true" tooltip="Gap">
+									<Text text="Gap"/>
+									<table:template>
+										<Text text="{FrieghtModel>Gap}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="GapPercentage" width="7rem" filterProperty="GapPercentage" autoResizable="true" tooltip="GapPercentage">
+									<Text text="Gap Percentage"/>
+									<table:template>
+										<Text text="{FrieghtModel>GapPercentage}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="UnloadingCharges" width="7rem" filterProperty="UnloadingCharges" autoResizable="true" tooltip="UnloadingCharges">
+									<Text text="Unloading Charges"/>
+									<table:template>
+										<Input valueState="{FrieghtModel>UnloadingChargesState}" editable="{LocalViewSettingDtl>/editable}" value="{FrieghtModel>UnloadingCharges}"
+											textAlign="Right"/>
+									</table:template>
+								</table:Column>
+							</table:columns>
+						</table:Table>
+						<table:Table id="UINewDetails" rows="{FrieghtModel>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+							enableSelectAll="false" enableColumnFreeze="true" noData="No results found."
+							visibleRowCount="{= ${LocalViewSettingDtl>/tableRowCount} > 5 ? 5:${LocalViewSettingDtl>/tableRowCount}}"
+							visible="{LocalViewSettingDtl>/UiTableNew}" visibleRowCountMode="Fixed">
+							<table:toolbar>
+								<Toolbar>
+									<Title id="UIListTableTitle2"
+										text="Items {= (!${LocalViewSettingDtl>/tableRowCount} > 0) ? '' : '('+${LocalViewSettingDtl>/tableRowCount}+')'}" level="H2"/>
+									<ToolbarSpacer/>
+									<Button icon="sap-icon://add" text="Add" visible="{LocalViewSettingDtl>/editable}" press="addLineItem"/>
+								</Toolbar>
+							</table:toolbar>
+							<table:columns>
+								<table:Column sortProperty="TruckType" filterProperty="TruckType" autoResizable="true" tooltip="TruckType">
+									<Text text="Truck Type"/>
+									<table:template>
+										<Input editable="{LocalViewSettingDtl>/editable}" value="{FrieghtModel>TruckType}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="CurrentFreigthRate" filterProperty="CurrentFreigthRate" autoResizable="true" tooltip="CurrentFreigthRate">
+									<Text text="Current Freigth Rate"/>
+									<table:template>
+										<Input editable="{LocalViewSettingDtl>/editable}" value="{FrieghtModel>CurrentFreigthRate}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="DerivedFreight" filterProperty="DerivedFreight" autoResizable="true" tooltip="DerivedFreight">
+									<Text text="Derived Freight"/>
+									<table:template>
+										<Input editable="{LocalViewSettingDtl>/editable}" value="{FrieghtModel>DerivedFreight}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="ProposedFrieght" filterProperty="ProposedFrieght" autoResizable="true" tooltip="ProposedFrieght">
+									<Text text="Proposed Frieght"/>
+									<table:template>
+										<Input editable="{LocalViewSettingDtl>/editable}" change="onChangeProposedFrieght" value="{FrieghtModel>ProposedFrieght}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="Gap" filterProperty="Gap" autoResizable="true" tooltip="Gap">
+									<Text text="Gap"/>
+									<table:template>
+										<Text text="{FrieghtModel>Gap}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="GapPercentage" filterProperty="GapPercentage" autoResizable="true" tooltip="GapPercentage">
+									<Text text="Gap Percentage"/>
+									<table:template>
+										<Text text="{FrieghtModel>GapPercentage}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column sortProperty="UnloadingCharges" filterProperty="UnloadingCharges" autoResizable="true" tooltip="UnloadingCharges">
+									<Text text="Unloading Charges"/>
+									<table:template>
+										<Input editable="{LocalViewSettingDtl>/editable}" value="{FrieghtModel>UnloadingCharges}" textAlign="Right"/>
+									</table:template>
+								</table:Column>
+								<table:Column visible="{LocalViewSettingDtl>/editable}" width="5rem">
+									<Text text="Delete"/>
+									<table:template>
+										<Button icon="sap-icon://decline" press="onCancel"></Button>
+									</table:template>
+								</table:Column>
+							</table:columns>
+						</table:Table>
+						<!--	</l:content>-->
+						<!--</l:Grid>-->
+					</IconTabFilter>
+				</items>
+			</IconTabBar>
+		</content>
+		<footer>
+			<Toolbar>
+				<Button id="oMessagePopoverButton" enabled="{= ${LocalViewSettingDtl>/messageLength} === 0 ? false : true }"
+					text="{= ${LocalViewSettingDtl>/messageLength} === 0 ? '' : ${LocalViewSettingDtl>/messageLength} }"
+					icon="{= ${LocalViewSettingDtl>/messageLength} === 0 ? '' : 'sap-icon://alert' }" press="showErrorPopUp"
+					type="{= ${LocalViewSettingDtl>/messageLength} === 0 ? 'Default' : 'Emphasized' }"/>
+				<ToolbarSpacer/>
+				<Button text="Approve" tooltip="Review" press="onApprove" type="Accept" visible="{LocalViewSettingsCreate>/Edit}"/>
+				<Button text="Reject" tooltip="Save" press="onReject" type="Reject" visible="{LocalViewSettingsCreate>/Review}"/>
+			</Toolbar>
+		</footer>
+	</Page>
+</mvc:View>

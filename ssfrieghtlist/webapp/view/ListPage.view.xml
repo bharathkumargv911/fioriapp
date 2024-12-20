@@ -1,0 +1,20 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteriatech.ssfrieghtlist.controller.ListPage" xmlns:html="http://www.w3.org/1999/xhtml">
+	<App>
+		<pages>
+			<Page title="OnBording Frieght Approve">
+				<content>
+					<mvc:XMLView id="ListView" viewName="com.arteriatech.ssfrieghtlist.view.List"/>
+					<!--<mvc:XMLView id="DetailView" visible="{LocalViewSetting>/detailPage}" viewName="com.arteriatech.sftopupapprove.view.DetailPage"/>-->
+				</content>
+				<footer>
+					<!--<Toolbar>-->
+					<!--	<ToolbarSpacer/>-->
+					<!--	<Button id="approveBtn" text="Approve" press="onApprove" icon="sap-icon://accept" type="Accept"/>-->
+					<!--	<Button id="rejectBtn" text="Reject" press="onReject" icon="sap-icon://decline" type="Reject"/>-->
+					<!--</Toolbar>-->
+				</footer>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

@@ -1,0 +1,268 @@
+{
+	"_version": "1.12.0",
+	"sap.app": {
+		"id": "com.arteriatech.ssfrieghtlist",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"sourceTemplate": {
+			"id": "ui5template.basicSAPUI5ApplicationProject",
+			"version": "1.40.12"
+		},
+		"dataSources": {
+			"PCGWHANA": {
+				"uri": "/sap/opu/odata/ARTEC/PCGWHANA/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/PCGWHANA/metadata.xml"
+				}
+			},
+			"ZART_ONBOARDING": {
+				"uri": "/sap/opu/odata/ARTEC/ZART_ONBOARDING/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/ZART_ONBOARDING/metadata.xml"
+				}
+			},
+			"tcm": {
+				"uri": "/bpmworkflowruntime/odata/v1/tcm/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/tcm/metadata.xml"
+				}
+			},
+			"SSGWHANA": {
+				"uri": "/sap/opu/odata/ARTEC/SSGWHANA/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/SSGWHANA/metadata.xml"
+				}
+			},
+			"PUGW": {
+				"uri": "/sap/opu/odata/ARTEC/PUGW/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/PCGW/metadata.xml"
+				}
+			},
+			"ZWHGW": {
+				"uri": "/AGGRBIL/ZWH_GW/service.xsodata/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			},
+			"PCGW": {
+				"uri": "/sap/opu/odata/ARTEC/PCGW/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/PCGW/metadata.xml"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"flexEnabled": false,
+		"rootView": {
+			"viewName": "com.arteriatech.ssfrieghtlist.view.Main",
+			"type": "XML",
+			"async": true,
+			"id": "Main"
+		},
+		"dependencies": {
+			"minUI5Version": "1.65.6",
+			"libs": {
+				"sap.ui.layout": {},
+				"sap.ui.core": {},
+				"sap.m": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "com.arteriatech.ssfrieghtlist.i18n.i18n"
+				}
+			},
+			"ppcutili18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleUrl": "/sap/bc/ui5_ui5/ARTEC/PPCUTIL/utils/i18n/i18n.properties"
+				},
+				"preload": true,
+				"async": true
+			},
+			"ZART_ONBOARDING": {
+				"dataSource": "ZART_ONBOARDING",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"tcm": {
+				"dataSource": "tcm",
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"PCGWHANA": {
+				"dataSource": "PCGWHANA",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"SSGWHANA": {
+				"dataSource": "SSGWHANA",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"ZWH_GW": {
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"dataSource": "ZWHGW",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"PCGW": {
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"dataSource": "PCGW",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"PUGW": {
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"dataSource": "PUGW",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			}
+		},
+		"resources": {
+			"css": [{
+				"uri": "css/style.css"
+			}]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"async": true,
+				"viewPath": "com.arteriatech.ssfrieghtlist.view",
+				"controlAggregation": "pages",
+				"controlId": "app",
+				"clearControlAggregation": false
+			},
+			"routes": [{
+				"name": "RouteMain",
+				"pattern": "RouteMain",
+				"target": [
+					"TargetMain"
+				]
+			}, {
+				"name": "ListPage",
+				"pattern": "",
+				"target": [
+					"ListPage"
+				]
+			}, {
+				"pattern": "View/{contextPath}",
+				"name": "DetailPage",
+				"target": [
+					"DetailPage"
+				]
+			}],
+			"targets": {
+				"TargetMain": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "Main",
+					"viewName": "Main"
+				},
+				"List": {
+					"viewType": "XML",
+					"viewName": "List"
+				},
+				"ListPage": {
+					"viewType": "XML",
+					"viewName": "ListPage"
+				},
+				"DetailPage": {
+					"viewType": "XML",
+					"viewName": "DetailPage"
+				}
+			}
+		}
+	}
+}

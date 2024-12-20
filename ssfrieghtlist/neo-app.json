@@ -1,0 +1,158 @@
+{
+  "welcomeFile": "/webapp/index.html",
+  "routes": [
+  	{
+		"path": "/sap/opu/odata/ARTEC/ZART_ONBOARDING/",
+		"target": {
+			"type": "destination",
+			"name": "zart_onboarding"
+		},
+		"description": "Partner Common Services"
+	},
+  	{
+      "path": "/sap/opu/odata/ARTEC/SSGWHANA/",
+      "target": {
+        "type": "destination",
+        "name": "SSGWHANA"
+      },
+      "description": "Common Functionality"
+    },
+    {
+      "path": "bpmworkflowruntime",
+      "target": {
+        "type": "destination",
+        "name": "bpmworkflowruntime",
+        "entryPath": "/workflow-service"
+      },
+      "description": "Workflow Service Runtime"
+    },
+    {
+      "path": "/bpmworkflowruntime/odata/v1/tcm/",
+      "target": {
+        "type": "destination",
+        "name": "bpmworkflowruntime",
+        "entryPath": "/workflow-service"
+      },
+      "description": "Workflow Service Runtime"
+    },
+    {
+      "path": "/sap/fiori/bpmmyinbox/",
+      "target": {
+        "type": "destination",
+        "name": "bpmmyinbox",
+        "entryPath": "/workflow-service"
+      },
+      "description": "Workflow Service Runtime"
+    },
+    {
+      "path": "/bpmmyinbox",
+      "target": {
+        "type": "destination",
+        "name": "bpmmyinbox",
+        "entryPath": "/workflow-service"
+      },
+      "description": "Workflow Service Runtime"
+    },
+    {
+      "path": "/sap/opu/odata/ARTEC/PCGWHANA/",
+      "target": {
+        "type": "destination",
+        "name": "PCGWHANA"
+      },
+      "description": "Common Functionality"
+    },
+    {
+      "path": "/sap/opu/odata/ARTEC/PUGW/",
+      "target": {
+        "type": "destination",
+        "name": "pugw_oc"
+      },
+      "description": "Common Type Set"
+    },
+     {
+      "path": "/AGGRBIL/ZWH_GW/service.xsodata/",
+      "target": {
+        "type": "destination",
+        "name": "ZWHGW"
+      },
+      "description": "Partner Common Services"
+    },
+     {
+      "path": "/sap/opu/odata/ARTEC/PCGW/",
+      "target": {
+        "type": "destination",
+        "name": "pcgw"
+      },
+      "description": "Common Functionality"
+    },
+    {
+      "path": "/sap/opu/odata/ARTEC/PUGW_UTILS/",
+      "target": {
+        "type": "destination",
+        "name": "pugw_utils"
+      },
+      "description": "Common Servlet File"
+    },
+    {
+      "path": "/sap/opu/odata/ARTEC/PCGW_UTILS/",
+      "target": {
+        "type": "destination",
+        "name": "pcgw_utils"
+      },
+      "description": "login id servlet"
+    },
+    {
+      "path": "/sap/bc/ui5_ui5/ARTEC/PPCUTIL/",
+      "target": {
+        "type": "destination",
+        "name": "ppcutil"
+      },
+      "description": "Common utils files(js, css & i18n)"
+    },
+    {
+      "path": "/sap/bc/ui5_ui5/ARTEC/SSUTIL/",
+      "target": {
+        "type": "destination",
+        "name": "ssutil"
+      },
+      "description": "SS Common utils files(js & i18n)"
+    },
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/webapp/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/webapp/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    }
+  ],
+  "sendWelcomeFileRedirect": true
+}
