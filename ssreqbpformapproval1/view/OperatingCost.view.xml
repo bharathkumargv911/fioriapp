@@ -1,0 +1,39 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	xmlns:table="sap.ui.table" controllerName="com.arteriatech.ssreqbpformapproval.controller.OperatingCost"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table width="75%" id="UICPInfraModel1" rows="{CPInfraModel>/}" showColumnVisibilityMenu="false" enableGrouping="false"
+		selectionMode="None" enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="false"
+		visibleRowCount="{= ${LocalViewSettingDt>/CPInfraQuestionCount} > 5 ? 5:${LocalViewSettingDt>/CPInfraQuestionCount}}"
+		visible="{LocalViewSettingDts>/ReviewMode}" visibleRowCountMode="Fixed">
+		<table:extension>
+			<Toolbar id="UISurveyItemQuestionsTableToolBarreview1">
+				<Title id="UISurveyItemQuestionsTableTitlereview2"
+					tooltip="{i18n>common.Table.Items.title} {= (!${LocalViewSettingDt>/CPInfraQuestionCount} > 0) ? '' : '('+${LocalViewSettingDt>/CPInfraQuestionCount}+')'}"
+					text="{i18n>common.Table.Items.title} {= (!${LocalViewSettingDt>/CPInfraQuestionCount} > 0) ? '' : '('+${LocalViewSettingDt>/CPInfraQuestionCount}+')'}"
+					level="H2"/>
+				<!--<ToolbarSpacer/>-->
+				<!--<Button icon="sap-icon://download" press="exportToExcel" visible="true"/>-->
+			</Toolbar>
+		</table:extension>
+		<table:Column sortProperty="SNO" filterProperty="SNO" autoResizable="true" tooltip="S.NO" width="5rem">
+			<Text text="S.No"/>
+			<table:template>
+				<Text text="{CPInfraModel>SNO}"/>
+			</table:template>
+		</table:Column>
+		<table:Column tooltip="Addition Informations">
+			<Text text="Addition Informations"/>
+			<table:template>
+				<Text text="{CPInfraModel>Text}" tooltip="{CPInfraModel>Text}"/>
+			</table:template>
+		</table:Column>
+		<table:Column autoResizable="true" tooltip="">
+			<Text text="Amount"/>
+			<table:template>
+				<ObjectNumber textAlign="Right" number="{path:'CPInfraModel>InputAnswerModel',type: 'sap.ui.model.type.Float'}"
+					unit="{=(${CPInfraModel>ValueType}==='000001')? ' INR':' '}"/>
+				<!--<ObjectNumber textAlign="Right" number="{path:'CPInfraModel>InputAnswerModel',type: 'sap.ui.model.type.Float'}" unit="INR"/>-->
+			</table:template>
+		</table:Column>
+	</table:Table>
+</mvc:View>

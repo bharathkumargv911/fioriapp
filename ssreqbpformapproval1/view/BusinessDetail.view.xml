@@ -1,0 +1,124 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:f="sap.ui.layout.form"
+	xmlns:table="sap.ui.table" controllerName="com.arteriatech.ssreqbpformapproval.controller.BusinessDetail"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UIFSSAIDocuments" rows="{FSSAICertificates>/}" showColumnVisibilityMenu="false" enableGrouping="false" selectionMode="None"
+		enableSelectAll="false" enableColumnFreeze="false" visible="{LocalViewSettingDt>/EditMode}"
+		visibleRowCount="{= ${LocalViewSettingDt>/FSSAIDocumentsCount} > 5 ? 5:${LocalViewSettingDt>/FSSAIDocumentsCount}}"
+		visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar>
+				<Title id="UIFSSAIDocuments_TABLETitle" level="H2"
+					text="FSSAI Documents {= (!${LocalViewSettingDt>/FSSAIDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/FSSAIDocumentsCount}+')'}"
+					tooltip="FSSAI Documents {= (!${LocalViewSettingDt>/FSSAIDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/FSSAIDocumentsCount}+')'}"/>
+				<ToolbarSpacer></ToolbarSpacer>
+				<!--<Button type="Emphasized" id="AddNew" text="" icon="sap-icon://add" press="onAddNew" visible="{LocalViewSettingDt>/CreateMode}"/>-->
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column autoResizable="true" tooltip="Certificate No">
+				<Text text="Certificate No"/>
+				<table:template>
+					<Text text="{FSSAICertificates>CertificateNo}" tooltip="Certificate No"/>
+				</table:template>
+			</table:Column>
+			<table:Column autoResizable="true" tooltip="{i18n>BusDetil.cert.desc}">
+				<Text text="{i18n>BusDetil.cert.desc}"/>
+				<table:template>
+					<Text text="{FSSAICertificates>CertificateType}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="CertificateType" filterProperty="CertificateType" autoResizable="true" tooltip="{i18n>BusDetil.Cert.Type}">
+				<Text text="{i18n>BusDetil.Cert.Type}"/>
+				<table:template>
+					<Text text="{FSSAICertificates>Certificates}" tooltip="{i18n>BusDetil.cert.desc}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="Validfrom" filterProperty="Validfrom" autoResizable="true" tooltip="{i18n>BusDetil.Validfrom}">
+				<Text text="{i18n>BusDetil.Validfrom}"/>
+				<table:template>
+					<Text text="{path:'FSSAICertificates>ValidFrom', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'} "/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="Validto" filterProperty="Validto" autoResizable="true" tooltip="{i18n>BusDetil.Validto}">
+				<Text text="{i18n>BusDetil.Validto}"/>
+				<table:template>
+					<Text text="{path:'FSSAICertificates>ValidTo', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+				</table:template>
+			</table:Column>
+			<table:Column hAlign="Center" width="10rem" tooltip="{i18n>View.Attachments.Label}">
+				<Text text="{i18n>View.Attachments.Label}"/>
+				<table:template>
+					<Button icon="sap-icon://attachment" text="View" type="Emphasized" tooltip="{i18n>View.Attachments}" press="viewAttachemets"/>
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+	<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="true" emptySpanL="0" emptySpanM="0" labelSpanL="5" labelSpanM="5"
+		layout="ResponsiveGridLayout" maxContainerCols="2" visible="{LocalViewSettingDt>/FssaiDetail}">
+		<core:Title text="FSSAI Registration No Details"/>
+		<Label text="Name" required="true"/>
+		<Text text="{EntityAttributesModel>/entityName}"/>
+		<Label text="License Type" required="true"/>
+		<Text text="{EntityAttributesModel>/licenseType}"/>
+		<Label text="Status"/>
+		<Text text="{EntityAttributesModel>/status}"/>
+		<core:Title text=""/>
+		<Label text="Address"/>
+		<Text text="{EntityAttributesModel>/address}"/>
+		<Label text="District"/>
+		<Text text="{EntityAttributesModel>/district}"/>
+		<Label text="State"/>
+		<Text text="{EntityAttributesModel>/state}"/>
+		<Label text="Pincode"/>
+		<Text text="{EntityAttributesModel>/pincode}"/>
+	</f:SimpleForm>
+	<table:Table id="UIPANDocuments1" rows="{PANCertificates>/}" showColumnVisibilityMenu="false" enableGrouping="false" selectionMode="None"
+		enableSelectAll="false" enableColumnFreeze="false" visible="true"
+		visibleRowCount="{= ${LocalViewSettingDt>/PANDocumentsCount} > 5 ? 5:${LocalViewSettingDt>/PANDocumentsCount}}" visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar>
+				<Title id="UIFSSAIDocuments_TABLETitle11" level="H2"
+					text="PAN Documents {= (!${LocalViewSettingDt>/PANDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/PANDocumentsCount}+')'}"
+					tooltip="PAN Documents {= (!${LocalViewSettingDt>/PANDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/PANDocumentsCount}+')'}"/>
+				<!--<Button type="Accept" id="AddNew" text="" icon="sap-icon://add" press="onAddNew" visible="{LocalViewSettingDt>/CreateMode}"/>-->
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column sortProperty="DocumentType" filterProperty="DocumentType" autoResizable="true" tooltip="PAN">
+				<Text text="PAN Documents"/>
+				<table:template>
+					<HBox>
+						<Text text="{PANCertificates>Certificates}"/>
+					</HBox>
+				</table:template>
+			</table:Column>
+			<table:Column hAlign="Center" width="10rem" tooltip="{i18n>View.Attachments.Label}">
+				<Text text="View"/>
+				<table:template>
+					<Button icon="sap-icon://attachment" text="View" type="Emphasized" tooltip="{i18n>View.Attachments}" press="viewPAN"/>
+					<!--<Button enabled="{PANCertificates>ImageFlag}" icon="sap-icon://attachment" text="View" type="Accept" tooltip="{i18n>View.Attachments}"-->
+					<!--	press="viewPAN"/>-->
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+	<f:SimpleForm class="editableForm" columnsL="2" columnsM="2" editable="true" emptySpanL="0" emptySpanM="0" labelSpanL="5" labelSpanM="5"
+		layout="ResponsiveGridLayout" maxContainerCols="3" visible="true">
+		<core:Title text="PAN Details"/>
+		<Label required="true" text="Personal PAN"/>
+		<HBox>
+			<Text text="{CPHeaderModel>/PANNo}"/>
+			<core:Icon src="sap-icon://sys-enter-2" color="green" class="css1" visible="true"/>
+		</HBox>
+		<core:Title text=""/>
+		<Label text="Registered Name"/>
+		<Text text="{EntityAttributesModel>/registered_name}"/>
+		<!--<core:Title text=""/>-->
+		<Label text="Type"/>
+		<Text text="{EntityAttributesModel>/type}"/>
+		<!--<core:Title text=""/>-->
+		<Label text="Status"/>
+		<Text text="{EntityAttributesModel>/statusPan}"/>
+		<!--<Input id="idPAN" value="{CPModel>/PANNo}" width="60%"/>-->
+	</f:SimpleForm>
+</mvc:View>

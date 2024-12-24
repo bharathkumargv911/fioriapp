@@ -1,0 +1,38 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	xmlns:table="sap.ui.table" controllerName="com.arteriatech.ssreqbpformapproval.controller.IncomeTax"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UIITRDocuments1" rows="{ITRCertificates>/}" showColumnVisibilityMenu="false" enableGrouping="false" selectionMode="None"
+		enableSelectAll="false" enableColumnFreeze="false" visible="{LocalViewSettingDt>/ReviewMode}"
+		visibleRowCount="{= ${LocalViewSettingDt>/ITRDocumentsCount} > 5 ? 5:${LocalViewSettingDt>/ITRDocumentsCount}}" visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar>
+				<Title id="UIITRDocuments_TABLETitle1" level="H2"
+					text="ITR Documents {= (!${LocalViewSettingDt>/ITRDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/ITRDocumentsCount}+')'}"
+					tooltip="Documents {= (!${LocalViewSettingDt>/ITRDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/ITRDocumentsCount}+')'}"/>
+				<ToolbarSpacer></ToolbarSpacer>
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column sortProperty="DocumentType" filterProperty="DocumentType" autoResizable="true" tooltip="ITR Documents">
+				<Text text="ITR Documents"/>
+				<table:template>
+					<Text text="{ITRCertificates>CertificateTypeDesc}"/>
+				</table:template>
+			</table:Column>
+			<!--<table:Column autoResizable="true" width="10rem" hAlign="Center" tooltip="{i18n>Upload.Attachments.Label}">-->
+			<!--	<Text text="{i18n>Upload.Attachments.Label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Button enabled="false" icon="sap-icon://attachment" text="{i18n>Upload.Attachments}" type="Accept" tooltip="{i18n>Upload.Attachments}"-->
+			<!--			press="onPressUploadAttachments"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<table:Column hAlign="Center" width="10rem" tooltip="{i18n>View.Attachments.Label}">
+				<Text text="{i18n>View.Attachments.Label}"/>
+				<table:template>
+					<Button enabled="{ITRCertificates>ImageFlag}" icon="sap-icon://attachment" text="{i18n>View.Attachments}" type="Emphasized"
+						tooltip="{i18n>View.Attachments}" press="viewAttachemets"/>
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+</mvc:View>

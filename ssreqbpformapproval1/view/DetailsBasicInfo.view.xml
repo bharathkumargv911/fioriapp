@@ -1,0 +1,66 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	controllerName="com.arteriatech.ssreqbpformapproval.controller.DetailsBasicInfo" xmlns:html="http://www.w3.org/1999/xhtml">
+	<f:SimpleForm columnsL="3" columnsM="3" editable="true" emptySpanL="0" emptySpanM="0" labelSpanL="5" labelSpanM="5"
+		layout="ResponsiveGridLayout" maxContainerCols="3" visible="{LocalViewSettings>/ReviewMode}">
+		<f:content>
+			<core:Title text=""/>
+			<Label text="{i18n>detail.Basic.DistributorSts}" visible="true"/>
+			<Text text="{CPHeaderModel>/ProspectStatusDes} ({CPHeaderModel>/ProspectStatusID})"
+				tooltip="{i18n>detail.Basic.DistributorSts} :{CPHeaderModel>/ProspectStatusID}"/>
+			<Label text="{i18n>detail.Basic.OldAW}" visible="{LocalViewSettingDt>/awCodeAndBusinessTurnoverVisibility}"/>
+			<Text text="{CPHeaderModel>/ReplacementCPUID}" tooltip="{CPHeaderModel>/ReplacementCPUID}"
+				visible="{LocalViewSettingDt>/awCodeAndBusinessTurnoverVisibility}"/>
+			<Label text="{i18n>Detail.BasInfo.Res}" visible="{LocalViewSettingDt>/reasonVisibility}"/>
+			<Text text="{CPHeaderModel>/AdditionalDetails}" tooltip="{CPHeaderModel>/AdditionalDetails}"
+				visible="{LocalViewSettingDt>/reasonVisibility}"/>
+			<Label text="{i18n>Detail.BasInfo.BTurn}" visible="{LocalViewSettingDt>/awCodeAndBusinessTurnoverVisibility}"/>
+			<Text text="{CPHeaderModel>/TurnOver}" tooltip="{CPHeaderModel>/TurnOver}"
+				visible="{LocalViewSettingDt>/awCodeAndBusinessTurnoverVisibility}"/>
+			<Label text="{i18n>Detail.BasInfo.OwnName}"/>
+			<Text text="{CPHeaderModel>/OwnerName}" tooltip="{CPHeaderModel>/OwnerName}"/>
+			<Label text="{i18n>Detail.BasInfo.GstNo}"/>
+			<HBox id="Icon">
+				<Text text="{CPHeaderModel>/TaxNumber1}" tooltip="{CPHeaderModel>/TaxNumber1}"/>
+				<core:Icon src="sap-icon://sys-enter-2" color="green" class="css1" visible="{LocalViewSettings>/GstVerified}"/>
+			</HBox>
+			<Label text="{i18n>Detail.BasInfo.BusTyp}"/>
+			<Text text="{CPAddInfos>/LegalStatusDesc}" tooltip="{CPHeaderModel>/LegalStatusDesc}"/>
+			<Label text="{i18n>Detail.BasInfo.DOI}"/>
+			<Text text="{path:'CPHeaderModel>/DateOfBirth', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"/>
+			<core:Title text=""/>
+			<Label text="{i18n>Detail.BasInfo.BusName}"/>
+			<Text text="{CPHeaderModel>/CPName}" tooltip="{i18n>Detail.BasInfo.BusName}:{CPHeaderModel>/CPName}"/>
+			<Label text="{i18n>Detail.BasInfo.Ase}"/>
+			<Text text="{CPHeaderModel>/SalesOffice}" tooltip="{CPHeaderModel>/SalesOffice}"/>
+			<Label text="{i18n>Detail.BasInfo.Asm}"/>
+			<Text text="{CPHeaderModel>/SalesGroup}" tooltip="{CPHeaderModel>/SalesGroup}"/>
+			<Label text="{i18n>Detail.BasInfo.MobNum}"/>
+			<Text text="{CPHeaderModel>/MobileNo1}" tooltip="{CPHeaderModel>/MobileNo1}"/>
+			<Label text="{i18n>Detail.BasInfo.TelNum}"/>
+			<Text text="{CPHeaderModel>/MobileNo2}" tooltip="{CPHeaderModel>/MobileNo2}"/>
+			<Label text="{i18n>Detail.BasInfo.Email}"/>
+			<Text text="{CPHeaderModel>/EmailID}" tooltip="{CPHeaderModel>/EmailID}"/>
+			<Label text="{i18n>Detail.BasInfo.PDP}"/>
+			<Text text="{CPHeaderModel>/ConstructionType}" tooltip="{CPHeaderModel>/ConstructionType}"/>
+			<core:Title text=""/>
+			<Label text="{i18n>Detail.BasInfo.Add1}"/>
+			<Text text="{CPHeaderModel>/Address1}" tooltip="{CPHeaderModel>/Address1}"/>
+			<Label text="{i18n>Detail.BasInfo.Add2}"/>
+			<Text text="{CPHeaderModel>/Address2}" tooltip="{CPHeaderModel>/Address2}"/>
+			<Label text="{i18n>Detail.BasInfo.Add3}"/>
+			<Text text="{CPHeaderModel>/Address3}" tooltip="{CPHeaderModel>/Address3}"/>
+			<Label text="{i18n>Detail.BasInfo.Add4}"/>
+			<Text text="{CPHeaderModel>/Address4}" tooltip="{CPHeaderModel>/Address4}"/>
+			<Label text="{i18n>Detail.BasInfo.City}"/>
+			<Text text="{CPHeaderModel>/CityDesc}" tooltip="{CPHeaderModel>/CityDesc}"/>
+			<Label text="{i18n>Detail.BasInfo.District}"/>
+			<Text text="{CPHeaderModel>/DistrictDesc}" tooltip="{CPHeaderModel>/DistrictDesc}"/>
+			<Label text="{i18n>Detail.BasInfo.state}"/>
+			<Text
+				text="{= ${CPHeaderModel>/StateID} !== '' ? ${CPHeaderModel>/StateDesc} +' ('+ ${CPHeaderModel>/StateID}+')' : ${CPHeaderModel>/StateDesc} }"
+				tooltip="{= ${CPHeaderModel>/StateID} !== '' ? ${CPHeaderModel>/StateDesc} +' ('+ ${CPHeaderModel>/StateID}+')' : ${CPHeaderModel>/StateDesc} }"/>
+			<Label text="{i18n>Detail.BasInfo.PostCode}"/>
+			<Text text="{CPHeaderModel>/PostalCode}" tooltip="{CPHeaderModel>/PostalCode}"/>
+		</f:content>
+	</f:SimpleForm>
+</mvc:View>

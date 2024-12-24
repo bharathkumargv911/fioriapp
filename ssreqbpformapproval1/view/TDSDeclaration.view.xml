@@ -1,0 +1,43 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	xmlns:table="sap.ui.table" controllerName="com.arteriatech.ssreqbpformapproval.controller.TDSDeclaration"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<f:SimpleForm class="editableForm" columnsL="2" columnsM="3" editable="true" emptySpanL="0" emptySpanM="0" labelSpanL="5" labelSpanM="5"
+		layout="ResponsiveGridLayout" maxContainerCols="2" visible="{LocalViewSettingDt>/ReviewMode}">
+		<f:content>
+			<!--<core:Title text=""/>-->
+			<Label text="Turn Over For PAN in FY 2022-23"/>
+			<Text text="{CPAddInfos>/PANTurnoverText}"/>
+			<Label text="TDS for BIL"/>
+			<Text text="{CPAddInfos>/TDSText}"/>
+			<Label visible="{LocalViewSettingDt>/TanVisble}" text="TAN Number"/>
+			<Text visible="{LocalViewSettingDt>/TanVisble}" text="{CPAddInfos>/TAN}"/>
+		</f:content>
+	</f:SimpleForm>
+	<table:Table id="UIDocuments1" rows="{TDSCertificates>/}" showColumnVisibilityMenu="false" enableGrouping="false" selectionMode="None"
+		enableSelectAll="false" enableColumnFreeze="false" visible="{LocalViewSettingDt>/ReviewMode}"
+		visibleRowCount="{= ${LocalViewSettingDt>/TDSDocConut} > 5 ? 5:${LocalViewSettingDt>/TDSDocConut}}" visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar>
+				<Title id="UIDocuments_TABLETi1tle" level="H2"
+					text="{i18n>Documents} {= (!${LocalViewSettingDt>/TDSDocConut} > 0) ? '' : '('+${LocalViewSettingDt>/TDSDocConut}+')'}"
+					tooltip="{i18n>Documents} {= (!${LocalViewSettingDt>/TDSDocConut} > 0) ? '' : '('+${LocalViewSettingDt>/TDSDocConut}+')'}"/>
+				<ToolbarSpacer></ToolbarSpacer>
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column sortProperty="DocumentType" filterProperty="DocumentType" autoResizable="true" tooltip="{i18n>Certification.Type1}">
+				<Text text="{i18n>Certification.Type1}"/>
+				<table:template>
+					<Text text="{TDSCertificates>Certificates}"/>
+				</table:template>
+			</table:Column>
+			<table:Column hAlign="Center" width="10rem" tooltip="{i18n>View.Attachments.Label}">
+				<Text text="{i18n>View.Attachments.Label}"/>
+				<table:template>
+					<Button enabled="{TDSCertificates>ImageFlag}" icon="sap-icon://attachment" text="{i18n>View.Attachments}" type="Emphasized"
+						tooltip="{i18n>View.Attachments}" press="viewAttachemets"/>
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+</mvc:View>

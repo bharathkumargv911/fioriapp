@@ -1,0 +1,71 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	xmlns:table="sap.ui.table" controllerName="com.arteriatech.ssreqbpformapproval.controller.Attachment"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<!--<table:Table width="75%" id="UITaxationDetailsTable" rows="{SurveyUploadQuestions>/}" showColumnVisibilityMenu="true" enableGrouping="false"-->
+	<!--	selectionMode="None" enableSelectAll="false" enableColumnFreeze="true" visibleRowCountMode="Fixed" visible="{LocalViewSettings>/EditMode}"-->
+	<!--	minAutoRowCount="{path: 'LocalViewSettings>/UploadQuestionCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"-->
+	<!--	visibleRowCount="{path: 'LocalViewSettings>/UploadQuestionCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}">-->
+	<!--	<table:extension>-->
+	<!--		<Toolbar>-->
+	<!--			<Label design="Bold"-->
+	<!--				text="{i18n>common.Table.Items.title} {= (!${LocalViewSettings>/UploadQuestionCount} > 0) ? '' : ' (' + ${LocalViewSettings>/UploadQuestionCount} + ') ' }"/>-->
+	<!--		</Toolbar>-->
+	<!--	</table:extension>-->
+	<!--	<table:columns>-->
+	<!--		<table:Column sortProperty="" filterProperty="" autoResizable="true" tooltip="Certificate">-->
+	<!--			<Text text="Certificate"/>-->
+	<!--			<table:template>-->
+	<!--				<Text text="{path: 'SurveyUploadQuestions>Question'}" tooltip="Registration Type"/>-->
+	<!--			</table:template>-->
+	<!--		</table:Column>-->
+	<!--		<table:Column autoResizable="true" hAlign="Center" tooltip="">-->
+	<!--			<Label text="{i18n>Upload.button}" required="true"/>-->
+	<!--			<table:template>-->
+	<!--				<Button icon="sap-icon://attachment" text="{i18n>Attachments.Page.UploadCollection.Dialog.Title}" type="Accept"-->
+	<!--					tooltip="{i18n>Attachments.Page.UploadCollection.Dialog.Title}" press="onPressUploadAttachments" visible="true"/>-->
+	<!--			</table:template>-->
+	<!--		</table:Column>-->
+	<!--		<table:Column hAlign="Center" tooltip="{i18n>Image.text}">-->
+	<!--			<Text text="{i18n>Image.text}"/>-->
+	<!--			<table:template>-->
+	<!--				<Link text="View Attachment" press="viewAttachemets" tooltip="{SurveyUploadQuestions>Url}"/>-->
+	<!--			</table:template>-->
+	<!--		</table:Column>-->
+	<!--	</table:columns>-->
+	<!--</table:Table>-->
+	<table:Table width="75%" id="UITaxationDetailsTable1" rows="{Attachments>/}" showColumnVisibilityMenu="true" enableGrouping="false"
+		selectionMode="None" enableSelectAll="false" enableColumnFreeze="true" visibleRowCountMode="Fixed" visible="{LocalViewSettings>/ReviewMode}"
+		minAutoRowCount="{path: 'LocalViewSettings>/UploadQuestionCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visibleRowCount="{path: 'LocalViewSettings>/UploadQuestionCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}">
+		<!--visibleRowCount="{path: 'LocalViewSettings>/UploadQuestionCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"-->
+		<table:extension>
+			<Toolbar>
+				<Label design="Bold"
+					text="{i18n>common.Table.Items.title} {= (!${LocalViewSettings>/UploadQuestionCount} > 0) ? '' : ' (' + ${LocalViewSettings>/UploadQuestionCount} + ') ' }"/>
+			</Toolbar>
+		</table:extension>
+		<table:columns>
+			<table:Column sortProperty="" filterProperty="" autoResizable="true" tooltip="Certificate">
+				<Text text="Certificate"/>
+				<table:template>
+					<Text text="{path: 'Attachments>CertificateTypeDesc'}" tooltip="{path: 'Attachments>CertificateTypeDesc'}"/>
+				</table:template>
+			</table:Column>
+			<!--<table:Column autoResizable="true" hAlign="Center" tooltip="">-->
+			<!--	<Label text="{i18n>Upload.button}" required="true"/>-->
+			<!--	<table:template>-->
+			<!--		<Button enabled="false" icon="sap-icon://attachment" text="{i18n>Attachments.Page.UploadCollection.Dialog.Title}" type="Accept"-->
+			<!--			tooltip="{i18n>Attachments.Page.UploadCollection.Dialog.Title}" press="UploadDocuments" visible="true"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<table:Column hAlign="Center" tooltip="{i18n>Image.text}">
+				<Text text="{i18n>Image.text}"/>
+				<table:template>
+					<Link text="View Attachment" press="viewAttachemets" tooltip="{Attachments>ImageURL}"/>
+					<!--<Button text="View Attachment" press="UploadDocuments" type="Emphasized"-->
+					<!--	enabled="{= (${SurveyUploadQuestions>Url}) !== '' ? true : false}"/>-->
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+</mvc:View>

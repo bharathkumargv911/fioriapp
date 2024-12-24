@@ -1,0 +1,278 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+	controllerName="com.arteriatech.ssreqbpformapproval.controller.List" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:table="sap.ui.table"
+	xmlns:fb="sap.ui.comp.filterbar">
+	<Panel visible="{LocalViewSetting>/ApprovalView}">
+		<table:Table id="UIListTable" rows="{ListItems>/}" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None"
+			enableSelectAll="false" noData="{ppcutili18n>common.NoItemSelected}" enableColumnFreeze="true"
+			minAutoRowCount="{LocalViewSetting>/tableCount}" visibleRowCount="{LocalViewSetting>/tableCount}" visible="true" visibleRowCountMode="Fixed">
+			<table:toolbar>
+				<Toolbar>
+					<Title id="UITableT23" text="Pending Approvals ({LocalViewSetting>/tableCount})" level="H1"/>
+					<ToolbarSpacer/>
+					<Button icon="sap-icon://refresh" press="getTaskCollections" tooltip="Referesh"/>
+				</Toolbar>
+			</table:toolbar>
+			<table:Column sortProperty="" filterProperty="" width="27rem" autoResizable="true" tooltip="">
+				<Text text="Task Title"/>
+				<table:template>
+					<Text text="{ListItems>taskTitle}" class="sapUiTinyMarginTopBottom" textAlign="Right"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="" filterProperty="" width="10rem" autoResizable="true" tooltip="">
+				<Text text="Moblie Number"/>
+				<table:template>
+					<Text text="{ListItems>header/MobileNo1}" class="sapUiTinyMarginTopBottom" textAlign="Right"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="" filterProperty="" width="14rem" autoResizable="true" tooltip="">
+				<Text text="Email"/>
+				<table:template>
+					<Text text="{ListItems>header/EmailID}" class="sapUiTinyMarginTopBottom" textAlign="Right"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="" filterProperty="" width="10rem" autoResizable="true" tooltip="">
+				<Text text="Address"/>
+				<table:template>
+					<Text text="{ListItems>header/Address1}" class="sapUiTinyMarginTopBottom" textAlign="Right"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="" filterProperty="" width="10rem" autoResizable="true" tooltip="">
+				<Text text="City"/>
+				<table:template>
+					<Text text="{ListItems>header/CityDesc}" class="sapUiTinyMarginTopBottom" textAlign="Right"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="" filterProperty="" autoResizable="true" tooltip="">
+				<Text text=""/>
+				<table:template>
+					<Button icon="sap-icon://navigation-right-arrow" press="gotoDetails"></Button>
+				</table:template>
+			</table:Column>
+		</table:Table>
+	</Panel>
+	<fb:FilterBar visible="{LocalViewSetting>/ListView}" search="onSearch" filterContainerWidth="16rem">
+		<fb:filterGroupItems>
+			<fb:FilterGroupItem groupName="Group1" visibleInFilterBar="true" label="Created On" labelTooltip="Created On" name="CreatedOn"
+				id="lCreatedOn">
+				<fb:control>
+					<Select change="onCreateOnDateSelectionChanged" id="inputCreatedOnDate" items="{SOCreatedOnDateViewSetting>/}" name="OrderDate">
+						<core:ListItem id="CreateOn_item" key="{SOCreatedOnDateViewSetting>DateKey}" text="{SOCreatedOnDateViewSetting>DateDesc}"
+							tooltip="{SOCreatedOnDateViewSetting>DateDesc}"></core:ListItem>
+					</Select>
+				</fb:control>
+			</fb:FilterGroupItem>
+			<fb:FilterGroupItem groupName="Group2" visibleInFilterBar="true" id="INVStatusMultiCombo" label="{i18n>List.filterbar.Status}"
+				labelTooltip="{i18n>List.filterbar.Status}" name="INVStatusMultiCombo">
+				<fb:control>
+					<MultiComboBox id="StatusID" items="{StatusDD>/}" selectedKeys="{LocalViewSetting>/StatusID}" selectionChange="onInvStatusMCSelectionChange">
+						<core:ListItem id="InvStatusMultiCombo_item" key="{StatusDD>Key}" text="{StatusDD>Key}{StatusDD>Seperator}{StatusDD>Text}"
+							tooltip="{StatusDD>Text}"></core:ListItem>
+					</MultiComboBox>
+				</fb:control>
+			</fb:FilterGroupItem>
+			<fb:FilterGroupItem groupName="Group3" visibleInFilterBar="true" id="ApprovalStatusMultiCombo" label="{i18n>List.filterbar.ApprivalStatus}"
+				labelTooltip="{i18n>List.filterbar.ApprivalStatus}" name="ApprovalStatusMultiCombo">
+				<fb:control>
+					<MultiComboBox id="ApprovalStatusID" items="{ApprovalStatusDD>/}" selectedKeys="{LocalViewSetting>/ApprovalStatusID}">
+						<core:ListItem id="ApprovalStatusMultiCombo_item" key="{ApprovalStatusDD>Key}"
+							text="{ApprovalStatusDD>Key}{ApprovalStatusDD>Seperator}{ApprovalStatusDD>Text}" tooltip="{ApprovalStatusDD>Text}"></core:ListItem>
+					</MultiComboBox>
+				</fb:control>
+			</fb:FilterGroupItem>
+		</fb:filterGroupItems>
+	</fb:FilterBar>
+	<Panel visible="{LocalViewSetting>/ListView}" backgroundDesign="Solid">
+		<content>
+			<table:Table id="UItable1" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None" rows="{CPModels>/}"
+				visible="{LocalViewSetting>/SummaryRecord}" enableSelectAll="false"
+				visibleRowCount="{= ${LocalViewSetting>/ItemsCount} > 5 ? 5:${LocalViewSetting>/ItemsCount}}">
+				<table:toolbar>
+					<Toolbar>
+						<Title id="UITableTitle1" text="Items ({LocalViewSetting>/ItemsCount})" level="H1"/>
+						<HBox>
+							<Title class="sapUiTinyMarginEnd" visible="{= ${device>/system/phone}? false : true}" text="{i18n>List.Table.Legend} :" level="H2"/>
+							<HBox>
+								<Title class="sapUiTinyMarginEnd" visible="{= ${device>/system/phone}? false : true}" text="Status : " level="H2"/>
+								<core:Icon class="sapUiTinyMarginEnd" src="sap-icon://status-in-process" color="#d14900" tooltip="Posted"
+									visible="{= ${device>/system/phone}? false : true}"/>
+								<Text class="sapUiTinyMarginEnd" text="{i18n>list.Table.Draft}" visible="{= ${device>/system/phone}? false : true}"/>
+								<core:Icon class="sapUiTinyMarginEnd" src="sap-icon://status-positive" color="Positive" tooltip="Posted"
+									visible="{= ${device>/system/phone}? false : true}"/>
+								<Text class="sapUiTinyMarginEnd" text="{i18n>list.Table.Status.Sub}" visible="{= ${device>/system/phone}? false : true}"/>
+								<core:Icon class="sapUiTinyMarginEnd" src="sap-icon://status-negative" color="Negative" tooltip="Cancelled"
+									visible="{= ${device>/system/phone}? false : true}"/>
+								<Text class="sapUiTinyMarginEnd" text="{i18n>list.Table.Status.Cancelled}" visible="{= ${device>/system/phone}? false : true}"/>
+							</HBox>
+							<HBox>
+								<Title text=" | Approval Status :" level="H2" visible="true" class="sapUiTinyMarginEnd"/>
+								<core:Icon class="sapUiTinyMarginEnd" src="sap-icon://status-negative" color="Negative" tooltip="Open"
+									visible="{= ${device>/system/phone}? false : true}"/>
+								<Text class="sapUiTinyMarginEnd" text="{i18n>list.Table.Rejected}" visible="{= ${device>/system/phone}? false : true}"/>
+								<core:Icon class="sapUiTinyMarginEnd" src="sap-icon://status-in-process" color="Critical" tooltip="Partially Processed"
+									visible="{= ${device>/system/phone}? false : true}"/>
+								<Text class="sapUiTinyMarginEnd" text="{i18n>list.Table.Pending1}" visible="{= ${device>/system/phone}? false : true}"/>
+								<core:Icon class="sapUiTinyMarginEnd" src="sap-icon://activity-2" color="Positive" tooltip="Closed"
+									visible="{= ${device>/system/phone}? false : true}"/>
+								<Text class="sapUiTinyMarginEnd" text="{i18n>list.Table.Confiram}" visible="{= ${device>/system/phone}? false : true}"/>
+							</HBox>
+						</HBox>
+						<ToolbarSpacer/>
+						<Button icon="sap-icon://download" tooltip="{ppcutili18n>common.ExportToExcelTooltip}" press="exportToExcel1" visible="true"/>
+					</Toolbar>
+				</table:toolbar>
+				<table:columns>
+					<table:Column width="10rem" sortProperty="NAME" filterProperty="NAME" tooltip="{i18n>List.Table.BusinessName}">
+						<Text text="{i18n>List.Table.BusinessName}"/>
+						<table:template>
+							<Link id="tbusName" press="gotoDetails1" wrapping="true" text="{CPModels>NAME}" tooltip="{i18n>List.Table.BusinessName}"/>
+						</table:template>
+					</table:Column>
+					<table:Column width="10rem" sortProperty="OwnName" filterProperty="OwnName" tooltip="{i18n>List.Table.OwnName}">
+						<Text text="{i18n>List.Table.OwnName}"/>
+						<table:template>
+							<Text id="Towner" wrapping="true"
+								text="{= ${CPModels>CP_NO} === null ? ${CPModels>OWNER_NAME} : ${CPModels>OWNER_NAME} +' ('+${CPModels>CP_NO}+')'}"
+								tooltip="{i18n>List.Table.OwnName}"/>
+						</table:template>
+					</table:Column>
+					<table:Column width="11rem" sortProperty="TAX1" filterProperty="TAX1" tooltip="{i18n>List.Table.gst}">
+						<Text text="{i18n>List.Table.gst}"/>
+						<table:template>
+							<Text id="Tgst" wrapping="true" text="{CPModels>TAX1}" tooltip="{i18n>List.Table.gst}"/>
+						</table:template>
+					</table:Column>
+					<table:Column width="10rem" sortProperty="MOBILE1" filterProperty="MOBILE1" tooltip="{i18n>List.Table.MobNum}">
+						<Text text="{i18n>List.Table.MobNum}"/>
+						<table:template>
+							<Text id="mob" wrapping="true" text="{CPModels>MOBILE1}" tooltip="{i18n>List.Table.MobNum}"/>
+						</table:template>
+					</table:Column>
+					<table:Column width="10rem" sortProperty="MOBILE2" filterProperty="MOBILE2" tooltip="{i18n>List.Table.TelNum}">
+						<Text text="{i18n>List.Table.TelNum}"/>
+						<table:template>
+							<Text id="telno" wrapping="true" text="{CPModels>MOBILE2}" tooltip="{i18n>List.Table.TelNum}"/>
+						</table:template>
+					</table:Column>
+					<table:Column width="11rem" sortProperty="EMAILID" filterProperty="EMAILID" tooltip="{i18n>List.Table.Emil}">
+						<Text text="{i18n>List.Table.Emil}"/>
+						<table:template>
+							<Text id="TEMAILID" wrapping="true" text="{CPModels>EMAILID}" tooltip="{i18n>List.Table.TelNum}"/>
+						</table:template>
+					</table:Column>
+					<table:Column width="10rem" sortProperty="DOB" filterProperty="DOB" tooltip="{i18n>List.Table.DOI}">
+						<Text text="{i18n>List.Table.DOI}"/>
+						<table:template>
+							<Text wrapping="true" text="{path: 'CPModels>DOB', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+								tooltip="{i18n>List.Table.DOI}"/>
+						</table:template>
+					</table:Column>
+					<table:Column width="10rem" sortProperty="ADDRESS1" filterProperty="ADDRESS1" tooltip="{i18n>List.Table.Address}">
+						<Text text="{i18n>List.Table.Address}"/>
+						<table:template>
+							<Text id="tAddress1" wrapping="true" text="{CPModels>ADDRESS1}" tooltip="{i18n>List.Table.Address}"/>
+						</table:template>
+					</table:Column>
+					<table:Column width="9rem" sortProperty="STATEID" filterProperty="STATEID" tooltip="{i18n>List.Table.State}">
+						<Text text="{i18n>List.Table.State}"/>
+						<table:template>
+							<Text id="State" wrapping="true" text="{CPModels>STATEID}" tooltip="{i18n>List.Table.State}"/>
+						</table:template>
+					</table:Column>
+					<!--REMARKS is need to Check-->
+					<table:Column width="7rem" tooltip="{i18n>List.Table.DisSts}">
+						<Text text="{i18n>List.Table.DisSts}"/>
+						<table:template>
+							<!--<Text text="{= ${CPModels>PROSPECT_STATUS} !== '' ? ${CPModels>CPTypeDes} +' ('+ ${CPModels>CP_TYPE}+')' : ${CPModels>CPTypeDes} }"-->
+							<!--	tooltip="{i18n>List.Table.DisSts}"/>-->
+							<Text wrapping="true" text="{CPModels>PROSPECT_STATUS}" tooltip="{i18n>List.Table.DisSts}"/>
+						</table:template>
+					</table:Column>
+					<table:Column width="3rem" sortProperty="STATUS" filterProperty="STATUS" tooltip="Status">
+						<ObjectStatus tooltip="Status" icon="sap-icon://document-text"></ObjectStatus>
+						<table:template>
+							<core:Icon src="{ path: 'CPModels>STATUS', formatter: '.formatImage' }"
+								color="{ path: 'CPModels>STATUS', formatter: '.formatImageColors1' }" tooltip="Status: {CPModels>STATUS}"/>
+							<!--<Text wrapping="true" text="{CPModels>STATUS}" tooltip="Status"/>-->
+						</table:template>
+					</table:Column>
+					<table:Column width="3rem" sortProperty="ApprovalStatus" filterProperty="ApprovalStatus" tooltip="ApprovalStatus">
+						<ObjectStatus tooltip="Approval Status" icon="sap-icon://activity-2"></ObjectStatus>
+						<table:template>
+							<core:Icon src="{ path: 'CPModels>APPRVL_STATUS', formatter: '.ApprovalformatImage' }"
+								color="{ path: 'CPModels>APPRVL_STATUS', formatter: '.ApprovalformatImageColors1' }" tooltip="Status: {CPModels>STATUS}"/>
+							<!--<Text wrapping="true" text="{CPModels>APPRVL_STATUS}" tooltip="ApprovalStatus"/>-->
+						</table:template>
+					</table:Column>
+				</table:columns>
+			</table:Table>
+			<!--Table for Mobile view-->
+			<Table id="mTable" busy="false" inset="false" items="{CPModels>/}" noDataText=""
+				visible="{= (${device>/system/phone} || ${device>/system/tablet})? true : false}">
+				<headerToolbar>
+					<Toolbar>
+						<Title text="Total Items ({LocalViewSetting>/ItemsCount})"/>
+						<ToolbarSpacer/>
+						<Button id="MOListTableExportButton1" icon="sap-icon://download" tooltip="" press="exportToExcel1"/>
+					</Toolbar>
+				</headerToolbar>
+				<columns>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.BusinessName}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.OwnName}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.gst}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.MobNum}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.TelNum}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.Emil}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.DOI}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.Address}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.State}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="{i18n>List.Table.DisSts}"/>
+					</Column>
+					<Column width="10em">
+						<Text text="Status"/>
+					</Column>
+					<Column width="10em">
+						<Text text="ApprovalStatus"/>
+					</Column>
+				</columns>
+				<items>
+					<ColumnListItem id="SOItem_column_List_ItemBRD" press="getSODetails" type="Navigation">
+						<cells>
+							<Text wrapping="true" text="{CPModels>NAME}" tooltip="{i18n>List.Table.BusinessName}"/>
+							<Text wrapping="true" text="{CPModels>OWNER_NAME}" tooltip="{i18n>List.Table.OwnName}"/>
+							<Text wrapping="true" text="{CPModels>TAX1}" tooltip="{i18n>List.Table.gst}"/>
+							<Text wrapping="true" text="{CPModels>MOBILE1}" tooltip="{i18n>List.Table.MobNum}"/>
+							<Text wrapping="true" text="{CPModels>MOBILE2}" tooltip="{i18n>List.Table.TelNum}"/>
+							<Text wrapping="true" text="{CPModels>EMAILID}" tooltip="{i18n>List.Table.TelNum}"/>
+							<Text wrapping="true" text="{path: 'CPModels>DOB', formatter: 'com.arteriatech.ss.utils.js.Common.getFormattedDate'}"
+								tooltip="{i18n>List.Table.DOI}"/>
+							<Text wrapping="true" text="{CPModels>ADDRESS1}" tooltip="{i18n>List.Table.Address}"/>
+							<Text wrapping="true" text="{CPModels>STATEID}" tooltip="{i18n>List.Table.State}"/>
+							<Text wrapping="true" text="{CPModels>PROSPECT_STATUS}" tooltip="{i18n>List.Table.DisSts}"/>
+							<Text wrapping="true" text="{CPModels>STATUS}" tooltip="Status"/>
+							<Text wrapping="true" text="{CPModels>APPRVL_STATUS}" tooltip="ApprovalStatus"/>
+						</cells>
+					</ColumnListItem>
+				</items>
+			</Table>
+		</content>
+	</Panel>
+</mvc:View>

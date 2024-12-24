@@ -1,0 +1,43 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table"
+	controllerName="com.arteriatech.ssreqbpformapproval.controller.CPPartnerDetails" xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UItable1" showColumnVisibilityMenu="true" enableGrouping="false" selectionMode="None" rows="{CPReferences>/}"
+		visible="true" enableSelectAll="false"
+		visibleRowCount="{= ${LocalViewSettingDt>/CPRefItemCount} > 5 ? 5:${LocalViewSettingDt>/CPRefItemCount}}">
+		<table:toolbar>
+			<Toolbar>
+				<!--<Title id="UIAppointmentsTableTitle"-->
+				<!--	text="{i18n>List.Table.title} {= (!${LocalViewSettingDt>/CPRefItemCount} > 0) ? '' : '('+${LocalViewSettingDt>/CPRefItemCount}+')'}" level="H2"/>-->
+				<ToolbarSpacer/>
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column sortProperty="Name" filterProperty="Name" tooltip="{i18n>Detail.PartnerTab.Name}">
+				<Text text="{i18n>Detail.PartnerTab.Name}"/>
+				<table:template>
+					<Text wrapping="true" text="{CPReferences>Name}" tooltip="{i18n>Detail.PartnerTab.Name}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="Business" filterProperty="Business" tooltip="{i18n>Detail.PartnerTab.Aadd}">
+				<Text text="{i18n>Detail.PartnerTab.Aadd}"/>
+				<table:template>
+					<Text wrapping="true" text="{CPReferences>Business}" tooltip="{i18n>Detail.PartnerTab.Aadd}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="MobileNo" filterProperty="MobileNo" tooltip="{i18n>Detail.PartnerTab.Mob}">
+				<Text text="{i18n>Detail.PartnerTab.Mob}"/>
+				<table:template>
+					<Text wrapping="true" text="{CPReferences>MobileNo}" tooltip="{i18n>Detail.PartnerTab.Mob}"/>
+				</table:template>
+			</table:Column>
+			<table:Column sortProperty="Desination" filterProperty="Desination" tooltip="{i18n>Detail.PartnerTab.Primary}">
+				<Text text="{i18n>Detail.PartnerTab.Primary}"/>
+				<table:template>
+					<RadioButtonGroup editable="fasle">
+						<RadioButton text="" selected="{CPReferences>SelectedPrimay}"/>
+					</RadioButtonGroup>
+					<!--<Text wrapping="true" text="{CPReferences>Desination}" tooltip="{i18n>Detail.PartnerTab.Primary}"/>-->
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+</mvc:View>
