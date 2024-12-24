@@ -1,0 +1,31 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout" xmlns:table="sap.ui.table"
+	controllerName="com.arteriatech.ssreqbpformapproval.controller.GSTUpload" xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UIGSTDocument1s" rows="{GSTCertificates>/}" showColumnVisibilityMenu="false" enableGrouping="false" selectionMode="None"
+		enableSelectAll="false" enableColumnFreeze="false" visible="{LocalViewSettingDt>/ReviewMode}"
+		visibleRowCount="{= ${LocalViewSettingDt>/GSTDocumentsCount} > 5 ? 5:${LocalViewSettingDt>/GSTDocumentsCount}}" visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar>
+				<Title id="UIGSTDocuments_TAB1LETitle" level="H2"
+					text="GST Documents {= (!${LocalViewSettingDt>/GSTDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/GSTDocumentsCount}+')'}"
+					tooltip="{i18n>GSTCertificates} {= (!${LocalViewSettingDt>/GSTDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/GSTDocumentsCount}+')'}"/>
+				<ToolbarSpacer></ToolbarSpacer>
+				<!--<Button type="Emphasized" id="AddNew" text="" icon="sap-icon://add" press="onAddNew" visible="{LocalViewSettingDt>/CreateMode}"/>-->
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column sortProperty="DocumentType" filterProperty="DocumentType" autoResizable="true" tooltip="GST Documents">
+				<Text text="GST Documents"/>
+				<table:template>
+					<Text text="{GSTCertificates>CertificateTypeDesc}"/>
+				</table:template>
+			</table:Column>
+			<table:Column hAlign="Center" width="10rem" tooltip="{i18n>View.Attachments.Label}">
+				<Text text="{i18n>View.Attachments.Label}"/>
+				<table:template>
+					<Button enabled="{GSTCertificates>ImageFlag}" icon="sap-icon://attachment" text="{i18n>View.Attachments}" type="Emphasized"
+						tooltip="{i18n>View.Attachments}" press="viewAttachemets"/>
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+</mvc:View>

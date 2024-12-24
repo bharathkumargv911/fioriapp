@@ -1,0 +1,61 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:table="sap.ui.table"
+	controllerName="com.arteriatech.ssreqbpformapproval.controller.ApprovalHistory" xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table id="UIGSTDocument1s" rows="{ApprovalHistoryModel>/}" showColumnVisibilityMenu="false" enableGrouping="false"
+		selectionMode="None" enableSelectAll="false" enableColumnFreeze="false" visible="{LocalViewSettingDt>/ReviewMode}"
+		visibleRowCount="{= ${LocalViewSettingDt>/ApprovalHistoryCount} > 5 ? 5:${LocalViewSettingDt>/ApprovalHistoryCount}}"
+		visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar>
+				<Title id="UIGSTDocuments_TAB1LETitle" level="H2"
+					text="Items {= (!${LocalViewSettingDt>/ApprovalHistoryCount} > 0) ? '' : '('+${LocalViewSettingDt>/ApprovalHistoryCount}+')'}"
+					tooltip="{i18n>ApprovalHistoryModel} {= (!${LocalViewSettingDt>/ApprovalHistoryCount} > 0) ? '' : '('+${LocalViewSettingDt>/ApprovalHistoryCount}+')'}"/>
+				<ToolbarSpacer></ToolbarSpacer>
+				<!--<Button type="Emphasized" id="AddNew" text="" icon="sap-icon://add" press="onAddNew" visible="{LocalViewSettingDt>/CreateMode}"/>-->
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column width="3rem" tooltip="S.NO">
+				<Text text="S.No"/>
+				<table:template>
+					<Text text="{ApprovalHistoryModel>Seq}"/>
+				</table:template>
+			</table:Column>
+			<table:Column tooltip="Approved By">
+				<Text text="Approved By"/>
+				<table:template>
+					<Text text="{ApprovalHistoryModel>ApprovedBy}"/>
+				</table:template>
+			</table:Column>
+			<table:Column tooltip="Comments">
+				<Text text="Comments"/>
+				<table:template>
+					<Text text="{ApprovalHistoryModel>UserComments}"/>
+				</table:template>
+			</table:Column>
+			<table:Column tooltip="Approved User">
+				<Text text="Approved User"/>
+				<table:template>
+					<Text text="{ApprovalHistoryModel>ApprovedUser}"/>
+				</table:template>
+			</table:Column>
+			<table:Column tooltip="Approved EmailID">
+				<Text text="Approved EmailID"/>
+				<table:template>
+					<Text text="{ApprovalHistoryModel>ApprovedEmail}"/>
+				</table:template>
+			</table:Column>
+			<table:Column tooltip="Approved On">
+				<Text text="Approved On"/>
+				<table:template>
+					<Text text="{path:'ApprovalHistoryModel>CreatedOn', formatter:'.formatDate'}"/>
+				</table:template>
+			</table:Column>
+			<!--<table:Column tooltip="Approved At">-->
+			<!--	<Text text="Approved At"/>-->
+			<!--	<table:template>-->
+			<!--		<Text text="{ApprovalHistoryModel>CreatedAt}"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+		</table:columns>
+	</table:Table>
+</mvc:View>

@@ -1,0 +1,32 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	xmlns:table="sap.ui.table" controllerName="com.arteriatech.ssreqbpformapproval.controller.Attachments"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<table:Table width="75%" id="UITaxationDetailsTable1" rows="{Attachments>/}" showColumnVisibilityMenu="true" enableGrouping="false"
+		selectionMode="None" enableSelectAll="false" enableColumnFreeze="true" visibleRowCountMode="Fixed" visible="{LocalViewSettings>/ReviewMode}"
+		minAutoRowCount="{path: 'LocalViewSettingDt>/AttachmentTableCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}"
+		visibleRowCount="{path: 'LocalViewSettingDt>/AttachmentTableCount', formatter: 'com.arteriatech.ppc.utils.js.Common.setUITableVisibleRowCount'}">
+		<table:extension>
+			<Toolbar>
+				<Label design="Bold"
+					text="Certificates {= (!${LocalViewSettingDt>/AttachmentTableCount} > 0) ? '' : ' (' + ${LocalViewSettingDt>/AttachmentTableCount} + ') ' }"/>
+			</Toolbar>
+		</table:extension>
+		<table:columns>
+			<table:Column sortProperty="" filterProperty="" autoResizable="true" tooltip="Certificate">
+				<Text text="Certificate"/>
+				<table:template>
+					<Text text="{path: 'Attachments>CertificateTypeDesc'}" tooltip="{Attachments>CertificateTypeDes}"/>
+				</table:template>
+			</table:Column>
+			<table:Column hAlign="Center" width="6rem" tooltip="{i18n>Image.text}">
+				<Text text="View"/>
+				<table:template>
+					<!--<Link text="View Attachment" press="viewAttachemets" tooltip="{Attachments>ImageURL}"/>-->
+					<Button icon="sap-icon://attachment" text="View" type="Emphasized" tooltip="{i18n>View.Attachments}" press="viewAttachemets"/>
+					<!--<Button text="View Attachment" press="UploadDocuments" type="Emphasized"-->
+					<!--	enabled="{= (${SurveyUploadQuestions>Url}) !== '' ? true : false}"/>-->
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+</mvc:View>

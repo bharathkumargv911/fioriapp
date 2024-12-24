@@ -1,0 +1,356 @@
+{
+	"_version": "1.12.0",
+	"sap.app": {
+		"id": "com.arteriatech.ssreqbpformapproval",
+		"type": "application",
+		"i18n": "i18n/i18n.properties",
+		"applicationVersion": {
+			"version": "1.0.0"
+		},
+		"title": "{{appTitle}}",
+		"description": "{{appDescription}}",
+		"sourceTemplate": {
+			"id": "ui5template.basicSAPUI5ApplicationProject",
+			"version": "1.40.12"
+		},
+		"dataSources": {
+			"PCGWHANA": {
+				"uri": "/sap/opu/odata/ARTEC/PCGWHANA/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/PCGWHANA/metadata.xml"
+				}
+			},
+			"tcm": {
+				"uri": "/bpmworkflowruntime/odata/v1/tcm/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/tcm/metadata.xml"
+				}
+			},
+			"SSGWHANA": {
+				"uri": "/sap/opu/odata/ARTEC/SSGWHANA/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/SSGWHANA/metadata.xml"
+				}
+			},
+			"PUGW": {
+				"uri": "/sap/opu/odata/ARTEC/PUGW/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/PCGW/metadata.xml"
+				}
+			},
+			"SSGW_MST": {
+				"uri": "/AGGRBIL/SSGW_MST/service.xsodata/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			},
+			"ZWHGW": {
+				"uri": "/AGGRBIL/ZWH_GW/service.xsodata/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0"
+				}
+			},
+			"CUBESHANA": {
+				"uri": "/AGGRBIL/ARTEC/CUBES/service.xsodata/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/CUBESHANA/metadata.xml"
+				}
+			},
+			"PCGW": {
+				"uri": "/sap/opu/odata/ARTEC/PCGW/",
+				"type": "OData",
+				"settings": {
+					"odataVersion": "2.0",
+					"localUri": "model/PCGW/metadata.xml"
+				}
+			}
+		}
+	},
+	"sap.ui": {
+		"technology": "UI5",
+		"icons": {
+			"icon": "",
+			"favIcon": "",
+			"phone": "",
+			"phone@2": "",
+			"tablet": "",
+			"tablet@2": ""
+		},
+		"deviceTypes": {
+			"desktop": true,
+			"tablet": true,
+			"phone": true
+		}
+	},
+	"sap.ui5": {
+		"flexEnabled": false,
+		"rootView": {
+			"viewName": "com.arteriatech.ssreqbpformapproval.view.Main",
+			"type": "XML",
+			"async": true,
+			"id": "Main"
+		},
+		"dependencies": {
+			"minUI5Version": "1.65.6",
+			"libs": {
+				"sap.ui.layout": {},
+				"sap.ui.core": {},
+				"sap.m": {}
+			}
+		},
+		"contentDensities": {
+			"compact": true,
+			"cozy": true
+		},
+		"models": {
+			"i18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleName": "com.arteriatech.ssreqbpformapproval.i18n.i18n"
+				}
+			},
+			"ppcutili18n": {
+				"type": "sap.ui.model.resource.ResourceModel",
+				"settings": {
+					"bundleUrl": "/sap/bc/ui5_ui5/ARTEC/PPCUTIL/utils/i18n/i18n.properties"
+				},
+				"preload": true,
+				"async": true
+			},
+			"tcm": {
+				"dataSource": "tcm",
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"PCGWHANA": {
+				"dataSource": "PCGWHANA",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"SSGWHANA": {
+				"dataSource": "SSGWHANA",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"SSGW_MST": {
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"preload": true,
+				"dataSource": "SSGW_MST",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"CUBESHANA": {
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"dataSource": "CUBESHANA",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"ZWH_GW": {
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"dataSource": "ZWHGW",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"PCGW": {
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"dataSource": "PCGW",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			},
+			"PUGW": {
+				"preload": true,
+				"type": "sap.ui.model.odata.v2.ODataModel",
+				"dataSource": "PUGW",
+				"settings": {
+					"defaultOperationMode": "Auto",
+					"defaultUpdateMethod": "PUT",
+					"useBatch": true,
+					"defaultBindingMode": "Default",
+					"tokenHandling": true,
+					"disableHeadRequestForToken": true
+				}
+			}
+		},
+		"resources": {
+			"css": [
+				{
+					"uri": "css/style.css"
+				}
+			]
+		},
+		"routing": {
+			"config": {
+				"routerClass": "sap.m.routing.Router",
+				"viewType": "XML",
+				"async": true,
+				"viewPath": "com.arteriatech.ssreqbpformapproval.view",
+				"controlAggregation": "pages",
+				"controlId": "app",
+				"clearControlAggregation": false
+			},
+			"routes": [
+				{
+					"name": "RouteMain",
+					"pattern": "RouteMain",
+					"target": [
+						"TargetMain"
+					]
+				},
+				{
+					"name": "ListPage",
+					"pattern": "",
+					"target": [
+						"ListPage"
+					]
+				},
+				{
+					"pattern": "View/{contextPath}",
+					"name": "DetailPage",
+					"target": [
+						"DetailPage"
+					]
+				}
+			],
+			"targets": {
+				"TargetMain": {
+					"viewType": "XML",
+					"transition": "slide",
+					"clearControlAggregation": false,
+					"viewId": "Main",
+					"viewName": "Main"
+				},
+				"ListPage": {
+					"viewType": "XML",
+					"viewName": "ListPage"
+				},
+				"List": {
+					"viewType": "XML",
+					"viewName": "List"
+				},
+				"DetailPage": {
+					"viewType": "XML",
+					"viewName": "DetailPage"
+				},
+				"DetailsBasicInfo": {
+					"viewType": "XML",
+					"viewName": "DetailsBasicInfo"
+				},
+				"CPPartnerDetails": {
+					"viewType": "XML",
+					"viewName": "CPPartnerDetails"
+				},
+				"AdditionalInfoDetail": {
+					"viewType": "XML",
+					"viewName": "AdditionalInfoDetail"
+				},
+				"InfraDetails": {
+					"viewType": "XML",
+					"viewName": "InfraDetails"
+				},
+				"Attachments": {
+					"viewType": "XML",
+					"viewName": "Attachments"
+				},
+				"Attachment": {
+					"viewType": "XML",
+					"viewName": "Attachment"
+				},
+				"BusinessDetail": {
+					"viewType": "XML",
+					"viewName": "BusinessDetail"
+				},
+				"Expenses": {
+					"viewType": "XML",
+					"viewName": "Expenses"
+				},
+				"OperatingCost": {
+					"viewType": "XML",
+					"viewName": "OperatingCost"
+				},
+				"IncomeTax": {
+					"viewType": "XML",
+					"viewName": "IncomeTax"
+				},
+				"GSTUpload": {
+					"viewType": "XML",
+					"viewName": "GSTUpload"
+				},
+				"BankDetails": {
+					"viewType": "XML",
+					"viewName": "BankDetails"
+				},
+				"TDSDeclaration": {
+					"viewType": "XML",
+					"viewName": "TDSDeclaration"
+				},
+				"ApprovalHistory": {
+					"viewType": "XML",
+					"viewName": "ApprovalHistory"
+				}
+			}
+		}
+	},
+	"sap.platform.hcp": {
+		"uri": "",
+		"_version": "1.1.0"
+	}
+}

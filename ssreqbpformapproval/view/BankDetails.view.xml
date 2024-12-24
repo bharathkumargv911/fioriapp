@@ -1,0 +1,76 @@
+<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:f="sap.ui.layout.form" xmlns:l="sap.ui.layout"
+	xmlns:table="sap.ui.table" controllerName="com.arteriatech.ssreqbpformapproval.controller.BankDetails"
+	xmlns:html="http://www.w3.org/1999/xhtml">
+	<f:SimpleForm class="editableForm" columnsL="3" columnsM="3" editable="true" emptySpanL="0" emptySpanM="0" labelSpanL="5" labelSpanM="5"
+		layout="ResponsiveGridLayout" maxContainerCols="3" visible="{LocalViewSettingDt>/ReviewMode}">
+		<!--<f:content>-->
+		<!--	<core:Title text=""/>-->
+		<!--	<Label text="Account Type" required="true"/>-->
+		<!--	<Text text="{CPAddInfos>/AccountTypeText}"/>-->
+		<!--	<core:Title text=""/>-->
+		<!--	<Label text="Account Number" required="true"/>-->
+		<!--	<Text text="{CPAddInfos>/AccountNumber}"/>-->
+		<!--	<core:Title text=""/>-->
+		<!--	<Label text="OD/CC Limit (in RS)" visible="{LocalViewSettingDt>/visibleODAmount}" required="true"/>-->
+		<!--	<Text text="{CPAddInfos>/ODCCLimit} INR" visible="{LocalViewSettingDt>/visibleODAmount}"/>-->
+		<!--</f:content>-->
+		<f:content>
+			<core:Title text=""/>
+			<Label text="Account Type"/>
+			<Text text="{CPAddInfos>/AccountTypeText}"/>
+			<Label text="IFSC Code"/>
+			<HBox>
+				<Text text="{CPAddInfos>/IFSCCode}"/>
+				<core:Icon src="sap-icon://sys-enter-2" color="green" class="css1" visible="{LocalViewSettings>/AccountVerified}"/>
+			</HBox>
+			<core:Title text=""/>
+			<Label text="Account Number" required="true"/>
+			<HBox>
+				<Text text="{CPAddInfos>/AccountNumber}"/>
+				<core:Icon src="sap-icon://sys-enter-2" color="green" class="css1" visible="{LocalViewSettings>/AccountVerified}"/>
+			</HBox>
+			<Label text="OD/CC Limit (in RS)" visible="{LocalViewSettingDt>/visibleODAmount}" required="true"/>
+			<Text text="{CPAddInfos>/ODCCLimit} INR" visible="{LocalViewSettingDt>/visibleODAmount}"/>
+			<core:Title text=""/>
+			<Label text="Beneficiary Name"/>
+			<Text text="{CPAddInfos>/beneName}"/>
+			<Label text="Active"/>
+			<Text text="{CPAddInfos>/active}"/>
+		</f:content>
+	</f:SimpleForm>
+	<table:Table id="UIBankDocuments1" rows="{BankCertificates>/}" showColumnVisibilityMenu="false" enableGrouping="false" selectionMode="None"
+		enableSelectAll="false" enableColumnFreeze="false" visible="{LocalViewSettingDt>/ReviewMode}"
+		visibleRowCount="{= ${LocalViewSettingDt>/BankDocumentsCount} > 5 ? 5:${LocalViewSettingDt>/BankDocumentsCount}}"
+		visibleRowCountMode="Fixed">
+		<table:toolbar>
+			<Toolbar>
+				<Title id="UIBankDocuments1_TABLETitle" level="H2"
+					text="Documents {= (!${LocalViewSettingDt>/BankDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/BankDocumentsCount}+')'}"
+					tooltip="{i18n>BankDocuments} {= (!${LocalViewSettingDt>/BankDocumentsCount} > 0) ? '' : '('+${LocalViewSettingDt>/BankDocumentsCount}+')'}"/>
+				<ToolbarSpacer></ToolbarSpacer>
+			</Toolbar>
+		</table:toolbar>
+		<table:columns>
+			<table:Column sortProperty="DocumentType" filterProperty="DocumentType" autoResizable="true" tooltip="{i18n>Certification.Type1}">
+				<Text text="{i18n>Certification.Type1}"/>
+				<table:template>
+					<Text text="{BankCertificates>CertificateTypeDesc}"/>
+				</table:template>
+			</table:Column>
+			<!--<table:Column autoResizable="true" width="10rem" hAlign="Center" tooltip="{i18n>Upload.Attachments.Label}">-->
+			<!--	<Text text="{i18n>Upload.Attachments.Label}"/>-->
+			<!--	<table:template>-->
+			<!--		<Button enabled="false" icon="sap-icon://attachment" text="{i18n>Upload.Attachments}" type="Accept" tooltip="{i18n>Upload.Attachments}"-->
+			<!--			press="onPressUploadAttachments"/>-->
+			<!--	</table:template>-->
+			<!--</table:Column>-->
+			<table:Column hAlign="Center" width="10rem" tooltip="{i18n>View.Attachments.Label}">
+				<Text text="{i18n>View.Attachments.Label}"/>
+				<table:template>
+					<Button enabled="{BankCertificates>ImageFlag}" icon="sap-icon://attachment" text="{i18n>View.Attachments}" type="Emphasized"
+						tooltip="{i18n>View.Attachments}" press="viewAttachemets"/>
+				</table:template>
+			</table:Column>
+		</table:columns>
+	</table:Table>
+</mvc:View>
